@@ -1,3 +1,22 @@
+## =============================================================================
+## Script for Visualizing Proportions of Edge Endpoint Types in Depression Graphs
+## =============================================================================
+#' This script computes and visualizes the proportions of edge endpoint types 
+#' (null, circle, arrowhead, arrowtail) for causal discovery results (FCI and CCI)
+#' derived from sum score and individual symptom-level data.
+#'
+#' @details
+#' - Stable edges are extracted from `.rds` files containing causal discovery results.
+#' - Proportions of edge types are computed for each edge across multiple runs.
+#' - Heatmaps are generated to visualize the dominant edge types and their proportions.
+#' 
+#' @output
+#' - Heatmaps visualizing the proportions of edge endpoint types for sum score graphs.
+#' - Heatmaps visualizing the proportions of edge endpoint types for individual symptom graphs.
+#' - Figures exported as `.pdf` files.
+## =============================================================================
+
+
 # BiocManager::install("ComplexHeatmap")
 library(ComplexHeatmap)
 library(circlize)
@@ -268,6 +287,7 @@ heatmap_CCI_plot <- ggplotify::as.ggplot(grid.grabExpr(draw(heatmap_cci))) + ggt
 )
 
 legend <- ggplotify::as.ggplot(grid.grabExpr(draw(custom_legend)))
+legend_h <- ggplotify::as.ggplot(grid.grabExpr(draw(custom_legend_h))) # horizontal version 
 
 # Combine heatmaps and legend using ggarrange
 sumgraph_mat <- ggpubr::ggarrange(
@@ -280,4 +300,20 @@ sumgraph_mat <- ggpubr::ggarrange(
 print(sumgraph_mat)
 # save plot
 #ggpubr::ggexport(filename = "sumgraph_mat.pdf", plot = sumgraph_mat,  width = 11, height = 5, units = "cm")
+
+
+
+# legend horizontal version (for symptom graph)
+symgraph_mat_h <- ggpubr::ggarrange(
+  heatmap_FCI_plot,
+  heatmap_CCI_plot,
+  legend_h,
+  nrow = 3,  # Heatmaps side by side with legend
+  heights = c(3, 3, 0.1)  # Adjust the relative width of each panel
+)
+print(symgraph_mat_h)
+# save plot
+# ggpubr::ggexport(filename = "symgraph_mat.pdf", plot = symgraph_mat_h,  width = 9, height = 20, units = "cm")
+
+
 
