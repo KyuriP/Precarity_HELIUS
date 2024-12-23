@@ -107,6 +107,8 @@ clust_data <- scaled_data |>
   dplyr::select(17:33) |>
   as.data.frame()
 
+# symptom score data
+depsym <- clust_data |> dplyr::select(anh, dep, slp, ene, app, glt, con, mot, sui, P.emp, P.soc, P.hou, S.rel, S.fin) 
 
 # sum of precariousness factor with depressive symptom
 sumpre_sym <- depsym |>
@@ -117,14 +119,14 @@ sumpre_sym <- depsym |>
 # Causal Discovery: Define Parameters and Run Analyses
 # ==============================================================================
 # Set parameters
-args <- commandArgs(trailingOnly = TRUE)
-
-alpha <- as.numeric(args[1]) # Significance level 
-threshold <- as.numeric(args[2]) # Threshold for stable edges 
-
-data <- sumpre_sym
-subsample_size <- nrow(data)  # Size of each subsample
-num_subsamples <- 100     # Number of subsamples
+# args <- commandArgs(trailingOnly = TRUE)
+# 
+# alpha <- as.numeric(args[1]) # Significance level 
+# threshold <- as.numeric(args[2]) # Threshold for stable edges 
+# 
+# data <- sumpre_sym
+# subsample_size <- nrow(data)  # Size of each subsample
+# num_subsamples <- 100     # Number of subsamples
 
 
 ## using fixed gaps and edges
@@ -169,13 +171,40 @@ fixedGaps_full[1:9, 1:9] <- matrix(
 plan(multicore)
 message("Number of parallel workers: ", nbrOfWorkers())
 
-# Run each algorithm and save result
-fci_result <- causal_subsampling(data, algorithm = "FCI", subsample_size = subsample_size, num_subsamples = num_subsamples, alpha = alpha, threshold = threshold, citest = "RCoT", fixedGaps = fixedEdges_full, fixedEdges = fixedEdges_full)
-saveRDS(fci_result, file = sprintf("helius/data/sumpre_FCI_alpha_%s_threshold_%s.rds", alpha, threshold))
 
-cci_result <- causal_subsampling(data, algorithm = "CCI", subsample_size = subsample_size, num_subsamples = num_subsamples, alpha = alpha, threshold = threshold, citest = "RCoT", fixedGaps = fixedEdges_full, fixedEdges = fixedEdges_full)
-saveRDS(cci_result, file = sprintf("helius/data/sumpre_CCI_alpha_%s_threshold_%s.rds", alpha, threshold))
+# Define parameters
+alphas = c(0.01, 0.05)
+thresholds = c(0.6, 0.7)
+citests = c("gaussCItest", "RCoT")
+algorithms = c("PC", "FCI", "CCI")
+data <- sumpre_sym # sumscore 
+subsample_size <- nrow(data)  # Size of each subsample
+num_subsamples <- 30     # Number of subsamples
 
-pc_result <- causal_subsampling(data, algorithm = "PC", subsample_size = subsample_size, num_subsamples = num_subsamples, alpha = alpha, threshold = threshold, citest = "RCoT", fixedGaps = fixedEdges_full, fixedEdges = fixedEdges_full)
-saveRDS(pc_result, file = sprintf("helius/data/sumpre_PC_alpha_%s_threshold_%s.rds", alpha, threshold))
 
+# Create a data frame of all parameter combinations
+params <- tidyr::expand_grid(alpha = alphas, threshold = thresholds, citest = citests, algorithm = algorithms)
+
+# Function to run and save results for each combination
+run_and_save <- function(alpha, threshold, citest, algorithm) {
+  # Run causal_subsampling for the given parameters
+  result <- causal_subsampling(
+    data,
+    algorithm = algorithm,
+    subsample_size = subsample_size,
+    num_subsamples = num_subsamples,
+    alpha = alpha,
+    threshold = threshold,
+    citest = citest
+  )
+  
+  # Create file name
+  file_name <- glue::glue("data/symptom_presum/{algorithm}_alpha_{alpha}_threshold_{threshold}_citest_{citest}.rds")
+  saveRDS(result, file = file_name)
+  
+  # Print a message to track progress
+  message(glue("Completed: algorithm = {algorithm}, alpha = {alpha}, threshold = {threshold}, citest = {citest}"))
+}
+
+# Apply the function to each row in the parameter data frame
+pwalk(params, run_and_save, .progress = TRUE)
