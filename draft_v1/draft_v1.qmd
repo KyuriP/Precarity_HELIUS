@@ -1,0 +1,1023 @@
+---
+title: "Causal Discovery on Precarity and Depression"
+#subtitle: Using the HELIUS dataset
+author: 
+  - name: Kyuri Park
+    affil-id: 1
+  - name: Leonie K. Elsenburg
+    affil-id: 2
+  - name: Mary Nicolao
+    affil-id: 2
+  - name: Karien Stronks
+    affil-id: 2
+  - name: Vítor V. Vasconcelos
+    affil-id: 1, 3
+    
+affiliations:
+  - id: 1
+    name: \textit{Computational Science Lab, Informatics Institute, University of Amsterdam, PO Box 94323, Amsterdam, 1090GH, the Netherlands}
+  - id: 2
+    name: \textit{Department of Public and Occupational Health, Amsterdam Public Health Research Institute, Amsterdam UMC, University of Amsterdam, Amsterdam, the Netherland}
+  - id: 3
+    name: \textit{Institute for Advanced Study, University of Amsterdam, Oude Turfmarkt 147, Amsterdam, 1012GC, the Netherland}   
+format: 
+  # docx:
+  #   number-sections: true
+  #   appendix: true
+  pdf:
+    pdf-engine: pdflatex
+    fontfamily: palatino
+    toc: true
+    number-sections: true
+    appendix: true
+    colorlinks: true
+    keep-tex: true
+    template-partials:
+      - title.tex
+    include-in-header:
+      text: |
+        \usepackage[noblocks]{authblk}
+        \renewcommand*{\Authsep}{, }
+        \renewcommand*{\Authand}{, }
+        \renewcommand*{\Authands}{, }
+        \renewcommand\Affilfont{\small}
+        \usepackage{amssymb}
+        \usepackage{booktabs} % Add to your preamble for cleaner table lines
+        \usepackage{makecell} % Add to your preamble for multi-line cells
+date: today
+execute:
+  echo: false
+  warning: false
+bibliography: references_draft.bib
+csl: apa.csl
+abstract: |
+  \noindent Understanding the causal mechanisms linking precarity factors and depression is critical for developing effective interventions. This study utilizes the HELIUS dataset to explore these relationships using advanced causal discovery methods. By applying algorithms such as FCI, and CCI, and combining traditional Gaussian CI tests with non-parametric approaches like RCoT, we investigate how precarity factors—including employment, social, financial, housing, and relational stress—affect depression, both as a sum score and at the individual symptom level. Our findings reveal that relational stress consistently emerges as a potential causal factor for depression, while symptoms such as sleep disturbances, guilt, and anhedonia are particularly sensitive to external stressors, acting as potential early warning signals or intervention points for prevention. Moreover, the results highlight complexities in the data, including the influence of latent confounders and the challenges of capturing cyclic relationships. Despite some limitations, such as unresolved ambiguities in causal directions and challenges with mixed data distributions, this study demonstrates the utility of causal discovery tools in disentangling the intricate interplay between social and mental health dynamics. By mapping these causal structures into computational models, future research can simulate intervention effects, providing actionable insights to mitigate the impact of precarity on mental health. This study serves as a foundational effort, offering both methodological advancements and practical implications for addressing depression at a population level.
+---
+
+```{r, include=FALSE}
+library(haven)
+library(dplyr)
+library(skimr)
+#library(bestNormalize)
+library(furrr)
+library(future)
+library(tidyr)
+library(GGally)
+library(purrr)
+library(gt)
+
+library(corrplot)
+library(psych)
+library(FactoMineR)
+library(factoextra)
+library(fastICA)
+library(umap)
+
+```
+
+```{r, include=FALSE}
+# Load the dataset 
+dat <- read_sav("../data/HELIUS_LEONIE.sav") 
+
+# Preprocess and scale the precariousness data
+scaled_data <- dat %>%
+  # Select precariousness-related variables
+                # Employment Precariousness
+  dplyr::select(H1_Arbeidsparticipatie, H1_WerkSit, H1_RecentErv8, 
+                # Financial Precariousness
+                H1_InkHhMoeite, H1_RecentErv9,                      
+                # Housing Precariousness
+                veilig_2012, vrz_2012, P_HUURWON,                   
+                # Cultural Precariousness
+                H1_Discr_sumscore, H1_SBSQ_meanscore, A_BED_RU,         
+                # Social Precariousness
+                H1_RecentErv5, H1_RecentErv6, H1_RecentErv7,       
+                H1_SSQT, H1_SSQSa,                                  
+                # Depression symptoms / sum scores
+                H1_WlbvRecent1, H1_WlbvRecent2, H1_WlbvRecent3, H1_WlbvRecent4, H1_WlbvRecent5, H1_WlbvRecent6, H1_WlbvRecent7, H1_WlbvRecent_89, H1_WlbvRecent10, H1_PHQ9_sumscore,   
+                # Ethnicity
+                H1_etniciteit,
+                # Ags
+                H1_lft) %>%                                
+  # Replace missing codes with NA 
+  mutate(across(everything(), ~ na_if(.x, -9)), 
+         across(everything(), ~ na_if(.x, -1))) %>%  
+  # Remove NAs 
+  na.omit() %>%
+  # Convert all columns to numeric
+  mutate(across(everything(), as.numeric),
+        # Combine categories 5 to 10 into a single category (5-10 as one unemployed)
+         H1_WerkSit = case_when(
+    H1_WerkSit %in% c(5, 6, 7, 8, 9, 10) ~ 5,  
+    .default = H1_WerkSit  # Keep other values as they are 
+  ))  %>%
+  # Reverse the values of specific variables (reverse transformation)
+  mutate(across(c(H1_RecentErv8, H1_RecentErv9, veilig_2012, vrz_2012, 
+                  H1_SBSQ_meanscore, A_BED_RU, H1_RecentErv5, H1_RecentErv6, 
+                  H1_RecentErv7, H1_SSQT, H1_SSQSa), 
+                ~ max(.x) - .x)) %>%
+  # scale the data
+  mutate(across(!c(H1_etniciteit, H1_lft), scale))
+  # Apply Min-Max scaling to all columns
+  # mutate(across(everything(), min_max_scaling))
+
+# redefine colnames
+colnames(scaled_data) <- c(
+  "emp_stat",       # H1_Arbeidsparticipatie
+  "work_sit",   # H1_WerkSit
+  "unemp12",     # H1_RecentErv8
+  "inc_dif",      # H1_InkHhMoeite
+  "fincri12",# H1_RecentErv9
+  "nb_safe",     # veilig_2012
+  "nb_res",   # vrz_2012
+  "nb_rent",         # P_HUURWON
+  "discrim",      # H1_Discr_sumscore
+  "hea_lit",       # H1_SBSQ_meanscore
+  "cul_rec",      # A_BED_RU
+  "rel_end12",   # H1_RecentErv5
+  "frd_brk12", # H1_RecentErv6
+  "conf12",         # H1_RecentErv7
+  "soc_freq",      # H1_SSQT
+  "soc_adq",      # H1_SSQSa
+  "anh",       # H1_WlbvRecent1
+  "dep",       # H1_WlbvRecent2
+  "slp",       # H1_WlbvRecent3
+  "ene",       # H1_WlbvRecent4
+  "app",       # H1_WlbvRecent5
+  "glt",       # H1_WlbvRecent6
+  "con",       # H1_WlbvRecent7
+  "mot",     # H1_WlbvRecent_89
+  "sui",      # H1_WlbvRecent10
+  "PHQsum",         # H1_PHQ9_sumscore
+  "ethn",         # H1_etniciteit
+  "age"          #"H1_lft" 
+)
+```
+
+# Introduction
+
+Mental health problems in urban areas have been reported to be on the rise. Governments have been attempting to intervene, but the complexity of mental health systems presents significant challenges in planning effective interventions, let alone understanding the underlying mechanisms driving these issues.
+
+Recent research has aimed to identify underlying factors contributing to mental health problems, often referred to as precariousness factors. These factors encompass various aspects of life, such as employment, social connections, financial stability, housing, and cultural dimensions. This comprehensive perspective on precarity helps to highlight how different aspects of life may be interconnected. While this research has advanced our understanding of the complex interplay between precariousness factors, a key question remains unanswered: how do these factors influence mental health? Specifically, the lack of directional information --- knowing what influences what --- limits our ability to identify and prioritize effective intervention targets.
+
+This study aims to investigate the causal relationships between precariousness factors and mental health outcomes, with a specific focus on depression, the most prevalent mental health issue in urban populations. Using causal discovery methods, we explore how different aspects of precarity influence depression and delve deeper into the dynamics at the symptom level. By examining individual depressive symptoms, we aim to identify which symptoms may act as initiators by being particularly sensitive to specific precariousness factors. Through this analysis, our goal is to uncover the causal mechanisms underlying mental health challenges and provide a foundation for developing more effective and targeted interventions.
+
+# Methods
+
+## Data
+
+We use the HELIUS dataset, which captures the diverse population of Amsterdam across various ethnicities and provides comprehensive health and lifestyle data. To operationalize precariousness factors, we draw on the framework outlined in previous research (i.e., Leonie's paper) and select a set of relevant variables.
+
+To ensure a robust representation of each precariousness factor, we conducted various exploratory analyses to identify consistent and meaningful factor structures. Based on these analyses, we identified five precariousness factors, including two related to recent stressors, each comprising multiple variables as outlined below. Detailed information on the exploratory analyses can be found in the [Appendix](#sec-appendix).
+
+-   Employment precariousness: `emp_stat`, `work_sit`.
+-   Social precariousness: `soc_freq`, `soc_adq`.
+-   Housing precariousness: `nb_safe`, `nb_res`, `nb_rent`, `cul_rec`.
+-   Recent relational stressors: `frd_brk12`, `conf12`.
+-   Recent financial stressors: `fincri12`, `inc_diff`.
+
+After preprocessing, the HELIUS dataset comprises 21,628 samples. In addition to the five precariousness factors, we include PHQ-9 scores — both the total sum score and individual symptom scores — to represent depression. In the subsequent causal discovery analysis, we will examine depression both as an aggregated sum score and through its individual symptom-level representations. Refer to @fig-dist for the overall distributions of the variables used in the analysis.
+
+```{r echo=FALSE, fig.align='center', fig.height=5, fig.width=8, out.width="90%"}
+#| fig-cap: >
+#|   Distributions of variables with density overlay.  
+#|   
+#|   *P.emp* = employment precariousness; *P.hou* = housing precariousness; *P.soc* = social precariousness; *S.fin* = recent financial stressors; *S.rel* = recent relational stressors;
+#|   *PHQsum* = PHQ-9 sum score; *anh* = anhedonia; *app* = appetite; *con* = concentration; *dep* = depressed mood; *ene* = energy; *glt* = guilty; *mot* = motor; *sui* = suicidal
+#| label: fig-dist
+
+clust_data <- scaled_data |> 
+  mutate(
+    P.emp = rowMeans(cbind(emp_stat, work_sit)),
+    P.soc = rowMeans(cbind(soc_freq, soc_adq)),
+    P.hou = rowMeans(cbind(nb_safe, nb_res, nb_rent, cul_rec)),
+    S.rel = rowMeans(cbind(frd_brk12, conf12)),
+    S.fin = rowMeans(cbind(fincri12, inc_dif)),
+    Precarity = P.emp + P.soc + P.hou + S.rel + S.fin
+  ) |>
+  dplyr::select(17:34) |>
+  as.data.frame()
+
+# Reshape the data to long format
+clust_data_long <- clust_data |>
+  dplyr::select(-age, -ethn) |>
+  pivot_longer(cols = everything(), names_to = "variable", values_to = "value")
+
+# Plot distributions with density lines
+ggplot(clust_data_long, aes(x = value)) +
+  geom_histogram(aes(y = after_stat(density)), fill = "lightblue", color = "white", bins = 15) +  # Use density for histogram
+  geom_density(adjust=2, linewidth=0.3, color = "gray", alpha = 0.5) +  # Add density line in red
+  facet_wrap(~ factor(variable, levels =c("P.emp", "P.hou", "P.soc", "S.fin", "S.rel", "Precarity", "PHQsum", "anh", "app", "con", "dep", "ene", "glt", "mot", "slp", "sui")), scales = "free") +
+  labs(x = "", y = "") +
+  theme_minimal()
+```
+
+## Causal Discovery
+
+There are numerous causal discovery algorithms available; however, in this study, we focus on algorithms suited to the potential cyclic relationships within our system. Specifically, we use FCI (Fast Causal Inference) and CCI (Cyclic Causal Inference), both capable of accounting for such cycles under certain conditions [@mooij2020constraint; @strobl2019]. Additionally, we include the PC algorithm as a reference, given its simplicity and prominence as one of the most widely known causal discovery methods [@spirtes2001causation]. For a more detailed explanation of these algorithms, please refer to @park2024discovering.
+
+
+
+\begin{table}[ht]
+\centering
+\caption{Assumptions of causal discovery algorithms}
+\begin{tabular}{lccccl}
+\toprule
+Algorithm & Acyclicity & Causal sufficiency & 
+\makecell{Absence of \\ selection bias} & Output \\ 
+\midrule
+PC  & $\checkmark$ & $\checkmark$ & $\checkmark$ & CPDAG \\ 
+FCI & $-^{a}$ & $\checkmark$ & $-^{a}$ & PAG \\ 
+CCI & x & x & x & MAAG \\ 
+\bottomrule
+\end{tabular}
+\caption*{\small{\textit{Note}. $^{a}$FCI can detect cycles in systems that lack selection bias and exhibit non-linear relationships (Mooij \& Claassen, 2020).}}
+\end{table}
+
+<!-- For word docx compiling -->
+<!-- **Table 1**: Assumptions of causal discovery algorithms. -->
+
+<!-- | Algorithm | Acyclicity | Causal sufficiency | Absence of selection bias | Output | -->
+<!-- |-----------|------------|--------------------|---------------------------|--------| -->
+<!-- | PC        | ✓          | ✓                  | ✓                         | CPDAG  | -->
+<!-- | FCI       | -¹         | ✓                  | -¹                        | PAG    | -->
+<!-- | CCI       | x          | x                  | x                         | MAAG   | -->
+<!-- ------------------------------------------------------------------------------------ -->
+<!-- ¹FCI can detect cycles in systems that lack selection bias and exhibit non-linear relationships (Mooij & Claassen, 2020). -->
+
+
+
+
+As shown in Table 1, the resulting graphs from FCI and CCI differ slightly (*PAG*: partial ancestral graph; *MAAG*: maximal almost ancestral graph) due to their reliance on different underlying assumptions. Both encode information about causal relationships between variables, where the presence of an edge indicates causal *ancestry*.
+Directed edges, $A$ \*→ $B$, specify that $B$ is not an ancestor of $A$ in every graph within the Markov equivalence class, $Equiv(G)$. $A$\*—$B$ represent cases where $B$ is an ancestor of $A$ in every graph in $Equiv(G)$. Circle endpoints, $A$\*-o$B$, denote ambiguity in the ancestral relationship, meaning that $B$'s ancestral status relative to $A$ varies across graphs in $Equiv(G)$.
+
+
+In contrast, the graph produced by the PC algorithm is a *CPDAG* (completed partially directed acyclic graph), where directed edges ($A$ → $B$) indicate that $A$ is a direct cause (parent) of $B$. Unlike FCI and CCI, the CPDAG does not include circle symbols. Instead, when the PC algorithm cannot determine the direction, it represents uncertainty with bidirectional arrows. While PC serves as a useful reference, its strict assumptions of acyclicity and the absence of latent confounders limit its applicability in more complex settings. Therefore, our primary focus remains on the results from FCI and CCI. For completeness, all PC algorithm results are provided in the [Appendix](#sec-appendix).
+
+One practical challenge in applying these algorithms to the HELIUS dataset is that the data does not follow a Gaussian distribution, and the relationships among variables are unlikely to be strictly linear. To account for this, we complement the commonly used Gaussian conditional independence test (CI test), which relies on partial correlations, with a non-parametric CI test based on kernel methods. However, kernel-based non-parametric tests are computationally demanding, particularly with large datasets like ours. To mitigate this issue, we employ Randomized Conditional Independence Test (RCIT) and the Randomized conditional Correlation Test (RCoT), which uses random Fourier features to approximate the kernel methods, thereby significantly reducing the computational cost [@strobl2019approximate]. For a more detailed explanation of RCIT and RCoT, see @sec-rcot.
+
+
+## Analysis
+We analyze the causal structure using two approaches: one with the PHQ sum score representing overall depression severity, and another with individual symptom scores. The PHQ sum score simplifies the analysis by reducing dimensionality, which is computationally advantageous and provides a broad, interpretable perspective on depression's relationship with precarity factors. In contrast, individual symptom scores offer a nuanced understanding, capturing the heterogeneous ways symptoms respond to precarity factors. However, analyzing individual symptoms poses methodological challenges due to their non-standard distributions and the increased complexity introduced by the higher dimensionality. By employing both approaches, we balance simplicity and granularity, ensuring robustness in our findings: the PHQ sum score captures overarching trends, while symptom-level analysis reveals detailed dynamics, essential for tailoring specific interventions.
+
+
+To evaluate the sensitivity of the results to the choice of alpha levels and ensure consistency, we test two significance levels --- $\alpha = 0.01, 0.05$. To further ensure robustness, we employ bootstrapping to generate 100 bootstrap samples For each sample, we estimate causal graphs and retain only the edges and directions that appear above predefined thresholds.
+
+The analyses are conducted under the following conditions:
+
+-   Significance levels ($\alpha$): 0.01 and 0.05
+-   Thresholds: 0.5, 0.6, 0.7, and 0.8
+-   CI test: Gaussian CI test, RCoT
+-   Algorithms: FCI, CCI, and PC
+
+This setup yields 16 combinations (2 significance levels × 4 thresholds × 2 CI tests), applied across three algorithms, with each combination repeated for 100 bootstrap samples, resulting in a total of 1,600 resulting graphs. For analyses involving individual symptom variables, we streamline the setup by using thresholds of 0.6 and 0.7, reducing the number of bootstrap samples to 30. Additionally, we fix the skeleton of edges among symptom variables based on the common structure estimated across all three algorithms, thereby reducing the computational time required to estimate skeletons. This fixed structure aligns with commonly observed skeleton structures in the literature, ensuring relevance to existing findings (**cite the comp_model paper**).[^2] 
+
+To summarize the results, we identify the most frequently occurring edge endpoints across different experimental setups. This ensures that only stable and consistent edges are retained, providing a clearer and more reliable understanding of the relationships between precarity factors and depression. Refer to @fig-workflow for the analysis workflow.
+
+
+[^2]: 
+To reduce spurious edges in the symptom network, we fixed the skeleton of symptom interactions using a common structure derived from PC, FCI, and CCI algorithms with an alpha level of 0.001. This approach maintained sparsity in symptom interactions while allowing the free estimation of causal directions between symptoms and precarity factors, balancing computational efficiency with meaningful results.
+
+
+
+
+```{r}
+#| label: fig-workflow
+#| fig-cap: "Analysis workflow applied across all three algorithms."
+#| fig-align: center
+#| out-width: 80%
+
+knitr::include_graphics("img/simsetup.png")
+
+```
+<!-- \begin{figure}[htbp] -->
+<!--     \centering -->
+<!--         \caption{Simulation workflow} -->
+<!--         \includegraphics[width=0.9\textwidth]{img/simsetup.png} -->
+<!-- \end{figure} -->
+
+
+# Results
+## Depression as sum score
+The sum score graphs provide a high-level summary of how precarity factors collectively influence overall depression severity, focusing on aggregated relationships.
+@fig-sum illustrates the causal relationships between precarity factors (*P.hou*, *P.emp*, *P.soc*, *S.rel*, *S.fin*) and the depression sum score (*PHQsum*) under two different setups: (a) using both Gaussian CI test and RCoT, and (b) using RCoT alone. Black edges represent consistent causal relationships identified by both FCI and CCI, while gray edges denote inconsistent relationships that vary between the two methods. The edge endpoints of inconsistent gray edges are marked with circles.
+In graph (a), the key pathways suggest that employment precarity (*P.emp*) and social precarity (*P.soc*) do not cause depression (*PHQsum*). Social precarity does not cause recent relational stress (*S.rel*) or financial stress (*S.fin*), and these stressors are likely related by a latent confounder. Additionally, *P.emp* and *S.fin* are identified as non-causes of housing precarity (*P.hou*). Both FCI and CCI detect a dependency between *P.emp* and *S.fin*, but they disagree on the direction of the relationship, leaving it unclear whether *S.fin* causes *P.emp* or if the connection is mediated by an unmeasured confounder. A similar ambiguity exists in the relationships between *S.rel* and *PHQsum* and between *S.fin* and *PHQsum*, with the methods diverging on whether these stressors influence depression or are linked through latent variables.
+
+Graph (b), derived solely from the nonparametric RCoT test. Both graphs consistently identify that employment precarity is not a cause of housing precarity or depression, and that social precarity does not cause depression or financial stress. 
+The relationship between stressors and depression remains unresolved between the two algorithms. However, RCoT provides greater confidence that depression is not the cause of financial stress and suggests a stronger likelihood that the financial stress may contribute to depression or that their relationship is mediated by a latent confounder.
+The role of relational stress has become less pronounced, as the edge between *P.soc* and *S.rel* is omitted, and the relationship between *S.rel* and *S.fin* is now inconsistent between the algorithms.
+
+Overall, both graphs together highlight the potential roles of recent stressors as being closely linked with depression, either as causes or through latent confounders. Employment and social precarity may also be influenced by depression, either directly or through latent variables. Lastly, housing precarity does not directly impact depression but remains connected to employment precarity and financial stress, either directly or through a latent confounder.
+
+
+```{r}
+#| layout-ncol: 2
+#| label: fig-sum
+#| fig-cap: "Resulting graphs of precarity factors and depression sum score using FCI and CCI"
+#| fig-subcap: 
+#|   - "Using both GaussianCI and RCoT"
+#|   - "Using only RCoT"
+#| fig-align: center
+#| out-width: 100%
+
+knitr::include_graphics("img/both_dot.png")
+knitr::include_graphics("img/rcot_dot.png")
+
+```
+
+<!-- \begin{figure}[htbp] -->
+<!--     \centering -->
+<!--         \caption{Summary of all sum score graphs} -->
+<!--         \includegraphics[width=1\textwidth]{img/sum_all.png} -->
+<!-- \end{figure} -->
+<!-- \begin{figure}[htbp] -->
+<!--     \centering -->
+<!--         \caption{Summary of sum score graphs given RCoT} -->
+<!--         \includegraphics[width=1\textwidth]{img/sum_rcotonly.png} -->
+<!-- \end{figure} -->
+
+
+## Individual depression symptom
+Moving from the sum score representation to the symptom-level graph provides a more granular perspective on the causal relationships between precarity factors and depression. This approach highlights the heterogeneity in how precarity factors influence individual depressive symptoms — *slp* (sleep), *ene* (energy), *app* (appetite), *mot* (motor), *sui* (suicidal), *anh* (anhedonia), *glt* (guilt), and *dep* (depressed mood). While the sum score graph aggregates all symptoms into a single measure—potentially obscuring nuanced relationships—the symptom graph uncovers distinct pathways for different symptoms.
+In the symptom-level graph (@fig-sym), consistent relationships are represented by black solid edges, while areas of disagreement between the FCI and CCI algorithms are denoted by gray dashed edges. Endpoints marked with circles indicate differences in directional conclusions between the algorithms. Additionally, the navy dashed edges represent relationships unique to the graphs generated using Gaussian CI testing.
+
+<!-- Overall Patterns in the Symptom Network -->
+The symptom-level graph reveals a complex and interconnected structure, far more intricate than the sum score graph. Its denser network highlights the strong interdependence among symptoms and suggests the presence of latent confounding influences, as indicated by numerous bidirectional arrows.
+
+<!-- Centrality and Connectivity -->
+Certain nodes in the network emerge as more *causally* central, highlighting their potential importance as intervention points. Among the depressive symptoms, *dep*, *slp*, and *glt* emerge as particularly influential, with multiple outgoing edges (o->) to other symptoms,  suggesting their roles as potential key drivers within the symptom network. Especially, symptoms such as *glt*, *slp*, and *anh* are particularly critical, potentially acting as initiator or activator nodes within the network due to their apparent connections with precarity factors. These symptoms appear to be especially sensitive to external stressors, potentially manifesting early in response to such conditions and subsequently activating other interconnected symptom nodes.
+<!-- This sensitivity indicates their potential as early warning signs or key targets for interventions aimed at preventing the progression to severe depression. -->
+
+The causal structure involving precarity factors in the symptom-level graph is largely consistent with the patterns observed in the sum score graphs. As in the sum graphs, relational stress (*S.rel*) emerges as a potential causal factor for depression, while employment (*P.emp*) and social precarity (*P.soc*) are more likely to be influenced by depressive symptoms. The symptom-level analysis, however, provides more specificity by pinpointing the symptoms involved in these relationships. For instance, *slp* is identified as influencing *P.emp* or potentially through a latent confounder (*slp* o-> *P.emp*) , while *glt* appears to affect *P.soc* or may be linked via a confounder (*glt* o-> *P.soc*).
+Additional edges are observed in the graph generated using Gaussian CI tests, such as *slp* <-> *S.rel* and *slp* o-> *P.emp*. As seen in the sum graph, Gaussian CI testing tends to produce a denser graph. In this case, causal relationships involving *slp* are particularly prominent.
+
+Some discrepancies, however, exist between the symptom-level and sum graphs. For example, financial stress (*S.fin*) does not have any edges with depressive symptoms in the symptom-level graph, although it maintains associations with other precarity factors. Additionally, housing precarity (*P.hou*) becomes entirely disconnected from the rest of the network, appearing as an isolated node. 
+
+
+
+
+
+
+<!-- However, due to computational constraints that required limiting the sample size, as well as the challenging distributions of certain symptoms, the statistical power is lower compared to the depression sum score graph. -->
+```{r}
+#| label: fig-sym
+#| fig-cap: "Resulting graphs of precarity factors and individual depression symptoms using FCI and CCI"
+#| fig-align: center
+#| out-width: 80%
+
+knitr::include_graphics("img/symptom_graph_refined.png")
+
+```
+
+
+
+
+# Discussion
+
+The present study explored the causal relationships between precarity factors and depression by employing both sum score and symptom-level analyses using causal discovery algorithms. The use of both PHQ sum scores and individual symptom scores provided a comprehensive understanding of how different aspects of precarity influence depression, revealing nuanced pathways that may be obscured when considering aggregate measures alone.
+
+<!-- Interpretation of Findings -->
+Our findings highlight the significant role of recent relational stress (*S.rel*) as a potential causal factor for depression, consistently observed across both sum score and symptom-level analyses. This consistency underscores the profound impact interpersonal relationships can have on mental health. The symptom-level analysis further identified specific symptoms, such as sleep disturbances (*slp*), guilt (*glt*), and anhedonia (*anh*), as particularly sensitive to external precarity conditions. These symptoms emerged as potential initiators or activators within the depressive symptom network, suggesting that they may serve as early warning signs or valuable targets for preventive interventions.
+
+Employment precarity (*P.emp*) and social precarity (*P.soc*) were more likely to be influenced by depressive symptoms rather than acting as direct causes. The symptom-level graph provided additional clarity by identifying that sleep disturbances influenced employment precarity (*slp* o-> *P.emp*) and feelings of guilt affected social precarity (*glt* o-> *P.soc*). This directional insight suggests that interventions targeting specific depressive symptoms may have downstream effects on improving certain aspects of precarity.
+
+Interestingly, financial stress (*S.fin*) did not exhibit causal relationships with individual depressive symptoms in the symptom-level analysis, contrasting with its apparent role in the sum score graphs. This divergence indicates that while financial stress may influence overall depression severity, its impact on specific symptoms may not be significant.
+Also, housing precarity (*P.hou*) emerged as an isolated node in the symptom-level graph, losing all connections with other precarity factors. This isolation suggests that housing precarity may operate independently of the depressive symptom network or that its effects are not captured within the scope of the measured variables.
+
+
+<!-- Limitations -->
+Several limitations should be acknowledged when interpreting these findings. The prevalence of bidirectional arrows and circle-marked endpoints in the graphs reflects unresolved ambiguities in the causal relationships suggested by the data. These uncertainties underscore the need for further research, ideally incorporating datasets with a higher proportion of symptomatic individuals. The HELIUS dataset, being predominantly composed of asymptomatic samples, posed challenges in identifying clear causal directions, particularly among symptom nodes.
+Future studies could address these limitations by incorporating time-series data to leverage temporal information about the relationships between precarity factors and depressive symptoms. Time-series data could provide time-specific insights and track how these relationships evolve over time. For instance, methods such as *PCMCI* [@runge2019detecting] and *tsFCI* [@entner2010causal], along with other time-series adaptations of causal discovery algorithms, could help better account for temporal dependencies and refine the analysis.
+
+Another limitation is the lack of clear evidence for cycles within the symptom network, despite using algorithms designed to account for cyclic relationships. The CCI algorithm predominantly produced bidirectional arrows, while FCI primarily generated directional arrows, yet neither displayed patterns indicative of definitive cyclic structures. Addressing cyclic relationships is particularly challenging with observational datasets alone. Future research could benefit from refined datasets that include intervention data. Methods such as *LLC* [@hyttinen2012learning], *NODGAS-Flow* [@sethuraman2023nodags], and the recently developed *Bicycle* algorithm [@rohbeck2024] are specifically designed to utilize both observational and intervention data to uncover potential cycles.
+Additionally, if time-series data becomes available, corresponding methods, as described above, could be applied to capture repetitive patterns in variable interactions that might suggest cyclic structures.
+
+
+<!-- The numerous bidirectional arrows in the CCI outputs also imply the presence of latent confounders. Expanding the analysis to include additional variables, such as other mental health conditions and coping mechanisms, could provide a more comprehensive understanding of the factors influencing depressive symptoms. Additionally, integrating qualitative approaches could enrich these findings, offering contextual insights into the quantitative relationships identified. Understanding individuals' lived experiences of precarity and depression could inform the development of more tailored and effective interventions. -->
+
+
+Lastly, regarding conditional independence (CI) testing, the differences between the graphs generated by Gaussian CI and RCoT underscore the methodological sensitivities in detecting causal relationships. Gaussian CI produced denser graphs, which is somewhat counterintuitive, as the Gaussian CI's strict linearity assumption would typically result in fewer detected relationships, not more.
+A possible explanation for this discrepancy is that Gaussian CI's reliance on partial correlations may overestimate relationships when specific non-linear dependencies exist in the data. In contrast, RCoT, free from such assumptions, may better capture these patterns under such conditions. However, while RCoT is technically non-parametric, its performance can still be influenced by the distributional characteristics of the data. Specifically, the RBF kernel, optimized for continuous data with smooth transitions, may struggle to capture relationships in datasets with discrete or mixed distributions. In such cases, the distances between discrete points may fail to convey meaningful similarity information. As a result, RCoT might miss certain dependencies, particularly when variables in the dataset lack smooth continuity.
+Future research could address these issues by exploring a broader range of CI testing approaches. One traditional approach to handle this is discretizing variables and use $G^2$ test, which may better capture dependencies in non-continuous datasets [@dojer2016learning; @neapolitan2004learning]. A more promising direction, however, lies in the development of hybrid kernels tailored for mixed datasets, effectively integrating both continuous and discrete variables into RCoT-like methods.
+By systematically employing and comparing a wider variety of CI testing techniques, researchers could gain more robust insights and mitigate the limitations inherent in specific approaches. This broader exploration holds the potential to enhance the reliability of findings, particularly in datasets with complex and heterogeneous structures.
+
+
+
+<!-- Implications -->
+<!-- 1. still impressive -- symptom directions aligns much well with the other empirical studies. -->
+<!-- 2. understood better which aspect of precarity is more important for depression and we can target depends on what level of intervention we are planning. -->
+
+<!-- Implications for Research and Practice -->
+Despite its limitations, this study marks a meaningful step toward understanding the mechanisms linking precarity factors and depression. By applying causal discovery methods, it moves beyond traditional association-based analyses, providing insights that can inform more precise and targeted interventions.
+While the resulting graphs are preliminary and contain unresolved ambiguities, they offer a valuable starting point for leveraging causal discovery tools to investigate the causal interplay between depression and precarity factors. A promising next step would involve integrating these causal structures into computational models, such as the symptom dynamic model proposed by **our comp-model paper**. By simulating intervention effects, such models could provide more realistic insights into how targeted actions might influence symptom networks and precarity factors over time. For example, interventions focused on improving sleep hygiene or alleviating guilt could be evaluated for their cascading effects on employment and social relationships, offering actionable guidance for designing population-level mental health strategies.
+<!-- Conclusion -->
+As one of the early applications of causal discovery tools to the complex dynamics of depression and precarity factors, this study lays a foundation for future research. We hope it inspires further refinement of these methods and ultimately contribute to more effective solutions for alleviating depression and improving societal well-being.
+
+
+# References
+
+::: {#refs}
+:::
+
+
+
+# Appendix {#sec-appendix}
+
+## Precariousness factors by Leonie
+
+1.  EMPLOYMENT PRECARIOUSNESS
+
+-   `H1_Arbeidsparticipatie`: Working status
+-   `H1_WerkSit`: Which work situation most applies to you?
+-   `H1_RecentErv8`: Experiences past 12 months: h. You were sacked from your job or became unemployed (*reverse*)
+
+2.  FINANCIAL PRECARIOUSNESS
+
+-   `H1_InkHhMoeite`: During the past year, did you have problems managing your household income?
+-   `H1_RecentErv9`: Experiences past 12 months: i. You had a major financial crisis (*reverse*)
+
+3.  HOUSING PRECARIOUSNESS
+
+-   `veilig_2012`: Score safety (veiligheid) in 2012 (*reverse*)
+-   `vrz_2012`: Score level of resources (niveau voorzieningen) in 2012 (*reverse*)
+-   `P_HUURWON`: Percentage Huurwoningen
+
+4.  CULTURAL PRECARIOUSNESS
+
+-   `H1_Discr_sumscore`: Perceived discrimination: sum score of 9 items (range 9-45)
+-   `H1_SBSQ_meanscore`: Health literacy: SBSQ meanscore (range 1-5) (*reverse*)
+-   `A_BED_RU`: Aantal bedrijfsvestigingen; cultuur, recreatie, overige diensten (*reverse*)
+
+5.  SOCIAL PRECARIOUSNESS
+
+-   `H1_RecentErv5`: Experiences past 12 months: e. Your steady relationship ended (*reverse*)
+-   `H1_RecentErv6`: Experiences past 12 months: f. A long-term friendship with a good friend or family member was broken off (*reverse*)
+-   `H1_RecentErv7`: Experiences past 12 months: g. You had a serious problem with a good friend or family member, or neighbour (*reverse*)
+-   `H1_SSQT`: SSQT (frequency of social contact): sum score of 5 items (range 5-20) (*reverse*)
+-   `H1_SSQSa`: SSQS (adequacy of social contact): sum score of 5 items, category 3 and 4 not combined (range 5-20) (*reverse*)
+
+```{r, echo=FALSE, fig.align='center', fig.width=15}
+# check correlation
+#cor(df) |> round(2) 
+
+# visualize corr
+col <- colorRampPalette(c("#BB4444", "#EE9988", "#FFFFFF", "#77AADD", "#4477AA"))
+corrplot(cor(scaled_data[,c(1:16, 26, 27)]), method="color", col=col(200),  
+         type="upper", order="hclust", 
+         addCoef.col = "black", # Add coefficient of correlation
+         tl.col="black", number.cex=0.50, tl.srt=45,tl.cex=0.7, #Text label color and rotation
+         # hide correlation coefficient on the principal diagonal
+         diag=FALSE 
+         )
+```
+
+-   **High** Correlations: `emp_stat` (employment status) and `work_sit` (work situation) have a strong positive correlation of 0.82. This suggests that individuals with higher employment status tend to have more secure or favorable work situations. `soc_freq` (social contact frequency) shows a strong positive correlation with `soc_adq` (social adequacy) at 0.61. This indicates that individuals with more frequent social contact also tend to have higher perceived adequacy of social interactions.
+
+-   **Moderate** Correlations: `nb_safe` (neighborhood safety) and `nb_res` (resources) have a moderate positive correlation of 0.39, suggesting that areas with higher safety also have better resources. `hea_lit` (health literacy) has moderate correlations with `emp_stat` (0.26) and `work_sit` (0.25), which could mean that higher health literacy is associated with better employment situations. `frd_brk12` (friendship breakups) and `conf12` (conflicts) have a notable correlation of 0.43, indicating a relationship between having conflicts and friendship losses.
+
+-   **Low to Moderate** Correlations in Financial Precariousness: `inc_dif` (income difficulties) has a moderate correlation with `fincri12` (financial crisis) at 0.49. This aligns with the expected relationship, where individuals who experience general income difficulties are more likely to report financial crises.
+
+-   **Low** Correlations (0.1 - 0.2): Many variables, such as `discrim` (discrimination), `unemp12` (unemployment experience), and `rel_end12` (relationship end), have low correlations with other variables, suggesting relatively independent relationships in the context of this dataset.
+
+## Exploratory Factor Analysis (EFA)
+
+```{r, echo=FALSE, fig.align='center', fig.height=5, out.width="55%", message=FALSE, results='hide'}
+# precarious factors 
+df <- scaled_data[,1:16]
+
+# check suggested number of factors
+pl <- fa.parallel(df, fa = "fa", n.iter = 100, show.legend = FALSE)
+# run EFA
+efa_result <- fa(df, nfactors = 5, rotate = "promax") # oblique rotation
+#print(efa_result)
+```
+
+```{r, echo=FALSE, fig.align='center', out.width="70%"}
+# Create a data frame from the pattern matrix
+loadings <- data.frame(
+  Variable = c("emp_stat", "work_sit", "unemp12", "inc_dif", "fincri12", "nb_safe", "nb_res", "nb_rent",
+               "discrim", "hea_lit", "cul_rec", "rel_end12", "frd_brk12", "conf12", "soc_freq", "soc_adq"),
+  MR1 = c(0.98, 0.97, 0.17, 0.21, 0.11, -0.08, 0.02, -0.03, -0.07, 0.27, -0.03, -0.04, -0.09, -0.08, -0.02, -0.03),
+  MR2 = c(-0.06, -0.08, -0.03, 0.09, 0.05, -0.08, -0.05, -0.06, 0.17, 0.08, -0.08, -0.04, -0.04, 0.00, 1.00, 0.77),
+  MR3 = c(-0.01, -0.06, 0.26, 0.28, 0.47, -0.05, -0.04, -0.02, 0.20, -0.10, -0.05, 0.36, 0.63, 0.56, -0.14, -0.01),
+  MR4 = c(-0.02, -0.03, -0.04, 0.06, 0.03, -0.02, 0.71, -0.09, 0.13, 0.04, 0.61, -0.03, -0.01, -0.02, -0.04, -0.12),
+  MR5 = c(-0.14, -0.11, -0.03, 0.16, 0.09, 0.61, -0.21, 0.54, 0.10, 0.15, 0.04, -0.01, -0.06, -0.06, -0.10, -0.13)
+)
+
+# Convert to long format
+loadings_long <- loadings %>%
+  pivot_longer(cols = starts_with("MR"), names_to = "Factor", values_to = "Loading")
+
+# Plot heatmap
+ggplot(loadings_long, aes(x = Factor, y = Variable, fill = Loading)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient2(low = "red", mid = "white", high = "blue", midpoint = 0, limits = c(-1, 1)) +
+  theme_minimal() +
+  labs(title = "Factor Loadings Heatmap", x = "", y = "") 
+```
+
+### Factor Loadings (Pattern Matrix)
+
+-   **MR1**: High loadings on `emp_stat` and `work_sit` suggest this factor captures *employment* precariousness.
+-   **MR2**: Strong loadings on `soc_freq` and `soc_adq` indicate *social* precariousness.
+-   **MR3**: Key items like `frd_brk12`, `conf12`, and `fincri12`, suggest recent *stressful events*.
+-   **MR4**: High loadings on `nb_res` and `cul_rec` may reflect *community resources* precariousness.
+-   **MR5**: Variables `nb_safe` and `nb_rent` with high loadings indicate *housing* precariousness.
+
+### Variance Explained
+
+The factors cumulatively explain **38%** of the variance, with MR1 being the most influential factor. Each factor contributes a smaller proportion to the total variance (MR1 at 12%, MR2 at 9%, etc.).
+
+### Factor Intercorrelations
+
+Factors are moderately correlated, especially between *MR1 and MR5*, and *MR2 and MR3*. This indicates that while distinct, these factors are related—reasonable in a complex socio-economic context.
+
+### Model Fit Statistics
+
+RMSEA (0.071) suggest an acceptable fit. Tucker Lewis Index (0.802) suggests moderate reliability for the model.
+
+### Summary
+
+The 5-factor model appears interpretable and captures distinct dimensions of precariousness: *employment, social, stressors, community resources, and housing precariousness*. Although the overall fit and explained variance could be stronger, these factors offer insights into the underlying structure of the data, highlighting key areas of precariousness.
+
+## PCA
+
+```{r, echo=FALSE, fig.align='center', out.width="70%"}
+# run PCA
+res.pca <- prcomp(df, scale = TRUE)
+# print(res.pca)
+#summary(res.pca)
+
+# Visualize eigenvalues (scree plot)
+fviz_eig(res.pca, addlabels = TRUE)
+#          
+# fviz_pca_var(res.pca,
+#              col.var = "contrib", # Color by contributions to the PC
+#              gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+#              repel = TRUE     # Avoid text overlapping
+#              )
+```
+
+-   Component Retention: The scree plot shows a clear "elbow" after the first component. This steep drop suggests that most variance is explained by the first component. After Dimension 5, the percentage of explained variance decreases slightly more gradually, indicating diminishing returns for adding more components. If we need to choose multiple components, retaining the first 5 components seems reasonable, as they capture most of the variance (cumulatively explaining about 54.7% of the total variance).
+
+```{r, echo=FALSE, fig.align='center', fig.height=4.5, fig.width = 8}
+# Results for Variables
+res.var <- get_pca_var(res.pca)
+# res.var$coord |> round(2)         # Coordinates
+# res.var$contrib |> round(2)        # Contributions to the PCs
+# res.var$cos2           # Quality of representation
+
+# corrplot(res.var$cos2, is.corr=FALSE)
+
+res.var$contrib |> as.data.frame() |> dplyr::select(1:5) |>
+  tibble::rownames_to_column(var = "var") |> # adds a column for rownames
+    pivot_longer(cols = starts_with("Dim"), 
+               names_to = "Dimension", 
+               values_to = "Contribution") |>
+# Plot with facet_wrap to show each dimension in a separate facet
+ggplot(aes(x = reorder(var, -Contribution), y = Contribution, fill = Contribution)) +
+  geom_bar(stat = "identity", show.legend = FALSE) +
+  facet_wrap(~ Dimension, scales="free_y") +
+  coord_flip() +
+  labs(title = "Contribution of Variables to 5 Principal Components",
+       x = "", y = "Contribution (%)") +
+  scale_fill_gradient(low = "lightblue", high = "blue") +
+  theme_minimal() +
+  theme(strip.text = element_text(face = "bold"))
+```
+
+### Explained variance (contributions) of variables
+
+It shows the importance of variables within each component.
+
+-   **Dim1**: High contributions are observed from `emp_stat`, `work_sit`, `inc_dif`, and `fincri12`, suggesting that this dimension captures aspects of *employment and financial* security.
+
+-   **Dim2**: While `emp_stat` and `work_sit` overlap with Dim1, the strong contributions from `frd_brk12` and `rel_end12` indicate that this dimension captures a focus on *recent relationship stressors*.
+
+-   **Dim3**: `cul_rec`, `nb_res` have the highest contributions, indicating this dimension likely represents *community and cultural* factors.
+
+-   **Dim4**: `soc_freq` and `soc_adq` stand out in this dimension, suggesting an emphasis on *social* precariousness.
+
+-   **Dim5**: `nb_safe` and `nb_rent` are the top contributors, pointing to *housing* security as key themes in this component.
+
+### Cos² Values
+
+Cos² (squared cosine) values, or the quality of representation, show how well each variable is represented by each dimension. where higher cos² values (closer to 1) indicate better representation of a variable by a component.
+
+```{r, echo=FALSE, fig.align='center', out.width="70%"}
+res.var$cos2 |> as.data.frame() |> dplyr::select(1:5) %>% 
+  mutate(var = rownames(.)) |>
+  pivot_longer(!var, names_to = "dim", values_to = "cos2") |>
+  ggplot(aes(x = dim, y = var, fill = cos2)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient2(low = "red", mid = "white", high = "blue") +
+  labs(title = "Cos2 of Variables on Each Component (1-5)", fill = "Cos2", x = "", y = "") +
+  theme_minimal()
+```
+
+-   **Dim.1**: Variables `emp_stat`, `work_sit`, `inc_dif`, and `fincri12` show high cos² values, meaning that PC1 primarily captures variations in employment and financial difficulties. This component could represent *employment & finance* precariousness.
+
+-   **Dim.2**: Variables `work_sit`, `emp_stat`, `frd_brk12`, and `conf12` are well-represented in this component, suggesting PC2 captures aspects of *recent relationship stressors*.
+
+-   **Dim.3**: Variables `nb_res` and `cul_rec` load strongly on PC3. This may represent community or cultural resources, indicating that this component is associated with *neighborhood resources*.
+
+-   **Dim.4**: This component has high cos² values for `nb_res`, `cul_rec`, `soc_freq`, and `soc_adq.` While `nb_res` and `cul_rec` are also prominent in PC3, PC4 uniquely captures nuanced differentiation in *social* precariousness.
+
+-   **Dim.5**: `nb_safe` and `nb_rent` are well-represented by PC5. This component might capture *housing* precariousness.
+
+## ICA
+
+```{r, echo=FALSE,  fig.align='center', out.width="70%"}
+# Load the library
+library(fastICA)
+# set the seed
+set.seed(1) 
+
+# Set the number of components you want to extract
+n_components <- 5  
+
+# Run ICA
+ica_model <- fastICA(df,
+  n.comp = n_components, alg.typ = "parallel",
+  fun = "exp", method = "C", maxit = 5000
+)
+# glimpse(ica_model)
+
+weight_matrix <- data.frame(t(ica_model$A))
+names(weight_matrix) <- stringr::str_glue("IC{seq(weight_matrix)}")
+
+# dist_matrix <- dist(as.matrix(weight_matrix))
+# clust <- hclust(dist_matrix)
+# plot(clust)
+
+weight_matrix |>
+  mutate(var = colnames(df)) |>
+  pivot_longer(
+    cols = starts_with("IC"),
+    names_to = "IC", values_to = "loading"
+  ) |>
+  ggplot(aes(x = IC, y = var, fill = loading)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient2(low = "red", mid = "white", high = "blue", midpoint = 0, limits = c(-1, 1)) +
+  labs(x="", y="") +
+  theme_minimal() 
+```
+
+### Dominant Variables per Component:
+
+For each Independent Component (IC), we can identify variables with *high absolute* values in each column. These values indicate that the IC captures a strong, independent signal associated with these variables.
+
+-   **IC1**: `soc_freq` and `soc_adq` have strong negative loadings on this component, indicating that this component might represent *social* precariousness.
+
+-   **IC2**: `frd_brk12`, `conf12`, `rel_end12`, `fincri12` and `unemp12` have the most substantial loadings on this component, all with negative signs. This might point to a *recent relational or social stressor* component.
+
+-   **IC3**: `nb_res` and `cul_rec` show notable negative loadings, pointing to a focus on *community resource* precariousness.
+
+-   **IC4**: High loadings for `nb_safe`, `nb_rent`, `nb_res`, `cul_rec`, and `discrim` suggest a theme of *housing and community-based* precariousness, reflecting both safety and social challenges within the neighborhood context.
+
+-   **IC5**: `emp_stat` and `work_sit` both have strong negative loadings on this component, suggesting it captures *employment* precariousness.
+
+## Hierarchical clustering
+
+### Using Euclidean distance
+
+-   Ward.D's method: Minimizes the variance within clusters, producing more compact and spherical clusters.
+-   Single linkage: Groups clusters based on the minimum distance between points.
+-   Complete linkage: Groups clusters based on the maximum distance between points.
+-   Average linkage: Uses the average distance between all pairs of points in the two clusters.
+
+```{r, warning=FALSE, message=FALSE, fig.height=7, echo=FALSE, fig.align='center'}
+#| layout-ncol: 2
+library(dendextend)  # For coloring the clusters
+library(ggdendro)
+
+
+# Compute the distance matrix between variables
+distance_matrix <- dist(t(df))
+
+# wardD
+hc_ward <- hclust(distance_matrix, method = "ward.D")
+# dend <- as.dendrogram(hc)
+# dend_colored <- dendextend::color_branches(dend, k = 5)  # Specify the number of clusters
+plot(hc_ward, main = "ward.D")
+rect.hclust(hc_ward, k = 5, border = 2:6)
+
+# Avg
+hc_avg <- hclust(distance_matrix, method = "average") 
+# dend <- as.dendrogram(hc)
+# dend_colored <- dendextend::color_branches(dend, k = 5) 
+plot(hc_avg, main = "average")
+rect.hclust(hc_avg, k = 5, border = 2:6)
+
+hc_comp <- hclust(distance_matrix, method = "complete")
+# dend <- as.dendrogram(hc)
+# dend_colored <- dendextend::color_branches(dend, k = 5)  
+plot(hc_comp, main = "complete")
+rect.hclust(hc_comp, k = 5, border = 2:6)
+
+hc_sing <- hclust(distance_matrix, method = "single") 
+# dend <- as.dendrogram(hc)
+# dend_colored <- dendextend::color_branches(dend, k = 5)  # Specify the number of clusters
+plot(hc_sing, main = "single")
+rect.hclust(hc_sing, k = 5, border = 2:6)
+```
+
+#### Consistent Groupings (Across All or Most Methods)
+
+-   `emp_stat` and `work_sit`: This pair consistently clusters together across all linkage methods, suggesting that they are closely related variables, likely capturing a similar aspect of the data (possibly employment status or employment-related information).
+
+-   `nb_safe`, `nb_res`, and `nb_rent`: These variables are often grouped closely in several methods (especially Ward.D, average, and complete linkage). This suggests a similarity or common theme among them, potentially related to neighborhood or housing precariousness.
+
+-   `soc_freq` and `soc_adq`: These two variables frequently cluster together, indicating they likely measure aspects of social frequency and adequacy in similar ways. They appear together in Ward.D, average, and complete linkage.
+
+-   `frd_brk12` and `conf12`: These variables are often clustered closely (though they sometimes join with other variables like rel_end12), suggesting they may capture aspects of relationship or social conflict. This pair appears in close proximity, especially in average and Ward.D.
+
+#### Inconsistent Groupings (Variability Across Methods)
+
+-   `hea_lit`: This variable shows inconsistent clustering across methods. In Ward.D, it joins with `fincri12`, while in other methods, it’s often more isolated or grouped with variables that do not appear similar. This may suggest that `hea_lit` does not strongly correlate with other variables, or it has multidimensional aspects affecting its grouping across methods.
+
+-   `discrim`: This variable also shows variable groupings. In Ward.D, it is grouped with `hea_lit`, while in other methods (e.g., complete and single linkage), it clusters differently, sometimes on its own. This variability may indicate that `discrim` has weaker associations with the main clusters in the data or overlaps partially with multiple clusters.
+
+-   Social and Financial Variables (`inc_dif`, `fincri12`, `unemp12`): These variables appear together in some methods (e.g., Ward.D clusters `fincri12` and `inc_dif`), but in others, they are spread out. This inconsistency suggests that social and financial variables may not have strong or consistent ties across different methods, perhaps due to capturing different aspects of precariousness.
+
+#### Summary
+
+The consistent clusters are likely capturing distinct thematic dimensions of the data (e.g., employment, housing, social contact), while the inconsistent variables may reflect multifaceted or weakly correlated attributes that do not fit neatly into one cluster.
+
+### Using Mutual Information
+
+Using mutual information (MI) as a basis for hierarchical clustering differs from using traditional distance measures (like Euclidean distance) in a few key ways.
+
+```{r echo=FALSE, fig.align='center', fig.height=6, out.width="60%"}
+library(infotheo)  # for mutual information functions
+
+# Calculate pairwise mutual information
+mi_matrix <- matrix(NA, ncol = ncol(df), nrow = ncol(df))
+colnames(mi_matrix) <- rownames(mi_matrix) <- colnames(df)
+
+for (i in 1:ncol(df)) {
+  for (j in i:ncol(df)) {
+    # Calculate mutual information between pairs of variables
+    mi_matrix[i, j] <- mutinformation(discretize(df[, i]), discretize(df[, j]))
+    mi_matrix[j, i] <- mi_matrix[i, j]  # symmetric
+  }
+}
+
+# Normalize mutual information matrix
+max_mi <- max(mi_matrix, na.rm = TRUE)
+mi_distance <- 1 - (mi_matrix / max_mi)
+
+# Convert to distance object
+dist_matrix_mi <- as.dist(mi_distance)
+
+# Hierarchical clustering on MI-based distance
+hc_mi <- hclust(dist_matrix_mi, method = "ward.D2")
+
+# Plot the dendrogram
+plot(hc_mi, main = "Hierarchical Clustering (Mutual Information Distance)", xlab = "", sub = "")
+rect.hclust(hc_mi, k = 5, border = 2:6)
+
+```
+
+#### Comparison to Euclidean Distance Clustering
+
+-   **Housing and Community** Cluster: The variables `nb_safe`, `nb_res`, `nb_rent`, and `cul_rec` cluster together, indicating a strong association among housing-related and community-based factors. This suggests a shared theme of housing or community precariousness. This grouping is also observed in the Euclidean-based clustering, but it appears more tightly connected here, potentially due to the non-linear relationships highlighted by mutual information.
+
+-   **Employment and Social Support** Cluster: `emp_stat` and `work_sit` form a cluster, linking employment status and work situation together as they did in Euclidean-based clustering. These remain closely associated regardless of the distance metric used. `soc_freq` and `soc_adq`, related to social contact frequency and adequacy, cluster nearby, indicating they have a stronger non-linear relationship with employment variables. This is a subtle difference as Euclidean distance might not capture this association as effectively.
+
+-   **Financial Stressor** Cluster: `inc_dif` and `fincri12`, representing income difficulties and recent financial crises, consistently cluster together in both approaches, showing a strong association, likely linear. However, mutual information-based clustering links these financial stressors with social support variables, suggesting that financial challenges may have complex dependencies with social support in this dataset.
+
+-   **Relational Stressor** Cluster: `frd_brk12`, `conf12`, `discrim`, `hea_lit`, `unemp12`, and `rel_end12` form a *looser* cluster focused on social and relational stressors (e.g., friendship breakup, conflicts, and discrimination). Compared to Euclidean clustering, `discrim` and `hea_lit` (health literacy) appear closer to relational stressors here, indicating that non-linear relationships might play a larger role in linking these variables.
+
+#### Summary
+
+In conclusion, mutual information-based clustering provides an alternative perspective that can reveal more intricate associations between variables, especially for those with non-linear relationships. Compared to Euclidean clustering, it shows a similar high-level structure but emphasizes nuanced connections between variables, particularly around social support, employment, and financial stress.
+
+## Conclusions on Precariousness factors
+
+Based on the consistent findings across multiple analyses, we decided to exclude the variables `discrim`, `hea_lit`, `umemp12`, and `rel_end12`, as they do not clearly belong to any specific precariousness factor nor exhibit strong associations with depression (see the correlation table above). Therefore, we propose retaining the following key precariousness factors:
+
+-   Employment Precariousness: `emp_stat`, `work_sit`
+-   Social Precariousness: `soc_freq`, `soc_adq`
+-   Housing Precariousness: `nb_safe`, `nb_res`, `nb_rent`, `cul_rec`
+-   Recent Relational Stressors: `frd_brk12`, `conf12`
+-   Recent Financial Stressors: `fincri12`, `inc_diff`
+
+We construct each precariousness factor by calculating the mean value of the combined variables. Below, we present the updated correlation table for the newly composed factors, along with the corresponding distributions of all variables to be used in the causal discovery analysis.
+
+```{r, echo=FALSE, fig.align='center'}
+clust_data <- scaled_data |> 
+  mutate(
+    P.emp = rowMeans(cbind(emp_stat, work_sit)),
+    P.soc = rowMeans(cbind(soc_freq, soc_adq)),
+    P.hou = rowMeans(cbind(nb_safe, nb_res, nb_rent, cul_rec)),
+    S.rel = rowMeans(cbind(frd_brk12, conf12)),
+    S.fin = rowMeans(cbind(fincri12, inc_dif))
+  ) |>
+  dplyr::select(17:33) |>
+  as.data.frame()
+
+# skimr::skim(clust_data)
+
+# visualize corr
+corrplot(cor(clust_data), method="color", col=col(200),  
+         type="upper", order="hclust", 
+         addCoef.col = "black", # Add coefficient of correlation
+         tl.col="black", number.cex=0.50, tl.srt=45,tl.cex=0.7, 
+         diag=FALSE 
+         )
+
+
+```
+
+```{r echo=FALSE, fig.align='center', fig.height=4.5, fig.width=8}
+# Reshape the data to long format
+clust_data_long <- clust_data %>%
+  pivot_longer(cols = everything(), names_to = "variable", values_to = "value")
+
+# Plot distributions with density lines
+ggplot(clust_data_long, aes(x = value)) +
+  geom_histogram(aes(y = after_stat(density)), fill = "lightblue", color = "white", bins = 15) +  # Use density for histogram
+  geom_density(adjust=2, linewidth=0.3, color = "gray", alpha = 0.5) +  # Add density line in red
+  facet_wrap(~ variable, scales = "free") +
+  labs(title = "Distribution of All Variables with Density Overlay", x = "", y = "") +
+  theme_minimal()
+```
+
+
+## Results from PC algorithm
+
+```{r}
+#| layout-ncol: 2
+#| label: fig-pc_sum
+#| fig-cap: "Resulting graphs of precarity factors and depression sum score using PC"
+#| fig-subcap: 
+#|   - "Using both GaussianCI and RCoT"
+#|   - "Using only RCoT"
+#| fig-align: center
+#| out-width: 100%
+
+knitr::include_graphics("img/sum_PC_all.png")
+knitr::include_graphics("img/sum_PC_RCoTonly.png")
+```
+
+
+
+```{r}
+#| layout-nrow: 2
+#| label: fig-pc_sym
+#| fig-cap: "Resulting graphs of precarity factors and individual depression symptoms using PC"
+#| fig-subcap: 
+#|   - "Using both GaussianCI and RCoT"
+#|   - "Using only RCoT"
+#| fig-align: center
+#| out-width: 70%
+
+
+knitr::include_graphics("img/pc_sym_GaussianCIRCoT.png")
+knitr::include_graphics("img/pc_sym_onlyRCoT.png")
+```
+
+
+\clearpage
+
+
+
+
+## Randomized Conditional Independence / Correlation Test (RCIT & RCoT) {#sec-rcot}
+
+RCIT (Randomized Conditional Independence Test) and RCoT (Randomized conditional Correlation Test) are advanced methods for scalable conditional independence (CI) testing, offering computational efficiency while maintaining the accuracy of kernel-based approaches. These methods evaluate conditional independence between two variables $X$ and $Y$ given a third variable $Z$ while addressing computational challenges inherent in kernel-based CI tests.  In this section, we provide a high-level overview of RCIT and RCoT based on [@strobl2019approximate].
+
+### Kernel-Based Conditional Independence Testing
+
+Traditional kernel-based CI tests, such as the Kernel Conditional Independence Test (KCIT), compute dependencies using the Hilbert-Schmidt Independence Criterion (HSIC) in reproducing kernel Hilbert spaces (RKHS) [@zhang2012kernel]. KCIT uses the following hypothesis framework:
+$$
+H_0: X \perp\!\!\!\perp Y \,|\, Z, \quad H_1: X \not\!\perp\!\!\!\perp Y \,|\, Z.
+$$
+The core quantity in KCIT is the partial cross-covariance operator:
+$$
+\Sigma_{XY \cdot Z} = \Sigma_{XY} - \Sigma_{XZ} \Sigma_{ZZ}^{-1} \Sigma_{ZY},
+$$
+where $\Sigma_{XY}$ represents the cross-covariance operator between $X$ and $Y$, and $\Sigma_{XZ} \Sigma_{ZZ}^{-1} \Sigma_{ZY}$ removes the dependence mediated by $Z$.
+
+The squared Hilbert-Schmidt (HS) norm of $\Sigma_{XY \cdot Z}$ serves as the test statistic:
+$$
+\|\Sigma_{XY \cdot Z}\|^2_{HS} = 0 \quad \text{if and only if} \quad X \perp\!\!\!\perp Y \,|\, Z.
+$$
+
+KCIT estimates residual dependencies using kernel ridge regression:
+$$
+f^*(z) = K_Z (K_Z + \lambda I)^{-1} f(x),
+$$
+where $K_Z$ is the kernel matrix for $Z$, $f(x)$ is the kernel feature map for $X$, and $\lambda$ is the ridge regularization parameter. The residual function for $X$ is:
+$$
+f_\text{res}(x) = f(x) - f^*(z) = R_Z f(x),
+$$
+with:
+$$
+R_Z = I - K_Z (K_Z + \lambda I)^{-1}.
+$$
+The kernel matrix for residualized $X$ is:
+$$
+K_{X \cdot Z} = R_Z K_X R_Z,
+$$
+and similarly for $Y$, $K_{Y \cdot Z} = R_Z K_Y R_Z$.
+
+The test statistic is computed as:
+$$
+T_{XY \cdot Z} = \frac{1}{n^2} \text{tr}(K_{X \cdot Z} K_{Y \cdot Z}),
+$$
+which estimates the Hilbert-Schmidt (HS) norm of the partial cross-covariance operator. To ensure convergence, KCIT scales the statistic by $n$:
+$$
+S_K = n T_{XY \cdot Z}.
+$$
+The null hypothesis $H_0$ is rejected if $S_K$ exceeds a threshold determined by permutation or moment-matching-based null distribution [@lindsay2000moment].
+
+
+### Random Fourier Features (RFFs)
+
+Kernel-based methods like KCIT face scalability issues, as they involve operations on $n \times n$ kernel matrices, which scale quadratically with the sample size $n$. RCIT and RCoT overcome this bottleneck using *Random Fourier Features (RFFs)* to approximate kernel operations efficiently.
+
+#### Bochner’s Theorem
+Bochner’s theorem provides the foundation for RFFs, stating that any continuous shift-invariant kernel $k(x, y)$ can be expressed as:
+$$
+k(x, y) = \int_{\mathbb{R}^p} e^{i \omega^\top (x - y)} \, dP_\omega,
+$$
+where $P_\omega$ is the spectral distribution of the kernel. For the widely used RBF kernel:
+$$
+k(x, y) = \exp\left(-\frac{\|x - y\|^2}{2\sigma^2}\right),
+$$
+$P_\omega$ follows a Gaussian distribution: $\omega \sim \mathcal{N}(0, \sigma^2 I)$.
+
+#### RFF Approximation
+Using Monte Carlo sampling, the kernel function is approximated as:
+$$
+k(x, y) \approx \phi(x)^\top \phi(y),
+$$
+where $\phi(x)$ is the random Fourier feature mapping:
+$$
+\phi(x) = \sqrt{\frac{2}{D}} \cos(W^\top x + b),
+$$
+with $W \sim \mathcal{N}(0, \sigma^2 I)$ and $b \sim \text{Uniform}(0, 2\pi)$. Here, $D$ is the number of Fourier features, which balances computational efficiency and approximation accuracy.
+
+### Differences Between RCIT and RCoT
+
+RCIT and RCoT differ in their test statistics, computational efficiency, and practical performance, which makes them suited for different scenarios in causal discovery. RCIT evaluates the Hilbert-Schmidt norm of the full partial cross-covariance operator, providing a general test for conditional independence but at a higher computational cost. RCoT simplifies the process by using the Frobenius norm of a finite-dimensional residualized cross-covariance matrix, significantly reducing complexity and improving scalability.
+
+These distinctions are particularly important for large-scale datasets, where RCoT's computational efficiency makes it a practical choice for high-dimensional causal discovery tasks.
+
+#### RCIT: Randomized Conditional Independence Test
+
+RCIT tests full conditional independence by examining the squared Hilbert-Schmidt (HS) norm of the partial cross-covariance operator $\Sigma_{XY \cdot Z}$:
+$$
+S_K = n T_{XY \cdot Z} = \frac{1}{n} \text{tr}(K_{X \cdot Z} K_{Y \cdot Z}),
+$$
+where $T_{XY \cdot Z}$ is an empirical estimate of $\|\Sigma_{XY \cdot Z}\|^2_{HS}$. The null and alternative hypotheses are:
+$$
+H_0: \|\Sigma_{XY \cdot Z}\|^2_{HS} = 0, \quad H_1: \|\Sigma_{XY \cdot Z}\|^2_{HS} > 0.
+$$
+
+RCIT is a general test for conditional independence but becomes computationally demanding as the size of $Z$ increases, due to the high-dimensional kernel operations required.
+
+#### RCoT: Randomized Conditional Correlation Test
+
+RCoT simplifies the testing process by using a finite-dimensional partial cross-covariance matrix, avoiding full HS norm calculations. Instead, it uses the Frobenius norm of the residualized cross-covariance matrix:
+$$
+S' = n \|C_{AB \cdot C}\|_F^2,
+$$
+where $C_{AB \cdot C}$ represents the residualized cross-covariance matrix. The hypotheses are:
+$$
+H_0: \|C_{AB \cdot C}\|_F^2 = 0, \quad H_1: \|C_{AB \cdot C}\|_F^2 > 0.
+$$
+
+
+RCoT is computationally efficient and well-suited for large conditioning sets ($|Z| \geq 4$). Its simplicity enables robust calibration of the null distribution and improved scalability for high-dimensional data.
+
+<!-- ### Advantages of RCIT and RCoT -->
+
+<!-- - **Scalability**: Linear complexity ($O(nD)$) makes these methods efficient for large datasets. -->
+<!-- - **Robustness**: Provide accurate approximations of kernel-based CI tests while significantly reducing computational costs. -->
+<!-- - **Applicability**: Suitable for large-scale causal discovery applications, particularly when integrated with algorithms like PC and FCI. -->
+
+<!-- By combining the flexibility of kernel methods with the computational efficiency of RFFs, RCIT and RCoT represent powerful tools for non-parametric CI testing, enabling their use in high-dimensional and large-scale datasets. -->
+
+
+
+## Summarized Stable Edges Proportion 
+
+```{r}
+#| label: fig-sum-mat
+#| fig-cap: "Proportions of edge endpoint types for graphs based on depression sum scores"
+#| fig-align: center
+#| out-width: 100%
+knitr::include_graphics("img/sumgraph_mat.pdf")
+```
+
+
+```{r}
+#| label: fig-sym-mat
+#| fig-cap: "Proportions of edge endpoint types for graphs based on individual depression symptoms"
+#| fig-align: center
+#| out-width: 100%
+knitr::include_graphics("img/symgraph_mat.pdf")
+```
