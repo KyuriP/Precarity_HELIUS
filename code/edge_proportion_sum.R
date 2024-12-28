@@ -27,7 +27,8 @@ library(ggplotify)
 
 # Define the directory containing the .rds files
 directory <- "Precarity_HELIUS/data/dep_sumscore"  # Replace with the path you need
-#directory <- "Precarity_HELIUS/data/dep_symscore"  # individual symptom
+# directory <- "Precarity_HELIUS/data/dep_symscore"  # individual symptom
+# directory <- "Precarity_HELIUS/data/presum_symscore"  # individual symptom
 
 # List all the file names from the directory
 file_names <- list.files(directory, full.names = TRUE, pattern = "\\.rds$")
@@ -289,18 +290,31 @@ heatmap_CCI_plot <- ggplotify::as.ggplot(grid.grabExpr(draw(heatmap_cci))) + ggt
 legend <- ggplotify::as.ggplot(grid.grabExpr(draw(custom_legend)))
 legend_h <- ggplotify::as.ggplot(grid.grabExpr(draw(custom_legend_h))) # horizontal version 
 
-# Combine heatmaps and legend using ggarrange
-sumgraph_mat <- ggpubr::ggarrange(
+
+## Combine heatmaps and legend using ggarrange
+# vertical version
+sumgraph_mat_v <- ggpubr::ggarrange(
   heatmap_FCI_plot,
   heatmap_CCI_plot,
-  legend,
+  legend_v,
   ncol = 3,  # Heatmaps side by side with legend
   widths = c(3, 3, 0.9)  # Adjust the relative width of each panel
 )
-print(sumgraph_mat)
-# save plot
-#ggpubr::ggexport(filename = "sumgraph_mat.pdf", plot = sumgraph_mat,  width = 11, height = 5, units = "cm")
+print(sumgraph_mat_v)
 
+# horizontal version
+sumgraph_mat_h <- ggpubr::ggarrange(
+  heatmap_FCI_plot,
+  heatmap_CCI_plot,
+  legend_h,
+  nrow = 3,  # Heatmaps side by side with legend
+  heights = c(3, 3, 0.1)  # Adjust the relative width of each panel
+)
+print(sumgraph_mat_h)
+# save plot
+# ggpubr::ggexport(filename = "sumgraph_mat.pdf", plot = sumgraph_mat,  width = 11, height = 5, units = "cm")
+# ggpubr::ggexport(filename = "symgraph_mat.pdf", plot = sumgraph_mat,  width = 11, height = 5, units = "cm")
+# ggpubr::ggexport(filename = "presumgraph_mat.pdf", plot = sumgraph_mat_h,  width = 9, height = 20, units = "cm")
 
 
 # legend horizontal version (for symptom graph)

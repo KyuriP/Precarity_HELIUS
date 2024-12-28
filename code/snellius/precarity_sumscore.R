@@ -129,42 +129,42 @@ sumpre_sym <- depsym |>
 # num_subsamples <- 100     # Number of subsamples
 
 
-## using fixed gaps and edges
-# Initialize a 14x14 matrix with FALSE for both fixedEdges and fixedGaps
-fixedEdges_full <- matrix(FALSE, nrow = 10, ncol = 10)
-fixedGaps_full <- matrix(FALSE, nrow = 10, ncol = 10)
-
-# Define the constraints for the first 9 variables (fixedEdges)
-fixedEdges_full[1:9, 1:9] <- matrix(
-  c(
-    FALSE,  TRUE,  TRUE,  TRUE,  TRUE, FALSE,  TRUE, FALSE, FALSE,
-    TRUE, FALSE,  TRUE,  TRUE, FALSE,  TRUE,  TRUE,  TRUE,  TRUE,
-    TRUE,  TRUE, FALSE,  TRUE,  TRUE, FALSE,  TRUE, FALSE, FALSE,
-    TRUE,  TRUE,  TRUE, FALSE,  TRUE, FALSE,  TRUE, FALSE, FALSE,
-    TRUE, FALSE,  TRUE,  TRUE, FALSE,  TRUE,  TRUE,  TRUE, FALSE,
-    FALSE,  TRUE, FALSE, FALSE,  TRUE, FALSE,  TRUE,  TRUE,  TRUE,
-    TRUE,  TRUE,  TRUE,  TRUE,  TRUE,  TRUE, FALSE,  TRUE, FALSE,
-    FALSE,  TRUE, FALSE, FALSE,  TRUE,  TRUE,  TRUE, FALSE,  TRUE,
-    FALSE,  TRUE, FALSE, FALSE, FALSE,  TRUE, FALSE,  TRUE, FALSE
-  ),
-  nrow = 9, byrow = TRUE
-)
-
-# Define the constraints for the first 9 variables (fixedGaps)
-fixedGaps_full[1:9, 1:9] <- matrix(
-  c(
-    FALSE, FALSE, FALSE, FALSE, FALSE,  TRUE, FALSE,  TRUE,  TRUE,
-    FALSE, FALSE, FALSE, FALSE,  TRUE, FALSE, FALSE, FALSE, FALSE,
-    FALSE, FALSE, FALSE, FALSE, FALSE,  TRUE, FALSE,  TRUE,  TRUE,
-    FALSE, FALSE, FALSE, FALSE, FALSE,  TRUE, FALSE,  TRUE,  TRUE,
-    FALSE,  TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,  TRUE,
-    TRUE, FALSE,  TRUE,  TRUE, FALSE, FALSE, FALSE, FALSE, FALSE,
-    FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,  TRUE,
-    TRUE, FALSE,  TRUE,  TRUE, FALSE, FALSE, FALSE, FALSE, FALSE,
-    TRUE, FALSE,  TRUE,  TRUE,  TRUE, FALSE,  TRUE, FALSE, FALSE
-  ),
-  nrow = 9, byrow = TRUE
-)
+# ## using fixed gaps and edges
+# # Initialize a 14x14 matrix with FALSE for both fixedEdges and fixedGaps
+# fixedEdges_full <- matrix(FALSE, nrow = 10, ncol = 10)
+# fixedGaps_full <- matrix(FALSE, nrow = 10, ncol = 10)
+# 
+# # Define the constraints for the first 9 variables (fixedEdges)
+# fixedEdges_full[1:9, 1:9] <- matrix(
+#   c(
+#     FALSE,  TRUE,  TRUE,  TRUE,  TRUE, FALSE,  TRUE, FALSE, FALSE,
+#     TRUE, FALSE,  TRUE,  TRUE, FALSE,  TRUE,  TRUE,  TRUE,  TRUE,
+#     TRUE,  TRUE, FALSE,  TRUE,  TRUE, FALSE,  TRUE, FALSE, FALSE,
+#     TRUE,  TRUE,  TRUE, FALSE,  TRUE, FALSE,  TRUE, FALSE, FALSE,
+#     TRUE, FALSE,  TRUE,  TRUE, FALSE,  TRUE,  TRUE,  TRUE, FALSE,
+#     FALSE,  TRUE, FALSE, FALSE,  TRUE, FALSE,  TRUE,  TRUE,  TRUE,
+#     TRUE,  TRUE,  TRUE,  TRUE,  TRUE,  TRUE, FALSE,  TRUE, FALSE,
+#     FALSE,  TRUE, FALSE, FALSE,  TRUE,  TRUE,  TRUE, FALSE,  TRUE,
+#     FALSE,  TRUE, FALSE, FALSE, FALSE,  TRUE, FALSE,  TRUE, FALSE
+#   ),
+#   nrow = 9, byrow = TRUE
+# )
+# 
+# # Define the constraints for the first 9 variables (fixedGaps)
+# fixedGaps_full[1:9, 1:9] <- matrix(
+#   c(
+#     FALSE, FALSE, FALSE, FALSE, FALSE,  TRUE, FALSE,  TRUE,  TRUE,
+#     FALSE, FALSE, FALSE, FALSE,  TRUE, FALSE, FALSE, FALSE, FALSE,
+#     FALSE, FALSE, FALSE, FALSE, FALSE,  TRUE, FALSE,  TRUE,  TRUE,
+#     FALSE, FALSE, FALSE, FALSE, FALSE,  TRUE, FALSE,  TRUE,  TRUE,
+#     FALSE,  TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,  TRUE,
+#     TRUE, FALSE,  TRUE,  TRUE, FALSE, FALSE, FALSE, FALSE, FALSE,
+#     FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,  TRUE,
+#     TRUE, FALSE,  TRUE,  TRUE, FALSE, FALSE, FALSE, FALSE, FALSE,
+#     TRUE, FALSE,  TRUE,  TRUE,  TRUE, FALSE,  TRUE, FALSE, FALSE
+#   ),
+#   nrow = 9, byrow = TRUE
+# )
 
 
 # Setup parallel backend

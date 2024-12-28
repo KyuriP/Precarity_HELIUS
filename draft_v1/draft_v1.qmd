@@ -373,6 +373,19 @@ knitr::include_graphics("img/symptom_graph_refined.png")
 ```
 
 
+## Precarity as sum score
+
+```{r}
+#| label: fig-presum
+#| fig-cap: "Resulting graphs of precarity sum score and individual depression symptoms using FCI and CCI"
+#| fig-align: center
+#| out-width: 80%
+
+knitr::include_graphics("img/presum_graph_refined.png")
+
+```
+
+
 
 
 # Discussion
@@ -1010,7 +1023,7 @@ RCoT is computationally efficient and well-suited for large conditioning sets ($
 
 ```{r}
 #| label: fig-sum-mat
-#| fig-cap: "Proportions of edge endpoint types for graphs based on depression sum scores"
+#| fig-cap: "Proportions of edge endpoint types for graphs based on depression sum score"
 #| fig-align: center
 #| out-width: 100%
 knitr::include_graphics("img/sumgraph_mat.pdf")
@@ -1023,4 +1036,12 @@ knitr::include_graphics("img/sumgraph_mat.pdf")
 #| fig-align: center
 #| out-width: 100%
 knitr::include_graphics("img/symgraph_mat.pdf")
+```
+
+```{r}
+#| label: fig-presum-mat
+#| fig-cap: "Proportions of edge endpoint types for graphs based on individual depression symptoms with precarity sum score"
+#| fig-align: center
+#| out-width: 70%
+knitr::include_graphics("img/presumgraph_mat.pdf")
 ```

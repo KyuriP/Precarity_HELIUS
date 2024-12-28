@@ -43,41 +43,41 @@ num_subsamples <- 30     # Number of subsamples
 
 
 ## Set up fixed gaps and edges for individual symptom analysis (*speed up*)
-# Initialize a 14x14 matrix with FALSE for both fixedEdges and fixedGaps
-fixedEdges_full <- matrix(FALSE, nrow = 14, ncol = 14)
-fixedGaps_full <- matrix(FALSE, nrow = 14, ncol = 14)
-
-# Define the constraints for the first 9 variables (fixedEdges)
-fixedEdges_full[1:9, 1:9] <- matrix(
-  c(
-    FALSE,  TRUE,  TRUE,  TRUE,  TRUE, FALSE,  TRUE, FALSE, FALSE,
-    TRUE, FALSE,  TRUE,  TRUE, FALSE,  TRUE,  TRUE,  TRUE,  TRUE,
-    TRUE,  TRUE, FALSE,  TRUE,  TRUE, FALSE,  TRUE, FALSE, FALSE,
-    TRUE,  TRUE,  TRUE, FALSE,  TRUE, FALSE,  TRUE, FALSE, FALSE,
-    TRUE, FALSE,  TRUE,  TRUE, FALSE,  TRUE,  TRUE,  TRUE, FALSE,
-    FALSE,  TRUE, FALSE, FALSE,  TRUE, FALSE,  TRUE,  TRUE,  TRUE,
-    TRUE,  TRUE,  TRUE,  TRUE,  TRUE,  TRUE, FALSE,  TRUE, FALSE,
-    FALSE,  TRUE, FALSE, FALSE,  TRUE,  TRUE,  TRUE, FALSE,  TRUE,
-    FALSE,  TRUE, FALSE, FALSE, FALSE,  TRUE, FALSE,  TRUE, FALSE
-  ),
-  nrow = 9, byrow = TRUE
-)
-
-# Define the constraints for the first 9 variables (fixedGaps)
-fixedGaps_full[1:9, 1:9] <- matrix(
-  c(
-    FALSE, FALSE, FALSE, FALSE, FALSE,  TRUE, FALSE,  TRUE,  TRUE,
-    FALSE, FALSE, FALSE, FALSE,  TRUE, FALSE, FALSE, FALSE, FALSE,
-    FALSE, FALSE, FALSE, FALSE, FALSE,  TRUE, FALSE,  TRUE,  TRUE,
-    FALSE, FALSE, FALSE, FALSE, FALSE,  TRUE, FALSE,  TRUE,  TRUE,
-    FALSE,  TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,  TRUE,
-    TRUE, FALSE,  TRUE,  TRUE, FALSE, FALSE, FALSE, FALSE, FALSE,
-    FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,  TRUE,
-    TRUE, FALSE,  TRUE,  TRUE, FALSE, FALSE, FALSE, FALSE, FALSE,
-    TRUE, FALSE,  TRUE,  TRUE,  TRUE, FALSE,  TRUE, FALSE, FALSE
-  ),
-  nrow = 9, byrow = TRUE
-)
+# # Initialize a 14x14 matrix with FALSE for both fixedEdges and fixedGaps
+# fixedEdges_full <- matrix(FALSE, nrow = 14, ncol = 14)
+# fixedGaps_full <- matrix(FALSE, nrow = 14, ncol = 14)
+# 
+# # Define the constraints for the first 9 variables (fixedEdges)
+# fixedEdges_full[1:9, 1:9] <- matrix(
+#   c(
+#     FALSE,  TRUE,  TRUE,  TRUE,  TRUE, FALSE,  TRUE, FALSE, FALSE,
+#     TRUE, FALSE,  TRUE,  TRUE, FALSE,  TRUE,  TRUE,  TRUE,  TRUE,
+#     TRUE,  TRUE, FALSE,  TRUE,  TRUE, FALSE,  TRUE, FALSE, FALSE,
+#     TRUE,  TRUE,  TRUE, FALSE,  TRUE, FALSE,  TRUE, FALSE, FALSE,
+#     TRUE, FALSE,  TRUE,  TRUE, FALSE,  TRUE,  TRUE,  TRUE, FALSE,
+#     FALSE,  TRUE, FALSE, FALSE,  TRUE, FALSE,  TRUE,  TRUE,  TRUE,
+#     TRUE,  TRUE,  TRUE,  TRUE,  TRUE,  TRUE, FALSE,  TRUE, FALSE,
+#     FALSE,  TRUE, FALSE, FALSE,  TRUE,  TRUE,  TRUE, FALSE,  TRUE,
+#     FALSE,  TRUE, FALSE, FALSE, FALSE,  TRUE, FALSE,  TRUE, FALSE
+#   ),
+#   nrow = 9, byrow = TRUE
+# )
+# 
+# # Define the constraints for the first 9 variables (fixedGaps)
+# fixedGaps_full[1:9, 1:9] <- matrix(
+#   c(
+#     FALSE, FALSE, FALSE, FALSE, FALSE,  TRUE, FALSE,  TRUE,  TRUE,
+#     FALSE, FALSE, FALSE, FALSE,  TRUE, FALSE, FALSE, FALSE, FALSE,
+#     FALSE, FALSE, FALSE, FALSE, FALSE,  TRUE, FALSE,  TRUE,  TRUE,
+#     FALSE, FALSE, FALSE, FALSE, FALSE,  TRUE, FALSE,  TRUE,  TRUE,
+#     FALSE,  TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,  TRUE,
+#     TRUE, FALSE,  TRUE,  TRUE, FALSE, FALSE, FALSE, FALSE, FALSE,
+#     FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,  TRUE,
+#     TRUE, FALSE,  TRUE,  TRUE, FALSE, FALSE, FALSE, FALSE, FALSE,
+#     TRUE, FALSE,  TRUE,  TRUE,  TRUE, FALSE,  TRUE, FALSE, FALSE
+#   ),
+#   nrow = 9, byrow = TRUE
+# )
 
 # Run with RCoT
 pc_result <- causal_subsampling(data, algorithm = "PC", subsample_size = subsample_size, num_subsamples = num_subsamples, alpha = alpha, threshold = threshold, citest = "RCoT", fixedEdges = fixedEdges_full, fixedGaps = fixedGaps_full)
