@@ -195,7 +195,9 @@ run_and_save <- function(alpha, threshold, citest, algorithm) {
     num_subsamples = num_subsamples,
     alpha = alpha,
     threshold = threshold,
-    citest = citest
+    citest = citest,
+    fixedEdges = fixedEdges_full,
+    fixedGaps = fixedGaps_full
   )
   
   # Create file name

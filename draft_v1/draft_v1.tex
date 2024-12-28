@@ -444,25 +444,15 @@ This setup yields 16 combinations (2 significance levels × 4 thresholds
 repeated for 100 bootstrap samples, resulting in a total of 1,600
 resulting graphs. For analyses involving individual symptom variables,
 we streamline the setup by using thresholds of 0.6 and 0.7, reducing the
-number of bootstrap samples to 30. Additionally, we fix the skeleton of
-edges among symptom variables based on the common structure estimated
-across all three algorithms, thereby reducing the computational time
-required to estimate skeletons. This fixed structure aligns with
-commonly observed skeleton structures in the literature, ensuring
-relevance to existing findings (\textbf{cite the comp\_model
-paper}).\footnote{To reduce spurious edges in the symptom network, we
-  fixed the skeleton of symptom interactions using a common structure
-  derived from PC, FCI, and CCI algorithms with an alpha level of 0.001.
-  This approach maintained sparsity in symptom interactions while
-  allowing the free estimation of causal directions between symptoms and
-  precarity factors, balancing computational efficiency with meaningful
-  results.}
+number of bootstrap samples to 30.
 
 To summarize the results, we identify the most frequently occurring edge
-endpoints across different experimental setups. This ensures that only
-stable and consistent edges are retained, providing a clearer and more
-reliable understanding of the relationships between precarity factors
-and depression. Refer to Figure~\ref{fig-workflow} for the analysis
+endpoints across different experimental setups.\footnote{The detailed
+  proportion of each edge endpoint occurrence is shown in
+  Section~\ref{sec-propmatrix}.} This ensures that only stable and
+consistent edges are retained, providing a clearer and more reliable
+understanding of the relationships between precarity factors and
+depression. Refer to Figure~\ref{fig-workflow} for the analysis
 workflow.
 
 \begin{figure}
@@ -587,16 +577,16 @@ bidirectional arrows.
 
 Certain nodes in the network emerge as more \emph{causally} central,
 highlighting their potential importance as intervention points. Among
-the depressive symptoms, \emph{dep}, \emph{slp}, and \emph{glt} emerge
-as particularly influential, with multiple outgoing edges
-(o-\textgreater) to other symptoms, suggesting their roles as potential
-key drivers within the symptom network. Especially, symptoms such as
-\emph{glt}, \emph{slp}, and \emph{anh} are particularly critical,
-potentially acting as initiator or activator nodes within the network
-due to their apparent connections with precarity factors. These symptoms
-appear to be especially sensitive to external stressors, potentially
-manifesting early in response to such conditions and subsequently
-activating other interconnected symptom nodes.
+the depressive symptoms, \emph{anh}, \emph{dep}, \emph{slp}, and
+\emph{glt} emerge as particularly influential, with multiple outgoing
+edges (o-\textgreater) to other symptoms, suggesting their roles as
+potential key drivers within the symptom network. Especially, symptoms
+such as \emph{glt}, \emph{slp}, and \emph{anh} are particularly
+critical, potentially acting as initiator or activator nodes within the
+network due to their apparent connections with precarity factors. These
+symptoms appear to be especially sensitive to external stressors,
+potentially manifesting early in response to such conditions and
+subsequently activating other interconnected symptom nodes.
 
 The causal structure involving precarity factors in the symptom-level
 graph is largely consistent with the patterns observed in the sum score
@@ -1604,8 +1594,7 @@ RCoT is computationally efficient and well-suited for large conditioning
 sets (\(|Z| \geq 4\)). Its simplicity enables robust calibration of the
 null distribution and improved scalability for high-dimensional data.
 
-\subsection{Summarized Stable Edges
-Proportion}\label{summarized-stable-edges-proportion}
+\subsection{Summarized Stable Edges Proportion}\label{sec-propmatrix}
 
 \begin{figure}
 

@@ -17,7 +17,7 @@
 # all conditions
 algorithm <- c("PC", "FCI", "CCI")
 alpha <- c(0.01, 0.05)
-threshold <- c(0.5, 0.6, 0.7, 0.8)
+threshold <- c(0.5, 0.6, 0.7, 0.8) # c(0.6, 0.7) # for symptom data
 citest <- c("gaussCItest", "RCoT")
 comb <- expand.grid(algorithm = algorithm, alpha = alpha, threshold = threshold, citest = citest)
 # sum score data
@@ -30,7 +30,7 @@ filenames <- glue::glue(
 # )
 
 # directory containing the files
-directory <- "data/dep_sumscore"  
+directory <- "Precarity_HELIUS/data/dep_sym_presum" #"Precarity_HELIUS/data/dep_sumscore"  
 
 # Full paths to the files
 full_paths <- file.path(directory, filenames)
@@ -46,6 +46,9 @@ stable_edges_data <- lapply(rds_data, function(x) x$stable_edges)
 
 # Group matrices by algorithm
 grouped_stable_edges <- split(stable_edges_data, comb$algorithm)
+
+# Group matrices by CItest
+grouped_stable_edges_ci <- split(stable_edges_data, comb$citest)
 
 
 summarized_stable_edges <- lapply(grouped_stable_edges, function(group) {
@@ -71,13 +74,36 @@ summarized_stable_edges <- lapply(grouped_stable_edges, function(group) {
 })
 
 
+## Plot the resulting graph
+# per algorithm
+summarized_stable_edges$PC |> plotPC()
+par(mfrow=c(1,2))
+summarized_stable_edges$FCI |> plotAG()
+summarized_stable_edges$CCI |> plotAG()
 
-# Compare matrices
+# per citest
+par(mfrow=c(1,2))
+summarized_stable_edges$gaussCItest |> plotAG()
+summarized_stable_edges$RCoT |> plotAG()
+
+## Compare matrices
+# per algorithm
 fcimat <- summarized_stable_edges$FCI 
 ccimat <- summarized_stable_edges$CCI
-
 shared_edges <- which(fcimat == ccimat, arr.ind = TRUE)
 diff_edges <- which(fcimat != ccimat, arr.ind = TRUE)
+
+cat("Shared Edges:\n")
+print(shared_edges)
+
+cat("\nDiffering Edges:\n")
+print(diff_edges)
+
+# per citest
+gaussmat <- summarized_stable_edges$gaussCItest 
+rcotmat <- summarized_stable_edges$RCoT
+shared_edges <- which(gaussmat == rcotmat, arr.ind = TRUE)
+diff_edges <- which(gaussmat != rcotmat, arr.ind = TRUE)
 
 cat("Shared Edges:\n")
 print(shared_edges)

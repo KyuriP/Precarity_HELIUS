@@ -6,7 +6,6 @@ plan(multicore)
 message("Number of parallel workers: ", nbrOfWorkers())
 
 
-
 # General function to run a causal discovery algorithm on a subsample
 run_causal_subsample <- function(data_subsample, algorithm, citest, alpha, num_f = 100, num_f2 = 10, fixedEdges = fixedEdges, fixedGaps = fixedGaps) {
   message(sprintf("Running causal discovery for algorithm: %s, CI test: %s, alpha: %f", algorithm, citest, alpha))

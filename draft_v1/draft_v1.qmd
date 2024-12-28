@@ -77,7 +77,7 @@ library(umap)
 
 ```{r, include=FALSE}
 # Load the dataset 
-dat <- read_sav("../data/HELIUS_LEONIE.sav") 
+dat <- read_sav("../../data/HELIUS_LEONIE.sav") 
 
 # Preprocess and scale the precariousness data
 scaled_data <- dat %>%
@@ -270,13 +270,16 @@ The analyses are conducted under the following conditions:
 -   CI test: Gaussian CI test, RCoT
 -   Algorithms: FCI, CCI, and PC
 
-This setup yields 16 combinations (2 significance levels × 4 thresholds × 2 CI tests), applied across three algorithms, with each combination repeated for 100 bootstrap samples, resulting in a total of 1,600 resulting graphs. For analyses involving individual symptom variables, we streamline the setup by using thresholds of 0.6 and 0.7, reducing the number of bootstrap samples to 30. Additionally, we fix the skeleton of edges among symptom variables based on the common structure estimated across all three algorithms, thereby reducing the computational time required to estimate skeletons. This fixed structure aligns with commonly observed skeleton structures in the literature, ensuring relevance to existing findings (**cite the comp_model paper**).[^2] 
+This setup yields 16 combinations (2 significance levels × 4 thresholds × 2 CI tests), applied across three algorithms, with each combination repeated for 100 bootstrap samples, resulting in a total of 1,600 resulting graphs. For analyses involving individual symptom variables, we streamline the setup by using thresholds of 0.6 and 0.7, reducing the number of bootstrap samples to 30. 
+<!-- Additionally, we fix the skeleton of edges among symptom variables based on the common structure estimated across all three algorithms, thereby reducing the computational time required to estimate skeletons. This fixed structure aligns with commonly observed skeleton structures in the literature, ensuring relevance to existing findings (**cite the comp_model paper**).[^2]  -->
 
-To summarize the results, we identify the most frequently occurring edge endpoints across different experimental setups. This ensures that only stable and consistent edges are retained, providing a clearer and more reliable understanding of the relationships between precarity factors and depression. Refer to @fig-workflow for the analysis workflow.
+To summarize the results, we identify the most frequently occurring edge endpoints across different experimental setups.[^3] This ensures that only stable and consistent edges are retained, providing a clearer and more reliable understanding of the relationships between precarity factors and depression. Refer to @fig-workflow for the analysis workflow.
 
+<!-- [^2]:  -->
+<!-- To reduce spurious edges in the symptom network, we fixed the skeleton of symptom interactions using a common structure derived from PC, FCI, and CCI algorithms with an alpha level of 0.001. This approach maintained sparsity in symptom interactions while allowing the free estimation of causal directions between symptoms and precarity factors, balancing computational efficiency with meaningful results. -->
 
-[^2]: 
-To reduce spurious edges in the symptom network, we fixed the skeleton of symptom interactions using a common structure derived from PC, FCI, and CCI algorithms with an alpha level of 0.001. This approach maintained sparsity in symptom interactions while allowing the free estimation of causal directions between symptoms and precarity factors, balancing computational efficiency with meaningful results.
+[^3]:
+The detailed proportion of each edge endpoint occurrence is shown in [@sec-propmatrix].
 
 
 
@@ -345,7 +348,7 @@ In the symptom-level graph (@fig-sym), consistent relationships are represented 
 The symptom-level graph reveals a complex and interconnected structure, far more intricate than the sum score graph. Its denser network highlights the strong interdependence among symptoms and suggests the presence of latent confounding influences, as indicated by numerous bidirectional arrows.
 
 <!-- Centrality and Connectivity -->
-Certain nodes in the network emerge as more *causally* central, highlighting their potential importance as intervention points. Among the depressive symptoms, *dep*, *slp*, and *glt* emerge as particularly influential, with multiple outgoing edges (o->) to other symptoms,  suggesting their roles as potential key drivers within the symptom network. Especially, symptoms such as *glt*, *slp*, and *anh* are particularly critical, potentially acting as initiator or activator nodes within the network due to their apparent connections with precarity factors. These symptoms appear to be especially sensitive to external stressors, potentially manifesting early in response to such conditions and subsequently activating other interconnected symptom nodes.
+Certain nodes in the network emerge as more *causally* central, highlighting their potential importance as intervention points. Among the depressive symptoms, *anh*, *dep*, *slp*, and *glt* emerge as particularly influential, with multiple outgoing edges (o->) to other symptoms,  suggesting their roles as potential key drivers within the symptom network. Especially, symptoms such as *glt*, *slp*, and *anh* are particularly critical, potentially acting as initiator or activator nodes within the network due to their apparent connections with precarity factors. These symptoms appear to be especially sensitive to external stressors, potentially manifesting early in response to such conditions and subsequently activating other interconnected symptom nodes.
 <!-- This sensitivity indicates their potential as early warning signs or key targets for interventions aimed at preventing the progression to severe depression. -->
 
 The causal structure involving precarity factors in the symptom-level graph is largely consistent with the patterns observed in the sum score graphs. As in the sum graphs, relational stress (*S.rel*) emerges as a potential causal factor for depression, while employment (*P.emp*) and social precarity (*P.soc*) are more likely to be influenced by depressive symptoms. The symptom-level analysis, however, provides more specificity by pinpointing the symptoms involved in these relationships. For instance, *slp* is identified as influencing *P.emp* or potentially through a latent confounder (*slp* o-> *P.emp*) , while *glt* appears to affect *P.soc* or may be linked via a confounder (*glt* o-> *P.soc*).
@@ -1003,7 +1006,7 @@ RCoT is computationally efficient and well-suited for large conditioning sets ($
 
 
 
-## Summarized Stable Edges Proportion 
+## Summarized Stable Edges Proportion {#sec-propmatrix}
 
 ```{r}
 #| label: fig-sum-mat
