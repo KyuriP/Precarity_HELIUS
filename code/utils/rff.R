@@ -4,6 +4,7 @@ library(stats)    # For kernel functions
 library(pracma)   # For cosine function
 library(momentchi2)  # For advanced p-value calculation using Lancaster or HBE methods
 
+
 # Multinomial Kernel function for categorical variables
 multinomial_kernel <- function(x, y, theta = 1) {
   if (x == y) {
