@@ -20,6 +20,10 @@ alpha <- c(0.01, 0.05)
 threshold <- c(0.5, 0.6, 0.7, 0.8) # c(0.6, 0.7) # for symptom data
 citest <- c("gaussCItest", "RCoT")
 comb <- expand.grid(algorithm = algorithm, alpha = alpha, threshold = threshold, citest = citest)
+
+# Filter combinations for "PC" and "RCoT"
+# filtered_comb <- comb[comb$algorithm == "PC" & comb$citest == "RCoT", ]
+
 # sum score data
 filenames <- glue::glue(
     "{comb$algorithm}_alpha_{sprintf('%.2f', comb$alpha)}_threshold_{sprintf('%.1f', comb$threshold)}_citest_{comb$citest}.rds"
@@ -27,6 +31,10 @@ filenames <- glue::glue(
 # # gaussian sym test data
 # filenames <- glue::glue(
 #   "gaussian{comb$algorithm}_alpha_{sprintf('%.2f', comb$alpha)}_threshold_{sprintf('%.1f', comb$threshold)}.rds"
+# )
+# Generate filenames for the filtered conditions
+# filtered_filenames <- glue::glue(
+#   "{filtered_comb$algorithm}_alpha_{sprintf('%.2f', filtered_comb$alpha)}_threshold_{sprintf('%.1f', filtered_comb$threshold)}_citest_{filtered_comb$citest}.rds"
 # )
 
 # directory containing the files
@@ -36,6 +44,7 @@ directory <- "Precarity_HELIUS/data/dep_sym_presum" #"Precarity_HELIUS/data/dep_
 
 # Full paths to the files
 full_paths <- file.path(directory, filenames)
+# full_paths <- file.path(directory, filtered_filenames)
 
 # Read all .rds files into a list
 rds_data <- lapply(full_paths, readRDS)
@@ -53,6 +62,7 @@ grouped_stable_edges <- split(stable_edges_data, comb$algorithm)
 grouped_stable_edges_ci <- split(stable_edges_data, comb$citest)
 
 
+# summarize them by taking the most frequent symbol per element in matrices
 summarized_stable_edges <- lapply(grouped_stable_edges, function(group) {
   # Check dimensions from the first matrix in the group
   nrow <- nrow(group[[1]])
@@ -112,6 +122,4 @@ print(shared_edges)
 
 cat("\nDiffering Edges:\n")
 print(diff_edges)
-
-
 
