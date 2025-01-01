@@ -176,13 +176,13 @@ To ensure a robust representation of each precariousness factor, we conducted va
 -   Recent relational stressors: `frd_brk12`, `conf12`.
 -   Recent financial stressors: `fincri12`, `inc_diff`.
 
-After preprocessing, the HELIUS dataset comprises 21,628 samples. In addition to the five precariousness factors, we include PHQ-9 scores — both the total sum score and individual symptom scores — to represent depression. In the subsequent causal discovery analysis, we will examine depression both as an aggregated sum score and through its individual symptom-level representations. Refer to @fig-dist for the overall distributions of the variables used in the analysis.
+After preprocessing, the HELIUS dataset comprises 21,628 samples. Along with the five precariousness factors, we also compute an overall precarity score as the combined value of these factors. Additionally, PHQ-9 scores are included to represent depression, both as a total sum score and as individual symptom scores. In the subsequent causal discovery analysis, we examine the relationship between depression and precarity using both aggregated sum scores and their individual-level representations. Refer to @fig-dist for the overall distributions of the variables used in the analysis.
 
 ```{r echo=FALSE, fig.align='center', fig.height=5, fig.width=8, out.width="90%"}
 #| fig-cap: >
 #|   Distributions of variables with density overlay.  
 #|   
-#|   *P.emp* = employment precariousness; *P.hou* = housing precariousness; *P.soc* = social precariousness; *S.fin* = recent financial stressors; *S.rel* = recent relational stressors;
+#|   *P.emp* = employment precariousness; *P.hou* = housing precariousness; *P.soc* = social precariousness; *S.fin* = recent financial stressors; *S.rel* = recent relational stressors; *Precarity* = overall precarity;
 #|   *PHQsum* = PHQ-9 sum score; *anh* = anhedonia; *app* = appetite; *con* = concentration; *dep* = depressed mood; *ene* = energy; *glt* = guilty; *mot* = motor; *sui* = suicidal
 #| label: fig-dist
 
@@ -258,11 +258,11 @@ One practical challenge in applying these algorithms to the HELIUS dataset is th
 
 
 ## Analysis
-We analyze the causal structure using two approaches: one with the PHQ sum score representing overall depression severity, and another with individual symptom scores. The PHQ sum score simplifies the analysis by reducing dimensionality, which is computationally advantageous and provides a broad, interpretable perspective on depression's relationship with precarity factors. In contrast, individual symptom scores offer a nuanced understanding, capturing the heterogeneous ways symptoms respond to precarity factors. However, analyzing individual symptoms poses methodological challenges due to their non-standard distributions and the increased complexity introduced by the higher dimensionality. By employing both approaches, we balance simplicity and granularity, ensuring robustness in our findings: the PHQ sum score captures overarching trends, while symptom-level analysis reveals detailed dynamics, essential for tailoring specific interventions.
+We analyze the causal structure using three approaches: examining the relationship (1) between the five individual precarity factors and the PHQ sum score, which represents overall depression severity; (2) between individual symptoms and precarity factors; and (3) between individual symptoms and overall precarity (the sum of the five precarity factors). Using the PHQ sum score simplifies the analysis by reducing dimensionality, offering computational efficiency and a broad, interpretable perspective on the relationship between depression and precarity factors. In contrast, including individual symptoms provide a more detailed understanding, capturing the diverse ways symptoms respond to different precarity factors. However, this approach introduces methodological challenges, such as non-standard distributions and the complexities of increased dimensionality. Finally, examining individual symptoms in relation to the overall precarity score complements the analysis by revealing how symptoms collectively connect to general precarity. By integrating these three approaches, we balance simplicity and granularity, ensuring robust findings. 
+<!-- The PHQ sum score and precarity sum score capture overarching trends between overall depression and precarity, while symptom-level analysis with individual precarity factors reveals detailed dynamics, essential for tailoring specific interventions. --> 
 
 
-To evaluate the sensitivity of the results to the choice of alpha levels and ensure consistency, we test two significance levels --- $\alpha = 0.01, 0.05$. To further ensure robustness, we employ bootstrapping to generate 100 bootstrap samples For each sample, we estimate causal graphs and retain only the edges and directions that appear above predefined thresholds.
-
+To address sensitivity to parameter values and enhance the robustness of our results, we implement multiple settings combined with bootstrapping. For each of the 100 bootstrap samples, we estimate causal graphs and retain only the edges and directions that exceed predefined thresholds.
 The analyses are conducted under the following conditions:
 
 -   Significance levels ($\alpha$): 0.01 and 0.05
@@ -270,10 +270,10 @@ The analyses are conducted under the following conditions:
 -   CI test: Gaussian CI test, RCoT
 -   Algorithms: FCI, CCI, and PC
 
-This setup yields 16 combinations (2 significance levels × 4 thresholds × 2 CI tests), applied across three algorithms, with each combination repeated for 100 bootstrap samples, resulting in a total of 1,600 resulting graphs. For analyses involving individual symptom variables, we streamline the setup by using thresholds of 0.6 and 0.7, reducing the number of bootstrap samples to 30. 
+This setup yields 16 combinations (2 significance levels × 4 thresholds × 2 CI tests), applied across three algorithms. Each combination is repeated for 100 bootstrap samples, yielding a total of 1,600 graphs per algorithm. For analyses involving individual symptom variables, we simplify the setup by focusing on thresholds of 0.6 and 0.7 and reducing the number of bootstrap samples to 30 to ease computational demands.
 <!-- Additionally, we fix the skeleton of edges among symptom variables based on the common structure estimated across all three algorithms, thereby reducing the computational time required to estimate skeletons. This fixed structure aligns with commonly observed skeleton structures in the literature, ensuring relevance to existing findings (**cite the comp_model paper**).[^2]  -->
 
-To summarize the results, we identify the most frequently occurring edge endpoints across different experimental setups.[^3] This ensures that only stable and consistent edges are retained, providing a clearer and more reliable understanding of the relationships between precarity factors and depression. Refer to @fig-workflow for the analysis workflow.
+To summarize the results, we identify the most frequently occurring edge endpoints across different experimental setups.[^3] This ensures that only stable and consistent edges are retained, providing a clearer and more reliable understanding of the relationships between precarity factors and depression.  See @fig-workflow for an overview of the analysis workflow.
 
 <!-- [^2]:  -->
 <!-- To reduce spurious edges in the symptom network, we fixed the skeleton of symptom interactions using a common structure derived from PC, FCI, and CCI algorithms with an alpha level of 0.001. This approach maintained sparsity in symptom interactions while allowing the free estimation of causal directions between symptoms and precarity factors, balancing computational efficiency with meaningful results. -->
@@ -290,7 +290,7 @@ The detailed proportion of each edge endpoint occurrence is shown in [@sec-propm
 #| fig-align: center
 #| out-width: 80%
 
-knitr::include_graphics("img/simsetup.png")
+knitr::include_graphics("img/simsetup2.png")
 
 ```
 <!-- \begin{figure}[htbp] -->
@@ -374,6 +374,13 @@ knitr::include_graphics("img/symptom_graph_refined.png")
 
 
 ## Precarity as sum score
+Lastly, we examine the relationships between individual symptoms and overall precarity, represented as the sum of five precariousness factors. This approach completes the analysis by providing a perspective on how individual symptoms relate to overall precarity. It complements the previous analysis, which focused on individual symptoms and individual precarity factors, by potentially capturing distributed relationships across different precarity factors through their aggregation into a single overall score.
+As before, black solid lines indicate edges agreed upon by both FCI and CCI, while gray dashed lines represent edges where the two algorithms disagree. Circles at the endpoints of gray dashed edges denote unresolved directionality. Additionally, navy dashed edges highlight relationships that appear exclusively in graphs generated using Gaussian CI tests.
+
+Compared to @fig-sym, this analysis reveals greater disagreement between FCI and CCI regarding edge directionality, as evidenced by more dashed edges. FCI tends to estimate more undirected edges (circles), while CCI more frequently assigns directed arrows between symptom-symptom relationships. For a detailed breakdown, see [@sec-propmatrix], which shows the proportion of symbols produced by each algorithm.
+When examining overall precarity, we observe that more symptoms are now connected to the precarity score (*Precarity*) compared to the individual precarity factor analysis in @fig-sym. In addition to *glt*, *slp*, *anh*, and *sui*, which are previously shown to be connected to individual precarity factors, *mot*, *app*, and *dep* are now identified as having causal relationships with overall precarity. Furthermore, when using the Gaussian CI test, con is also shown to be causally related to overall precarity. Notably, all these connections are directed towards precarity (o→), indicating that overall precarity is not the cause of symptoms. The exception is the bidirectional edge between *sui* <-> *Precarity*, which suggests a connection via latent confounders.
+FCI predominantly estimates directed arrows (→) for symptom-precarity relationships, suggesting that symptoms are driving precarity. With fewer variables (reduced from 14 to 9), this approach appears to have slightly more statistical power, enabling algorithms to estimate relationships with greater confidence compared to the previous analysis involving individual symptoms and individual precarity factors.
+
 
 ```{r}
 #| label: fig-presum
