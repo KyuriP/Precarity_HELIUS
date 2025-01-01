@@ -131,44 +131,39 @@ sumpre_sym <- depsym |>
 
 # ## using fixed gaps and edges
 # # Initialize a 14x14 matrix with FALSE for both fixedEdges and fixedGaps
-# fixedEdges_full <- matrix(FALSE, nrow = 10, ncol = 10)
-# fixedGaps_full <- matrix(FALSE, nrow = 10, ncol = 10)
-# 
-# # Define the constraints for the first 9 variables (fixedEdges)
-# fixedEdges_full[1:9, 1:9] <- matrix(
-#   c(
-#     FALSE,  TRUE,  TRUE,  TRUE,  TRUE, FALSE,  TRUE, FALSE, FALSE,
-#     TRUE, FALSE,  TRUE,  TRUE, FALSE,  TRUE,  TRUE,  TRUE,  TRUE,
-#     TRUE,  TRUE, FALSE,  TRUE,  TRUE, FALSE,  TRUE, FALSE, FALSE,
-#     TRUE,  TRUE,  TRUE, FALSE,  TRUE, FALSE,  TRUE, FALSE, FALSE,
-#     TRUE, FALSE,  TRUE,  TRUE, FALSE,  TRUE,  TRUE,  TRUE, FALSE,
-#     FALSE,  TRUE, FALSE, FALSE,  TRUE, FALSE,  TRUE,  TRUE,  TRUE,
-#     TRUE,  TRUE,  TRUE,  TRUE,  TRUE,  TRUE, FALSE,  TRUE, FALSE,
-#     FALSE,  TRUE, FALSE, FALSE,  TRUE,  TRUE,  TRUE, FALSE,  TRUE,
-#     FALSE,  TRUE, FALSE, FALSE, FALSE,  TRUE, FALSE,  TRUE, FALSE
-#   ),
-#   nrow = 9, byrow = TRUE
-# )
-# 
-# # Define the constraints for the first 9 variables (fixedGaps)
-# fixedGaps_full[1:9, 1:9] <- matrix(
-#   c(
-#     FALSE, FALSE, FALSE, FALSE, FALSE,  TRUE, FALSE,  TRUE,  TRUE,
-#     FALSE, FALSE, FALSE, FALSE,  TRUE, FALSE, FALSE, FALSE, FALSE,
-#     FALSE, FALSE, FALSE, FALSE, FALSE,  TRUE, FALSE,  TRUE,  TRUE,
-#     FALSE, FALSE, FALSE, FALSE, FALSE,  TRUE, FALSE,  TRUE,  TRUE,
-#     FALSE,  TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,  TRUE,
-#     TRUE, FALSE,  TRUE,  TRUE, FALSE, FALSE, FALSE, FALSE, FALSE,
-#     FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,  TRUE,
-#     TRUE, FALSE,  TRUE,  TRUE, FALSE, FALSE, FALSE, FALSE, FALSE,
-#     TRUE, FALSE,  TRUE,  TRUE,  TRUE, FALSE,  TRUE, FALSE, FALSE
-#   ),
-#   nrow = 9, byrow = TRUE
-# )
+fixedEdges_full <- matrix(FALSE, nrow = 10, ncol = 10)
+fixedGaps_full <- matrix(FALSE, nrow = 10, ncol = 10)
+
+# Define the constraints for the first 9 variables (fixedEdges)
+fixedEdges_full[1:9, 1:9] <- matrix(c(
+  FALSE,  TRUE,  TRUE,  TRUE,  TRUE,  TRUE,  TRUE, FALSE, FALSE, # anh
+  TRUE, FALSE,  TRUE,  TRUE,  TRUE,  TRUE,  TRUE,  TRUE,  TRUE, # dep
+  TRUE,  TRUE, FALSE,  TRUE,  TRUE, TRUE,  TRUE,  TRUE, FALSE, # slp
+  TRUE,  TRUE,  TRUE, FALSE,  TRUE, FALSE,  TRUE,  TRUE, FALSE, # ene
+  TRUE,  TRUE,  TRUE,  TRUE, FALSE,  TRUE,  TRUE,  TRUE, FALSE, # app
+  TRUE,  TRUE,  TRUE, FALSE,  TRUE, FALSE,  TRUE,  TRUE,  TRUE, # glt
+  TRUE,  TRUE,  TRUE,  TRUE,  TRUE,  TRUE, FALSE,  TRUE,  TRUE, # con
+  FALSE,  TRUE,  TRUE,  TRUE,  TRUE,  TRUE,  TRUE, FALSE,  TRUE, # mot
+  FALSE,  TRUE, FALSE, FALSE, FALSE,  TRUE,  TRUE,  TRUE, FALSE  # sui
+), nrow = 9, byrow = TRUE)
+
+
+# Define the constraints for the first 9 variables (fixedGaps)
+fixedGaps_full[1:9, 1:9] <- matrix(c(
+  FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,  TRUE,  TRUE, # anh
+  FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, # dep
+  FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,  TRUE, # slp
+  FALSE, FALSE, FALSE, FALSE, FALSE,  TRUE, FALSE, FALSE,  TRUE, # ene
+  FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,  TRUE, # app
+  FALSE, FALSE, FALSE,  TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, # glt
+  FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,  FALSE, FALSE, FALSE, # con
+  TRUE, FALSE, FALSE, FALSE, FALSE, FALSE, FALSE,  FALSE, FALSE, # mot
+  TRUE, FALSE,  TRUE,  TRUE,  TRUE, FALSE, FALSE, FALSE,  FALSE  # sui
+), nrow = 9, byrow = TRUE)
 
 
 # Setup parallel backend
-plan(multicore)
+plan(multisession)
 message("Number of parallel workers: ", nbrOfWorkers())
 
 
@@ -176,7 +171,7 @@ message("Number of parallel workers: ", nbrOfWorkers())
 alphas = c(0.01, 0.05)
 thresholds = c(0.6, 0.7)
 citests = c("gaussCItest", "RCoT")
-algorithms = c("PC", "FCI", "CCI")
+algorithms = c("FCI", "CCI") #c("PC", "FCI", "CCI")
 data <- sumpre_sym # sumscore 
 subsample_size <- nrow(data)  # Size of each subsample
 num_subsamples <- 30     # Number of subsamples
@@ -201,11 +196,11 @@ run_and_save <- function(alpha, threshold, citest, algorithm) {
   )
   
   # Create file name
-  file_name <- glue::glue("data/symptom_presum/{algorithm}_alpha_{alpha}_threshold_{threshold}_citest_{citest}.rds")
+  file_name <- glue::glue("data/symptom_presum2/{algorithm}_alpha_{alpha}_threshold_{threshold}_citest_{citest}.rds")
   saveRDS(result, file = file_name)
   
   # Print a message to track progress
-  message(glue("Completed: algorithm = {algorithm}, alpha = {alpha}, threshold = {threshold}, citest = {citest}"))
+  message(glue::glue("Completed: algorithm = {algorithm}, alpha = {alpha}, threshold = {threshold}, citest = {citest}"))
 }
 
 # Apply the function to each row in the parameter data frame

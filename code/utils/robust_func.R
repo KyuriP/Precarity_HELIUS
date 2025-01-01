@@ -58,7 +58,7 @@ run_causal_subsample <- function(data_subsample, algorithm, citest, alpha, num_f
     stop("Unsupported CI test specified.")
   }
   
-  # Select the CI test function
+  # Select the CI test function 
   indepTest <- switch(citest,
                       "gaussCItest" = pcalg::gaussCItest,
                       "RCoT" = RCIT::RCoT,
@@ -101,6 +101,7 @@ causal_subsampling <- function(data, algorithm, subsample_size, num_subsamples, 
     1:num_subsamples, 
     ~ {
       library(RCIT)
+      library(pcalg)
       
       data_subsample <- dplyr::sample_n(data, subsample_size, replace = TRUE)
       message(sprintf("Processing subsample: %s", .x))

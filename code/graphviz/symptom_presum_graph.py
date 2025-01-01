@@ -34,6 +34,8 @@ dot.edge("anh", "con", dir="both", arrowhead="odot", arrowtail="odot", style="da
 dot.edge("anh", "Precarity", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
 
 dot.edge("dep", "slp", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
+dot.edge("dep", "ene", dir="both", arrowhead="normal", arrowtail="normal")
+
 dot.edge("dep", "app", dir="both", arrowhead="odot", arrowtail="odot", style="dashed", color="#a9a9a9")
 dot.edge("dep", "glt", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
 dot.edge("dep", "con", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
@@ -48,6 +50,7 @@ dot.edge("slp", "mot", dir="both", arrowhead="odot", arrowtail="odot", style="da
 dot.edge("slp", "Precarity", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
 
 dot.edge("ene", "app", dir="both", arrowhead="normal", arrowtail="normal")
+dot.edge("ene", "con", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
 dot.edge("ene", "mot", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
 
 dot.edge("app", "glt", dir="both", arrowhead="normal", arrowtail="normal")
