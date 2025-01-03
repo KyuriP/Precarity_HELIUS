@@ -148,16 +148,21 @@ fixedGaps_full[1:9, 1:9] <- matrix(c(
 ), nrow = 9, byrow = TRUE)
 
 
-# Setup parallel backend
-plan(multicore)
-message("Number of parallel workers: ", nbrOfWorkers())
+## Setup parallel backend
+# Dynamically determine available cores and set workers
+available_cores <- parallel::detectCores() - 4  # Reserve some for the system
+workers <- min(available_cores, 120)  # Use a safe limit below the connection cap
 
+# Set the future plan
+plan(multisession, workers = workers)
+# Confirm the setup
+cat("Using", workers, "parallel workers.\n")
 
 # Define parameters
 alphas = c(0.01, 0.05)
 thresholds = c(0.6, 0.7)
 citests = c("gaussCItest", "RCoT")
-algorithms = c("FCI", "CCI") #c("PC", "FCI", "CCI")
+algorithms = "CCI" #c("FCI", "CCI") #c("PC", "FCI", "CCI")
 data <- depsym
 subsample_size <- nrow(data)  # Size of each subsample
 num_subsamples <- 30     # Number of subsamples
@@ -182,7 +187,7 @@ run_and_save <- function(alpha, threshold, citest, algorithm) {
   )
   
   # Create file name
-  file_name <- glue::glue("data/individual_sym_pre/{algorithm}_alpha_{alpha}_threshold_{threshold}_citest_{citest}.rds")
+  file_name <- glue::glue("helius/data/individual_sym/{algorithm}_alpha_{alpha}_threshold_{threshold}_citest_{citest}.rds")
   saveRDS(result, file = file_name)
   
   # Print a message to track progress
@@ -190,4 +195,4 @@ run_and_save <- function(alpha, threshold, citest, algorithm) {
 }
 
 # Apply the function to each row in the parameter data frame
-pwalk(params, run_and_save, .progress = TRUE)
+purrr::pwalk(params, run_and_save, .progress = TRUE)

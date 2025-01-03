@@ -1,6 +1,6 @@
 #!/bin/bash
 #Set job requirements (note set time 1.5 to 2x longer than expected)
-#SBATCH -J sym_rcot
+#SBATCH -J sym_rcot_CCI
 
 #SBATCH -t 120:00:00 
 #SBATCH -p genoa
@@ -8,7 +8,6 @@
 #SBATCH --nodes=1
 #SBATCH --tasks-per-node=1
 #SBATCH --cpus-per-task=128
-#SBATCH --array=0-3 # Total jobs based on parameter combinations
 
 #Send email at start en end
 #SBATCH --mail-type=BEGIN,END
@@ -25,21 +24,6 @@ module load R-bundle-CRAN/2023.12-foss-2023a
 export R_LIBS="/gpfs/home1/kpark/rpackages:/gpfs/home1/kpark/R/x86_64-pc-linux-gnu-library/4.3:$R_LIBS"
 
 
-# Define parameters
-alphas=("0.01" "0.05")
-thresholds=("0.6" "0.7")
-
-# Calculate indices for parameter combinations
-alpha_index=$((SLURM_ARRAY_TASK_ID / 2)) # 2 thresholds per alpha
-threshold_index=$((SLURM_ARRAY_TASK_ID % 2)) # Modulo to wrap indices
-
-# Get specific alpha and threshold based on the indices
-alpha=${alphas[$alpha_index]}
-threshold=${thresholds[$threshold_index]}
-
-# Log the chosen parameters (for debugging purposes)
-echo "Running with alpha=$alpha and threshold=$threshold"
-
 # Run the R script with the specified alpha and threshold
-Rscript $HOME/helius/code/sym_rcot.R "$alpha" "$threshold"
+Rscript $HOME/helius/code/individual_sym_CCI.R 
 

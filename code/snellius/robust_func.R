@@ -62,7 +62,7 @@ causal_subsampling <- function(data, algorithm, subsample_size, num_subsamples, 
     1:num_subsamples, 
     ~ {
       library(RCIT)
-      
+      library(pcalg)
       data_subsample <- dplyr::sample_n(data, subsample_size, replace = TRUE)
       message(sprintf("Processing subsample: %s", .x))
       
