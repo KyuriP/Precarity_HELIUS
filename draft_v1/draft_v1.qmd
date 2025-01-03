@@ -34,21 +34,14 @@ format:
     keep-tex: true
     template-partials:
       - title.tex
-    include-in-header:
-      text: |
-        \usepackage[noblocks]{authblk}
-        \renewcommand*{\Authsep}{, }
-        \renewcommand*{\Authand}{, }
-        \renewcommand*{\Authands}{, }
-        \renewcommand\Affilfont{\small}
-        \usepackage{amssymb}
-        \usepackage{booktabs} % Add to your preamble for cleaner table lines
-        \usepackage{makecell} % Add to your preamble for multi-line cells
+    include-in-header: header.tex
 date: today
 execute:
   echo: false
   warning: false
 bibliography: references_draft.bib
+nocite: |
+  @*
 csl: apa.csl
 abstract: |
   \noindent Understanding the causal mechanisms linking precarity factors and depression is critical for developing effective interventions. This study utilizes the HELIUS dataset to explore these relationships using advanced causal discovery methods. By applying algorithms such as FCI, and CCI, and combining traditional Gaussian CI tests with non-parametric approaches like RCoT, we investigate how precarity factors—including employment, social, financial, housing, and relational stress—affect depression, both as a sum score and at the individual symptom level. Our findings reveal that relational stress consistently emerges as a potential causal factor for depression, while symptoms such as sleep disturbances, guilt, and anhedonia are particularly sensitive to external stressors, acting as potential early warning signals or intervention points for prevention. Moreover, the results highlight complexities in the data, including the influence of latent confounders and the challenges of capturing cyclic relationships. Despite some limitations, such as unresolved ambiguities in causal directions and challenges with mixed data distributions, this study demonstrates the utility of causal discovery tools in disentangling the intricate interplay between social and mental health dynamics. By mapping these causal structures into computational models, future research can simulate intervention effects, providing actionable insights to mitigate the impact of precarity on mental health. This study serves as a foundational effort, offering both methodological advancements and practical implications for addressing depression at a population level.
@@ -75,7 +68,7 @@ library(umap)
 
 ```
 
-```{r, include=FALSE}
+```{r, include=FALSE, cache=TRUE}
 # Load the dataset 
 dat <- read_sav("../../data/HELIUS_LEONIE.sav") 
 
@@ -178,7 +171,7 @@ To ensure a robust representation of each precariousness factor, we conducted va
 
 After preprocessing, the HELIUS dataset comprises 21,628 samples. Along with the five precariousness factors, we also compute an overall precarity score as the combined value of these factors. Additionally, PHQ-9 scores are included to represent depression, both as a total sum score and as individual symptom scores. In the subsequent causal discovery analysis, we examine the relationship between depression and precarity using both aggregated sum scores and their individual-level representations. Refer to @fig-dist for the overall distributions of the variables used in the analysis.
 
-```{r echo=FALSE, fig.align='center', fig.height=5, fig.width=8, out.width="90%"}
+```{r echo=FALSE, fig.align='center', fig.height=5, fig.width=8, out.width="90%", cache=TRUE}
 #| fig-cap: >
 #|   Distributions of variables with density overlay.  
 #|   
@@ -214,55 +207,92 @@ ggplot(clust_data_long, aes(x = value)) +
 
 ## Causal Discovery
 
-There are numerous causal discovery algorithms available; however, in this study, we focus on algorithms suited to the potential cyclic relationships within our system. Specifically, we use FCI (Fast Causal Inference) and CCI (Cyclic Causal Inference), both capable of accounting for such cycles under certain conditions [@mooij2020constraint; @strobl2019]. Additionally, we include the PC algorithm as a reference, given its simplicity and prominence as one of the most widely known causal discovery methods [@spirtes2001causation]. For a more detailed explanation of these algorithms, please refer to @park2024discovering.
+There are numerous causal discovery algorithms available; however, in this study, we focus on algorithms suited to the potential cyclic relationships within our system. Specifically, we use FCI (Fast Causal Inference) and CCI (Cyclic Causal Inference), both capable of accounting for such cycles under certain conditions [@mooij2020constraint; @strobl2019]. Additionally, we include the PC algorithm as a reference, given its simplicity and prominence as one of the most widely known causal discovery methods [@spirtes2001causation]. 
 
 
 
 \begin{table}[ht]
 \centering
+\small % Make the font size smaller
 \caption{Assumptions of causal discovery algorithms}
-\begin{tabular}{lccccl}
+\begin{tabular}{lccccc}
 \toprule
-Algorithm & Acyclicity & Causal sufficiency & 
-\makecell{Absence of \\ selection bias} & Output \\ 
+Algorithm & Acyclicity & \makecell{Causal \\ sufficiency} & 
+\makecell{Absence of \\ selection bias} & Linearity & Output \\ 
 \midrule
-PC  & $\checkmark$ & $\checkmark$ & $\checkmark$ & CPDAG \\ 
-FCI & $-^{a}$ & $\checkmark$ & $-^{a}$ & PAG \\ 
-CCI & x & x & x & MAAG \\ 
+PC  & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & CPDAG \\ 
+FCI & $-^{a}$ & $\checkmark$ & $-^{a}$ & $-^{a}$ & PAG \\ 
+CCI & x & x & x & $\checkmark$ & \makecell{\footnotesize(partially oriented) \\ MAAG} \\ 
 \bottomrule
 \end{tabular}
-\caption*{\small{\textit{Note}. $^{a}$FCI can detect cycles in systems that lack selection bias and exhibit non-linear relationships (Mooij \& Claassen, 2020).}}
+\caption*{\footnotesize{\textit{Note}. $^{a}$The FCI algorithm, introduced by Spirtes (1995), is a constraint-based causal discovery method for DAGs that accounts for latent confounding and selection bias. Mooij \& Claassen (2020) later showed its applicability to cyclic causal discovery with latent confounding under general faithfulness and Markov conditions, assuming non-linear causal relationships.}}
 \end{table}
 
 <!-- For word docx compiling -->
 <!-- **Table 1**: Assumptions of causal discovery algorithms. -->
 
-<!-- | Algorithm | Acyclicity | Causal sufficiency | Absence of selection bias | Output | -->
-<!-- |-----------|------------|--------------------|---------------------------|--------| -->
-<!-- | PC        | ✓          | ✓                  | ✓                         | CPDAG  | -->
-<!-- | FCI       | -¹         | ✓                  | -¹                        | PAG    | -->
-<!-- | CCI       | x          | x                  | x                         | MAAG   | -->
-<!-- ------------------------------------------------------------------------------------ -->
+<!-- | Algorithm | Acyclicity | Causal sufficiency | Absence of selection bias | Linearity | Output | -->
+<!-- |-----------|------------|--------------------|---------------------------|-----------|--------| -->
+<!-- | PC        | ✓          | ✓                  | ✓                         | ✓         |  CPDAG | -->
+<!-- | FCI       | -¹         | ✓                  | -¹                        | -¹        |  PAG   | -->
+<!-- | CCI       | x          | x                  | x                         | ✓         |  MAAG  | -->
+<!-- ------------------------------------------------------------------------------------------------ -->
 <!-- ¹FCI can detect cycles in systems that lack selection bias and exhibit non-linear relationships (Mooij & Claassen, 2020). -->
 
 
 
 
-As shown in Table 1, the resulting graphs from FCI and CCI differ slightly (*PAG*: partial ancestral graph; *MAAG*: maximal almost ancestral graph) due to their reliance on different underlying assumptions. Both encode information about causal relationships between variables, where the presence of an edge indicates causal *ancestry*.
-Directed edges, $A$ \*→ $B$, specify that $B$ is not an ancestor of $A$ in every graph within the Markov equivalence class, $Equiv(G)$. $A$\*—$B$ represent cases where $B$ is an ancestor of $A$ in every graph in $Equiv(G)$. Circle endpoints, $A$\*-o$B$, denote ambiguity in the ancestral relationship, meaning that $B$'s ancestral status relative to $A$ varies across graphs in $Equiv(G)$.
+As shown in Table 1, the resulting graphs from FCI and CCI differ slightly (*PAG*: partial ancestral graph; *MAAG*: maximal almost ancestral graph) due to their reliance on different underlying assumptions. Despite these differences, both graphs are forms of *ancestral graphs*, designed to encode causal relationships between variables, where the presence of an edge indicates causal *ancestry.*
+Directed edges, $A \stararrow B$, indicate that $B$ is not an ancestor of $A$ in every graph within the Markov equivalence class, $Equiv(G)$. The Markov equivalence class refers to the set of graphs that encode the same conditional independence relationships, such that the same *d-separation* relations hold across all graphs in the class [@spirtes2001causation]. 
+$A \startail B$ indicates that $B$ is an ancestor of $A$ across all graphs in $Equiv(G)$. 
+Circle endpoints, $A \starcirc B$, represent ambiguity in the ancestral relationship, meaning $B$'s ancestral status relative to $A$ varies across graphs in $Equiv(G)$.[^4] 
+When $A \arrowarrow B$, neither $A$ nor $B$ is an ancestor of the other, indicating the presence of a latent confounder between them. 
+
+The algorithms also differ in their approaches and assumptions for detecting cycles.
+In CCI's MAAG, $A$ \textemdash\ $B$ indicates that $A$ is an ancestor of $B$ and $B$ is an ancestor of $A$, referring to a cycle between $A \stackedarrows B$. 
+FCI, on the other hand, identifies potential cycles more subtly: fully-connected nodes with circle endpoints ($\circirc$) in FCI's PAG may suggest a cyclic structure. 
+FCI basically provides a sufficient condition to distinguish nodes that are not part of a cycle, offering a more nuanced approach [@mooij2020constraint].
+Table 1 highlights further differences in the assumptions underlying these algorithms. CCI operates under the assumption of a linear system, while FCI, particularly for inferring cyclic relationships, assumes a non-linear system without selection bias and adheres to more general faithfulness and Markov conditions (i.e., *$\sigma$-separation* and *$\sigma$-faithfulness* setting) [@forre2018constraint].
+When the respective assumptions of each algorithm are satisfied, their outcomes for cyclic relationships align with those illustrated in @fig-examplegraphs.
+While an exhaustive discussion of causal discovery concepts and algorithm-specific details is beyond the scope of this paper, readers seeking a deeper understanding are encouraged to consult @park2024discovering for comprehensive insights into these methods and their applications.
 
 
-In contrast, the graph produced by the PC algorithm is a *CPDAG* (completed partially directed acyclic graph), where directed edges ($A$ → $B$) indicate that $A$ is a direct cause (parent) of $B$. Unlike FCI and CCI, the CPDAG does not include circle symbols. Instead, when the PC algorithm cannot determine the direction, it represents uncertainty with bidirectional arrows. While PC serves as a useful reference, its strict assumptions of acyclicity and the absence of latent confounders limit its applicability in more complex settings. Therefore, our primary focus remains on the results from FCI and CCI. For completeness, all PC algorithm results are provided in the [Appendix](#sec-appendix).
 
-One practical challenge in applying these algorithms to the HELIUS dataset is that the data does not follow a Gaussian distribution, and the relationships among variables are unlikely to be strictly linear. To account for this, we complement the commonly used Gaussian conditional independence test (CI test), which relies on partial correlations, with a non-parametric CI test based on kernel methods. However, kernel-based non-parametric tests are computationally demanding, particularly with large datasets like ours. To mitigate this issue, we employ Randomized Conditional Independence Test (RCIT) and the Randomized conditional Correlation Test (RCoT), which uses random Fourier features to approximate the kernel methods, thereby significantly reducing the computational cost [@strobl2019approximate]. For a more detailed explanation of RCIT and RCoT, see @sec-rcot.
+[^4]: $*$ serves as a \textit{meta-symbol}, representing one of the three possible edge-endpoints. For instance, $A \tailstar B$ can indicate any of the following edges: $A$ \textemdash\ $B$, $A\tailarrow B$, or $A \tailcirc B$ [@park2024discovering].
+
+```{r}
+#| layout-ncol: 3
+#| label: fig-examplegraphs
+#| fig-cap: Example graph $\mathcal{G}$ featuring a cycle and the corresponding MAAG from CCI and PAG from FCI.
+#| fig-subcap: 
+#|   - Example graph $\mathcal{G}$
+#|   - Corresponding MAAG 
+#|   - Corrsponding PAG
+#| fig-align: center
+#| out-width: 60%
+
+
+knitr::include_graphics("img/original_DCG.png")
+knitr::include_graphics("img/FCI_graph.png")
+knitr::include_graphics("img/CCI_graph.png")
+```
+
+The graph produced by the PC algorithm is a *CPDAG* (completed partially directed acyclic graph), where directed edges ($A$ → $B$) indicate that $A$ is a direct cause (parent) of $B$. Unlike FCI and CCI, the CPDAG does not include circle symbols. Instead, when the PC algorithm cannot determine the direction of causality, it represents this uncertainty with bidirectional arrows. While the PC algorithm serves as a useful reference, its strict assumptions of acyclicity and the absence of latent confounders restrict its applicability in more complex scenarios. Therefore, our primary focus remains on the results from FCI and CCI, with all PC algorithm results provided in the [Appendix](#sec-appendix) for completeness. 
+
+
+One practical challenge in applying these algorithms to the HELIUS dataset is that the data does not follow a Gaussian distribution, and the relationships among variables are unlikely to be strictly linear. To account for this, we supplement the commonly used Gaussian conditional independence (CI) test, which relies on partial correlations, with a non-parametric CI test based on reproducing kernel methods [@zhang2012kernel].
+While kernel-based conditional independence tests (KCIT) are effective, they are computationally intensive for large datasets like HELIUS, as their quadratic scaling with sample size is primarily driven by the inversion of large kernel matrices. To mitigate this issue, we use the Randomized Conditional Correlation Test (RCoT), which approximate kernel methods using random Fourier features. This approach reduces computation to linear scaling with sample size, significantly lowering computational costs [@strobl2019approximate]. For a more detailed explanation of RCoT, refer to @sec-rcot.
+
 
 
 ## Analysis
-We analyze the causal structure using three approaches: examining the relationship (1) between the five individual precarity factors and the PHQ sum score, which represents overall depression severity; (2) between individual symptoms and precarity factors; and (3) between individual symptoms and overall precarity (the sum of the five precarity factors). Using the PHQ sum score simplifies the analysis by reducing dimensionality, offering computational efficiency and a broad, interpretable perspective on the relationship between depression and precarity factors. In contrast, including individual symptoms provide a more detailed understanding, capturing the diverse ways symptoms respond to different precarity factors. However, this approach introduces methodological challenges, such as non-standard distributions and the complexities of increased dimensionality. Finally, examining individual symptoms in relation to the overall precarity score complements the analysis by revealing how symptoms collectively connect to general precarity. By integrating these three approaches, we balance simplicity and granularity, ensuring robust findings. 
+We analyze the causal structure using three approaches: examining the relationship (1) between the five individual precarity factors and the PHQ sum score, which represents overall depression severity; (2) between individual symptoms and precarity factors; and (3) between individual symptoms and overall precarity (the sum of the five precarity factors). 
+Using the PHQ sum score simplifies the analysis by reducing dimensionality, offering computational efficiency and a broad, interpretable perspective on the relationship between depression and precarity factors. In contrast, analyzing individual symptoms provides a more detailed understanding by capturing the diverse ways symptoms respond to different precarity factors. However, this detailed approach introduces methodological challenges, including non-standard distributions of individual symptom variables and the complexities associated with increased dimensionality.
+Finally, examining individual symptoms in relation to the overall precarity score complements the analysis by revealing how symptoms collectively connect to general precarity. Aggregating precarity factors may uncover relationships that could be overlooked in analyses of individual factors, particularly when a symptom has associations across multiple factors that are not strong enough to emerge in individual analyses.
+By integrating these three approaches, we achieve a balance between capturing detailed granularity and gaining a broader understanding of the relationship between precarity and depression. 
 <!-- The PHQ sum score and precarity sum score capture overarching trends between overall depression and precarity, while symptom-level analysis with individual precarity factors reveals detailed dynamics, essential for tailoring specific interventions. --> 
 
-
-To address sensitivity to parameter values and enhance the robustness of our results, we implement multiple settings combined with bootstrapping. For each of the 100 bootstrap samples, we estimate causal graphs and retain only the edges and directions that exceed predefined thresholds.
+Furthermore, to address sensitivity to parameter values and enhance the robustness of our results, we implement multiple settings combined with bootstrapping. For each of the 100 bootstrap samples, we estimate causal graphs and retain only the edges and directions that exceed predefined thresholds.
 The analyses are conducted under the following conditions:
 
 -   Significance levels ($\alpha$): 0.01 and 0.05
@@ -270,16 +300,16 @@ The analyses are conducted under the following conditions:
 -   CI test: Gaussian CI test, RCoT
 -   Algorithms: FCI, CCI, and PC
 
-This setup yields 16 combinations (2 significance levels × 4 thresholds × 2 CI tests), applied across three algorithms. Each combination is repeated for 100 bootstrap samples, yielding a total of 1,600 graphs per algorithm. For analyses involving individual symptom variables, we simplify the setup by focusing on thresholds of 0.6 and 0.7 and reducing the number of bootstrap samples to 30 to ease computational demands.
-<!-- Additionally, we fix the skeleton of edges among symptom variables based on the common structure estimated across all three algorithms, thereby reducing the computational time required to estimate skeletons. This fixed structure aligns with commonly observed skeleton structures in the literature, ensuring relevance to existing findings (**cite the comp_model paper**).[^2]  -->
+This setup yields 16 combinations (2 significance levels × 4 thresholds × 2 CI tests), applied across three algorithms. Each combination is repeated for 100 bootstrap samples, yielding a total of 1,600 graphs per algorithm. For analyses involving individual symptom variables, we simplify the setup by focusing on thresholds of 0.6 and 0.7 and reducing the number of bootstrap samples to 30, easing computational demands.
+To further enhance efficiency, we fix the skeleton of edges among symptom variables based on the common structure estimated across all algorithms. This approach minimizes spurious edges in the symptom network and significantly reduces the computational time needed for skeleton estimation. 
+This fixed structure also aligns well with commonly reported skeleton structures in the literature, ensuring consistency with existing findings (**cite the comp_model paper**).[^2]
+Lastly, to summarize the results, we identify the most frequently occurring edge endpoints across different experimental setups.[^3] This ensures that only stable and consistent edges are retained, providing a clearer and more reliable understanding of the relationships between precarity factors and depression.  See @fig-workflow for an overview of the analysis workflow.
 
-To summarize the results, we identify the most frequently occurring edge endpoints across different experimental setups.[^3] This ensures that only stable and consistent edges are retained, providing a clearer and more reliable understanding of the relationships between precarity factors and depression.  See @fig-workflow for an overview of the analysis workflow.
-
-<!-- [^2]:  -->
-<!-- To reduce spurious edges in the symptom network, we fixed the skeleton of symptom interactions using a common structure derived from PC, FCI, and CCI algorithms with an alpha level of 0.001. This approach maintained sparsity in symptom interactions while allowing the free estimation of causal directions between symptoms and precarity factors, balancing computational efficiency with meaningful results. -->
+[^2]:
+We fixed the skeleton of the symptom network using a common structure derived from the PC, FCI, and CCI algorithms with an alpha level of 0.001. This approach preserved the complexity of symptom interactions, enabling unrestricted estimation of causal directions both among symptoms (*symptom --- symptom* interactions) and between symptoms and precarity factors.
 
 [^3]:
-The detailed proportion of each edge endpoint occurrence is shown in [@sec-propmatrix].
+The detailed proportion of each edge endpoint occurrence is provided in [@sec-propmatrix].
 
 
 
@@ -316,7 +346,7 @@ Overall, both graphs together highlight the potential roles of recent stressors 
 ```{r}
 #| layout-ncol: 2
 #| label: fig-sum
-#| fig-cap: "Resulting graphs of precarity factors and depression sum score using FCI and CCI"
+#| fig-cap: "Resulting graphs of precarity factors and depression sum score using FCI and CCI."
 #| fig-subcap: 
 #|   - "Using both GaussianCI and RCoT"
 #|   - "Using only RCoT"
@@ -359,12 +389,10 @@ Some discrepancies, however, exist between the symptom-level and sum graphs. For
 
 
 
-
-
 <!-- However, due to computational constraints that required limiting the sample size, as well as the challenging distributions of certain symptoms, the statistical power is lower compared to the depression sum score graph. -->
 ```{r}
 #| label: fig-sym
-#| fig-cap: "Resulting graphs of precarity factors and individual depression symptoms using FCI and CCI"
+#| fig-cap: "Resulting graphs of precarity factors and individual depression symptoms using FCI and CCI."
 #| fig-align: center
 #| out-width: 80%
 
@@ -374,6 +402,7 @@ knitr::include_graphics("img/symptom_graph_refined.png")
 
 
 ## Precarity as sum score
+
 Lastly, we examine the relationships between individual symptoms and overall precarity, represented as the sum of five precariousness factors. This approach completes the analysis by providing a perspective on how individual symptoms relate to overall precarity. It complements the previous analysis, which focused on individual symptoms and individual precarity factors, by potentially capturing distributed relationships across different precarity factors through their aggregation into a single overall score.
 As before, black solid lines indicate edges agreed upon by both FCI and CCI, while gray dashed lines represent edges where the two algorithms disagree. Circles at the endpoints of gray dashed edges denote unresolved directionality. Additionally, navy dashed edges highlight relationships that appear exclusively in graphs generated using Gaussian CI tests.
 
@@ -384,7 +413,7 @@ FCI predominantly estimates directed arrows (→) for symptom-precarity relation
 
 ```{r}
 #| label: fig-presum
-#| fig-cap: "Resulting graphs of precarity sum score and individual depression symptoms using FCI and CCI"
+#| fig-cap: "Resulting graphs of precarity sum score and individual depression symptoms using FCI and CCI."
 #| fig-align: center
 #| out-width: 80%
 
@@ -481,16 +510,16 @@ As one of the early applications of causal discovery tools to the complex dynami
 
 ```{r, echo=FALSE, fig.align='center', fig.width=15}
 # check correlation
-#cor(df) |> round(2) 
+#cor(df) |> round(2)
 
 # visualize corr
 col <- colorRampPalette(c("#BB4444", "#EE9988", "#FFFFFF", "#77AADD", "#4477AA"))
-corrplot(cor(scaled_data[,c(1:16, 26, 27)]), method="color", col=col(200),  
-         type="upper", order="hclust", 
+corrplot(cor(scaled_data[,c(1:16, 26, 27)]), method="color", col=col(200),
+         type="upper", order="hclust",
          addCoef.col = "black", # Add coefficient of correlation
          tl.col="black", number.cex=0.50, tl.srt=45,tl.cex=0.7, #Text label color and rotation
          # hide correlation coefficient on the principal diagonal
-         diag=FALSE 
+         diag=FALSE
          )
 ```
 
@@ -505,7 +534,7 @@ corrplot(cor(scaled_data[,c(1:16, 26, 27)]), method="color", col=col(200),
 ## Exploratory Factor Analysis (EFA)
 
 ```{r, echo=FALSE, fig.align='center', fig.height=5, out.width="55%", message=FALSE, results='hide'}
-# precarious factors 
+# precarious factors
 df <- scaled_data[,1:16]
 
 # check suggested number of factors
@@ -536,7 +565,7 @@ ggplot(loadings_long, aes(x = Factor, y = Variable, fill = Loading)) +
   geom_tile(color = "white") +
   scale_fill_gradient2(low = "red", mid = "white", high = "blue", midpoint = 0, limits = c(-1, 1)) +
   theme_minimal() +
-  labs(title = "Factor Loadings Heatmap", x = "", y = "") 
+  labs(title = "Factor Loadings Heatmap", x = "", y = "")
 ```
 
 ### Factor Loadings (Pattern Matrix)
@@ -573,7 +602,7 @@ res.pca <- prcomp(df, scale = TRUE)
 
 # Visualize eigenvalues (scree plot)
 fviz_eig(res.pca, addlabels = TRUE)
-#          
+#
 # fviz_pca_var(res.pca,
 #              col.var = "contrib", # Color by contributions to the PC
 #              gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
@@ -594,8 +623,8 @@ res.var <- get_pca_var(res.pca)
 
 res.var$contrib |> as.data.frame() |> dplyr::select(1:5) |>
   tibble::rownames_to_column(var = "var") |> # adds a column for rownames
-    pivot_longer(cols = starts_with("Dim"), 
-               names_to = "Dimension", 
+    pivot_longer(cols = starts_with("Dim"),
+               names_to = "Dimension",
                values_to = "Contribution") |>
 # Plot with facet_wrap to show each dimension in a separate facet
 ggplot(aes(x = reorder(var, -Contribution), y = Contribution, fill = Contribution)) +
@@ -628,7 +657,7 @@ It shows the importance of variables within each component.
 Cos² (squared cosine) values, or the quality of representation, show how well each variable is represented by each dimension. where higher cos² values (closer to 1) indicate better representation of a variable by a component.
 
 ```{r, echo=FALSE, fig.align='center', out.width="70%"}
-res.var$cos2 |> as.data.frame() |> dplyr::select(1:5) %>% 
+res.var$cos2 |> as.data.frame() |> dplyr::select(1:5) %>%
   mutate(var = rownames(.)) |>
   pivot_longer(!var, names_to = "dim", values_to = "cos2") |>
   ggplot(aes(x = dim, y = var, fill = cos2)) +
@@ -654,10 +683,10 @@ res.var$cos2 |> as.data.frame() |> dplyr::select(1:5) %>%
 # Load the library
 library(fastICA)
 # set the seed
-set.seed(1) 
+set.seed(1)
 
 # Set the number of components you want to extract
-n_components <- 5  
+n_components <- 5
 
 # Run ICA
 ica_model <- fastICA(df,
@@ -683,7 +712,7 @@ weight_matrix |>
   geom_tile(color = "white") +
   scale_fill_gradient2(low = "red", mid = "white", high = "blue", midpoint = 0, limits = c(-1, 1)) +
   labs(x="", y="") +
-  theme_minimal() 
+  theme_minimal()
 ```
 
 ### Dominant Variables per Component:
@@ -726,19 +755,19 @@ plot(hc_ward, main = "ward.D")
 rect.hclust(hc_ward, k = 5, border = 2:6)
 
 # Avg
-hc_avg <- hclust(distance_matrix, method = "average") 
+hc_avg <- hclust(distance_matrix, method = "average")
 # dend <- as.dendrogram(hc)
-# dend_colored <- dendextend::color_branches(dend, k = 5) 
+# dend_colored <- dendextend::color_branches(dend, k = 5)
 plot(hc_avg, main = "average")
 rect.hclust(hc_avg, k = 5, border = 2:6)
 
 hc_comp <- hclust(distance_matrix, method = "complete")
 # dend <- as.dendrogram(hc)
-# dend_colored <- dendextend::color_branches(dend, k = 5)  
+# dend_colored <- dendextend::color_branches(dend, k = 5)
 plot(hc_comp, main = "complete")
 rect.hclust(hc_comp, k = 5, border = 2:6)
 
-hc_sing <- hclust(distance_matrix, method = "single") 
+hc_sing <- hclust(distance_matrix, method = "single")
 # dend <- as.dendrogram(hc)
 # dend_colored <- dendextend::color_branches(dend, k = 5)  # Specify the number of clusters
 plot(hc_sing, main = "single")
@@ -829,7 +858,7 @@ Based on the consistent findings across multiple analyses, we decided to exclude
 We construct each precariousness factor by calculating the mean value of the combined variables. Below, we present the updated correlation table for the newly composed factors, along with the corresponding distributions of all variables to be used in the causal discovery analysis.
 
 ```{r, echo=FALSE, fig.align='center'}
-clust_data <- scaled_data |> 
+clust_data <- scaled_data |>
   mutate(
     P.emp = rowMeans(cbind(emp_stat, work_sit)),
     P.soc = rowMeans(cbind(soc_freq, soc_adq)),
@@ -843,11 +872,11 @@ clust_data <- scaled_data |>
 # skimr::skim(clust_data)
 
 # visualize corr
-corrplot(cor(clust_data), method="color", col=col(200),  
-         type="upper", order="hclust", 
+corrplot(cor(clust_data), method="color", col=col(200),
+         type="upper", order="hclust",
          addCoef.col = "black", # Add coefficient of correlation
-         tl.col="black", number.cex=0.50, tl.srt=45,tl.cex=0.7, 
-         diag=FALSE 
+         tl.col="black", number.cex=0.50, tl.srt=45,tl.cex=0.7,
+         diag=FALSE
          )
 
 
@@ -873,8 +902,8 @@ ggplot(clust_data_long, aes(x = value)) +
 ```{r}
 #| layout-ncol: 2
 #| label: fig-pc_sum
-#| fig-cap: "Resulting graphs of precarity factors and depression sum score using PC"
-#| fig-subcap: 
+#| fig-cap: "Resulting graphs of precarity factors and depression sum score using PC."
+#| fig-subcap:
 #|   - "Using both GaussianCI and RCoT"
 #|   - "Using only RCoT"
 #| fig-align: center
@@ -889,8 +918,8 @@ knitr::include_graphics("img/sum_PC_RCoTonly.png")
 ```{r}
 #| layout-nrow: 2
 #| label: fig-pc_sym
-#| fig-cap: "Resulting graphs of precarity factors and individual depression symptoms using PC"
-#| fig-subcap: 
+#| fig-cap: "Resulting graphs of precarity factors and individual depression symptoms using PC."
+#| fig-subcap:
 #|   - "Using both GaussianCI and RCoT"
 #|   - "Using only RCoT"
 #| fig-align: center
@@ -905,8 +934,8 @@ knitr::include_graphics("img/pc_sym_onlyRCoT.png")
 ```{r}
 #| layout-nrow: 2
 #| label: fig-pc_presum
-#| fig-cap: "Resulting graphs of precarity sum score and individual depression symptoms using PC"
-#| fig-subcap: 
+#| fig-cap: "Resulting graphs of precarity sum score and individual depression symptoms using PC."
+#| fig-subcap:
 #|   - "Using both GaussianCI and RCoT"
 #|   - "Using only RCoT"
 #| fig-align: center
@@ -1045,7 +1074,7 @@ RCoT is computationally efficient and well-suited for large conditioning sets ($
 
 ```{r}
 #| label: fig-sum-mat
-#| fig-cap: "Proportions of edge endpoint types for graphs based on depression sum score"
+#| fig-cap: "Proportions of edge endpoint types for graphs based on depression sum score."
 #| fig-align: center
 #| out-width: 100%
 knitr::include_graphics("img/sumgraph_mat.pdf")
@@ -1054,7 +1083,7 @@ knitr::include_graphics("img/sumgraph_mat.pdf")
 
 ```{r}
 #| label: fig-sym-mat
-#| fig-cap: "Proportions of edge endpoint types for graphs based on individual depression symptoms"
+#| fig-cap: "Proportions of edge endpoint types for graphs based on individual depression symptoms."
 #| fig-align: center
 #| out-width: 100%
 knitr::include_graphics("img/symgraph_mat.pdf")
@@ -1062,7 +1091,7 @@ knitr::include_graphics("img/symgraph_mat.pdf")
 
 ```{r}
 #| label: fig-presum-mat
-#| fig-cap: "Proportions of edge endpoint types for graphs based on individual depression symptoms with precarity sum score"
+#| fig-cap: "Proportions of edge endpoint types for graphs based on individual depression symptoms with precarity sum score."
 #| fig-align: center
 #| out-width: 70%
 knitr::include_graphics("img/presumgraph_mat.pdf")

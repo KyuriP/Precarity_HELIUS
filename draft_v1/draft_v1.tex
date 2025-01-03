@@ -131,6 +131,102 @@
 \usepackage{amssymb}
 \usepackage{booktabs} % Add to your preamble for cleaner table lines
 \usepackage{makecell} % Add to your preamble for multi-line cells
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, shapes.geometric}
+
+%% Define TikZ arrow styles
+\newcommand{\starstar}{% 
+\begin{tikzpicture}[baseline=-3pt]
+    \draw [{Rays[n=6]}-{Rays[n=6]}] (0,0) -- (0.55,0);
+\end{tikzpicture}
+}
+
+\newcommand{\circstar}{% 
+\begin{tikzpicture}
+    \draw [{Circle[open]}-{Rays[n=6]}] (0,0) -- (0.55, 0);
+\end{tikzpicture}
+}
+
+\newcommand{\starcirc}{% 
+\begin{tikzpicture}
+    \draw [{Rays[n=6]}-{Circle[open]}] (0,0) -- (0.55, 0);
+\end{tikzpicture}
+}
+
+\newcommand{\stararrow}{% 
+\begin{tikzpicture}
+    \draw [{Rays[n=6]}-{Straight Barb[length=2.5pt]}] (0,0) -- (0.5, 0);
+\end{tikzpicture}
+}
+
+\newcommand{\arrowstar}{% 
+\begin{tikzpicture}
+    \draw [{Straight Barb[length=2.5pt]}-{Rays[n=6]}] (0,0) -- (0.5, 0);
+\end{tikzpicture}
+}
+
+\newcommand{\circarrow}{% 
+\begin{tikzpicture}
+    \draw [{Circle[open]}-{Straight Barb[length=2.5pt]}] (0,0) -- (0.5, 0);
+\end{tikzpicture}
+}
+
+\newcommand{\tailcirc}{% 
+\begin{tikzpicture}[baseline=-3pt] 
+    \draw [-{Circle[open]}] (0,0) -- (0.4, 0);
+\end{tikzpicture}
+}
+
+\newcommand{\circtail}{% 
+\begin{tikzpicture}[baseline=-3pt] 
+    \draw [{Circle[open]}-] (0,0) -- (0.4, 0);
+\end{tikzpicture}
+}
+
+\newcommand{\circirc}{% 
+\begin{tikzpicture}[baseline=-3pt] 
+    \draw [{Circle[open]}-{Circle[open]}] (0,0) -- (0.5, 0);
+\end{tikzpicture}
+}
+
+\newcommand{\tailstar}{% 
+\begin{tikzpicture}[baseline=-3pt] 
+    \draw [-{Rays[n=6]}] (0,0) -- (0.5, 0);
+\end{tikzpicture}
+}
+
+\newcommand{\startail}{% 
+\begin{tikzpicture}
+    \draw [{Rays[n=6]}-] (0,0) -- (0.5, 0);
+\end{tikzpicture}
+}
+
+\newcommand{\tailarrow}{% 
+\begin{tikzpicture}
+    \draw [-{Straight Barb[length=2.5pt]}](0,0) -- (0.4, 0);
+\end{tikzpicture}
+}
+
+\newcommand{\arrowtail}{% 
+\begin{tikzpicture}
+    \draw [{Straight Barb[length=2.5pt]}-](0,0) -- (0.4, 0);
+\end{tikzpicture}
+}
+
+\newcommand{\arrowarrow}{% 
+\begin{tikzpicture}
+    \draw [{Straight Barb[length=2.5pt]}-{Straight Barb[length=2.5pt]}](0,0) -- (0.4, 0);
+\end{tikzpicture}
+}
+
+\newcommand\stackedarrows{%
+        \mathrel{\vcenter{\mathsurround0pt
+                \ialign{##\crcr
+                \noalign{\nointerlineskip}$\arrowtail$\crcr
+                \noalign{\nointerlineskip}$\tailarrow$\crcr
+                }
+        }}%
+}
 \makeatletter
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \AtBeginDocument{%
@@ -205,7 +301,7 @@
 \affil[3]{\textit{Institute for Advanced Study, University of Amsterdam, Oude Turfmarkt 147, Amsterdam, 1012GC, the Netherland}}
 
 
-\date{2024-12-30}
+\date{2025-01-03}
 \begin{document}
 \maketitle
 \begin{abstract}
@@ -346,63 +442,141 @@ Inference) and CCI (Cyclic Causal Inference), both capable of accounting
 for such cycles under certain conditions (Mooij \& Claassen, 2020;
 Strobl, 2019). Additionally, we include the PC algorithm as a reference,
 given its simplicity and prominence as one of the most widely known
-causal discovery methods (Spirtes et al., 2001). For a more detailed
-explanation of these algorithms, please refer to Park et al. (2024).
+causal discovery methods (Spirtes et al., 2001).
 
 \begin{table}[ht]
 \centering
+\small % Make the font size smaller
 \caption{Assumptions of causal discovery algorithms}
-\begin{tabular}{lccccl}
+\begin{tabular}{lccccc}
 \toprule
-Algorithm & Acyclicity & Causal sufficiency & 
-\makecell{Absence of \\ selection bias} & Output \\ 
+Algorithm & Acyclicity & \makecell{Causal \\ sufficiency} & 
+\makecell{Absence of \\ selection bias} & Linearity & Output \\ 
 \midrule
-PC  & $\checkmark$ & $\checkmark$ & $\checkmark$ & CPDAG \\ 
-FCI & $-^{a}$ & $\checkmark$ & $-^{a}$ & PAG \\ 
-CCI & x & x & x & MAAG \\ 
+PC  & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & CPDAG \\ 
+FCI & $-^{a}$ & $\checkmark$ & $-^{a}$ & $-^{a}$ & PAG \\ 
+CCI & x & x & x & $\checkmark$ & \makecell{\footnotesize(partially oriented) \\ MAAG} \\ 
 \bottomrule
 \end{tabular}
-\caption*{\small{\textit{Note}. $^{a}$FCI can detect cycles in systems that lack selection bias and exhibit non-linear relationships (Mooij \& Claassen, 2020).}}
+\caption*{\footnotesize{\textit{Note}. $^{a}$The FCI algorithm, introduced by Spirtes (1995), is a constraint-based causal discovery method for DAGs that accounts for latent confounding and selection bias. Mooij \& Claassen (2020) later showed its applicability to cyclic causal discovery with latent confounding under general faithfulness and Markov conditions, assuming non-linear causal relationships.}}
 \end{table}
 
 As shown in Table 1, the resulting graphs from FCI and CCI differ
 slightly (\emph{PAG}: partial ancestral graph; \emph{MAAG}: maximal
 almost ancestral graph) due to their reliance on different underlying
-assumptions. Both encode information about causal relationships between
+assumptions. Despite these differences, both graphs are forms of
+\emph{ancestral graphs}, designed to encode causal relationships between
 variables, where the presence of an edge indicates causal
-\emph{ancestry}. Directed edges, \(A\) *→ \(B\), specify that \(B\) is
-not an ancestor of \(A\) in every graph within the Markov equivalence
-class, \(Equiv(G)\). \(A\)*---\(B\) represent cases where \(B\) is an
-ancestor of \(A\) in every graph in \(Equiv(G)\). Circle endpoints,
-\(A\)*-o\(B\), denote ambiguity in the ancestral relationship, meaning
-that \(B\)'s ancestral status relative to \(A\) varies across graphs in
-\(Equiv(G)\).
+\emph{ancestry.} Directed edges, \(A \stararrow B\), indicate that \(B\)
+is not an ancestor of \(A\) in every graph within the Markov equivalence
+class, \(Equiv(G)\). The Markov equivalence class refers to the set of
+graphs that encode the same conditional independence relationships, such
+that the same \emph{d-separation} relations hold across all graphs in
+the class (Spirtes et al., 2001). \(A \startail B\) indicates that \(B\)
+is an ancestor of \(A\) across all graphs in \(Equiv(G)\). Circle
+endpoints, \(A \starcirc B\), represent ambiguity in the ancestral
+relationship, meaning \(B\)'s ancestral status relative to \(A\) varies
+across graphs in \(Equiv(G)\).\footnote{\(*\) serves as a
+  \textit{meta-symbol}, representing one of the three possible
+  edge-endpoints. For instance, \(A \tailstar B\) can indicate any of
+  the following edges: \(A\) \textemdash~\(B\), \(A\tailarrow B\), or
+  \(A \tailcirc B\) (Park et al., 2024).} When \(A \arrowarrow B\),
+neither \(A\) nor \(B\) is an ancestor of the other, indicating the
+presence of a latent confounder between them.
 
-In contrast, the graph produced by the PC algorithm is a \emph{CPDAG}
-(completed partially directed acyclic graph), where directed edges
-(\(A\) → \(B\)) indicate that \(A\) is a direct cause (parent) of \(B\).
-Unlike FCI and CCI, the CPDAG does not include circle symbols. Instead,
-when the PC algorithm cannot determine the direction, it represents
-uncertainty with bidirectional arrows. While PC serves as a useful
-reference, its strict assumptions of acyclicity and the absence of
-latent confounders limit its applicability in more complex settings.
-Therefore, our primary focus remains on the results from FCI and CCI.
-For completeness, all PC algorithm results are provided in the
-\hyperref[sec-appendix]{Appendix}.
+The algorithms also differ in their approaches and assumptions for
+detecting cycles. In CCI's MAAG, \(A\) \textemdash~\(B\) indicates that
+\(A\) is an ancestor of \(B\) and \(B\) is an ancestor of \(A\),
+referring to a cycle between \(A \stackedarrows B\). FCI, on the other
+hand, identifies potential cycles more subtly: fully-connected nodes
+with circle endpoints (\(\circirc\)) in FCI's PAG may suggest a cyclic
+structure. FCI basically provides a sufficient condition to distinguish
+nodes that are not part of a cycle, offering a more nuanced approach
+(Mooij \& Claassen, 2020). Table 1 highlights further differences in the
+assumptions underlying these algorithms. CCI operates under the
+assumption of a linear system, while FCI, particularly for inferring
+cyclic relationships, assumes a non-linear system without selection bias
+and adheres to more general faithfulness and Markov conditions (i.e.,
+\emph{\(\sigma\)-separation} and \emph{\(\sigma\)-faithfulness} setting)
+(Forré \& Mooij, 2018). When the respective assumptions of each
+algorithm are satisfied, their outcomes for cyclic relationships align
+with those illustrated in Figure~\ref{fig-examplegraphs}. While an
+exhaustive discussion of causal discovery concepts and
+algorithm-specific details is beyond the scope of this paper, readers
+seeking a deeper understanding are encouraged to consult Park et al.
+(2024) for comprehensive insights into these methods and their
+applications.
+
+\begin{figure}
+
+\begin{minipage}{0.33\linewidth}
+
+\centering{
+
+\includegraphics[width=0.6\textwidth,height=\textheight]{img/original_DCG.png}
+
+}
+
+\subcaption{\label{fig-examplegraphs-1}Example graph \(\mathcal{G}\)}
+
+\end{minipage}%
+%
+\begin{minipage}{0.33\linewidth}
+
+\centering{
+
+\includegraphics[width=0.6\textwidth,height=\textheight]{img/FCI_graph.png}
+
+}
+
+\subcaption{\label{fig-examplegraphs-2}Corresponding MAAG}
+
+\end{minipage}%
+%
+\begin{minipage}{0.33\linewidth}
+
+\centering{
+
+\includegraphics[width=0.6\textwidth,height=\textheight]{img/CCI_graph.png}
+
+}
+
+\subcaption{\label{fig-examplegraphs-3}Corrsponding PAG}
+
+\end{minipage}%
+
+\caption{\label{fig-examplegraphs}Example graph \(\mathcal{G}\)
+featuring a cycle and the corresponding MAAG from CCI and PAG from FCI.}
+
+\end{figure}%
+
+The graph produced by the PC algorithm is a \emph{CPDAG} (completed
+partially directed acyclic graph), where directed edges (\(A\) → \(B\))
+indicate that \(A\) is a direct cause (parent) of \(B\). Unlike FCI and
+CCI, the CPDAG does not include circle symbols. Instead, when the PC
+algorithm cannot determine the direction of causality, it represents
+this uncertainty with bidirectional arrows. While the PC algorithm
+serves as a useful reference, its strict assumptions of acyclicity and
+the absence of latent confounders restrict its applicability in more
+complex scenarios. Therefore, our primary focus remains on the results
+from FCI and CCI, with all PC algorithm results provided in the
+\hyperref[sec-appendix]{Appendix} for completeness.
 
 One practical challenge in applying these algorithms to the HELIUS
 dataset is that the data does not follow a Gaussian distribution, and
 the relationships among variables are unlikely to be strictly linear. To
-account for this, we complement the commonly used Gaussian conditional
-independence test (CI test), which relies on partial correlations, with
-a non-parametric CI test based on kernel methods. However, kernel-based
-non-parametric tests are computationally demanding, particularly with
-large datasets like ours. To mitigate this issue, we employ Randomized
-Conditional Independence Test (RCIT) and the Randomized conditional
-Correlation Test (RCoT), which uses random Fourier features to
-approximate the kernel methods, thereby significantly reducing the
-computational cost (Strobl et al., 2019). For a more detailed
-explanation of RCIT and RCoT, see Section~\ref{sec-rcot}.
+account for this, we supplement the commonly used Gaussian conditional
+independence (CI) test, which relies on partial correlations, with a
+non-parametric CI test based on reproducing kernel methods (Zhang et
+al., 2012). While kernel-based conditional independence tests (KCIT) are
+effective, they are computationally intensive for large datasets like
+HELIUS, as their quadratic scaling with sample size is primarily driven
+by the inversion of large kernel matrices. To mitigate this issue, we
+use the Randomized Conditional Correlation Test (RCoT), which
+approximate kernel methods using random Fourier features. This approach
+reduces computation to linear scaling with sample size, significantly
+lowering computational costs (Strobl et al., 2019). For a more detailed
+explanation of RCoT, refer to Section~\ref{sec-rcot}.
 
 \subsection{Analysis}\label{analysis}
 
@@ -414,21 +588,27 @@ symptoms and overall precarity (the sum of the five precarity factors).
 Using the PHQ sum score simplifies the analysis by reducing
 dimensionality, offering computational efficiency and a broad,
 interpretable perspective on the relationship between depression and
-precarity factors. In contrast, including individual symptoms provide a
-more detailed understanding, capturing the diverse ways symptoms respond
-to different precarity factors. However, this approach introduces
-methodological challenges, such as non-standard distributions and the
-complexities of increased dimensionality. Finally, examining individual
+precarity factors. In contrast, analyzing individual symptoms provides a
+more detailed understanding by capturing the diverse ways symptoms
+respond to different precarity factors. However, this detailed approach
+introduces methodological challenges, including non-standard
+distributions of individual symptom variables and the complexities
+associated with increased dimensionality. Finally, examining individual
 symptoms in relation to the overall precarity score complements the
 analysis by revealing how symptoms collectively connect to general
-precarity. By integrating these three approaches, we balance simplicity
-and granularity, ensuring robust findings.
+precarity. Aggregating precarity factors may uncover relationships that
+could be overlooked in analyses of individual factors, particularly when
+a symptom has associations across multiple factors that are not strong
+enough to emerge in individual analyses. By integrating these three
+approaches, we achieve a balance between capturing detailed granularity
+and gaining a broader understanding of the relationship between
+precarity and depression.
 
-To address sensitivity to parameter values and enhance the robustness of
-our results, we implement multiple settings combined with bootstrapping.
-For each of the 100 bootstrap samples, we estimate causal graphs and
-retain only the edges and directions that exceed predefined thresholds.
-The analyses are conducted under the following conditions:
+Furthermore, to address sensitivity to parameter values and enhance the
+robustness of our results, we implement multiple settings combined with
+bootstrapping. For each of the 100 bootstrap samples, we estimate causal
+graphs and retain only the edges and directions that exceed predefined
+thresholds. The analyses are conducted under the following conditions:
 
 \begin{itemize}
 \tightlist
@@ -447,16 +627,27 @@ This setup yields 16 combinations (2 significance levels × 4 thresholds
 repeated for 100 bootstrap samples, yielding a total of 1,600 graphs per
 algorithm. For analyses involving individual symptom variables, we
 simplify the setup by focusing on thresholds of 0.6 and 0.7 and reducing
-the number of bootstrap samples to 30 to ease computational demands.
-
-To summarize the results, we identify the most frequently occurring edge
-endpoints across different experimental setups.\footnote{The detailed
-  proportion of each edge endpoint occurrence is shown in
-  Section~\ref{sec-propmatrix}.} This ensures that only stable and
-consistent edges are retained, providing a clearer and more reliable
-understanding of the relationships between precarity factors and
-depression. See Figure~\ref{fig-workflow} for an overview of the
-analysis workflow.
+the number of bootstrap samples to 30, easing computational demands. To
+further enhance efficiency, we fix the skeleton of edges among symptom
+variables based on the common structure estimated across all algorithms.
+This approach minimizes spurious edges in the symptom network and
+significantly reduces the computational time needed for skeleton
+estimation. This fixed structure also aligns well with commonly reported
+skeleton structures in the literature, ensuring consistency with
+existing findings (\textbf{cite the comp\_model paper}).\footnote{We
+  fixed the skeleton of the symptom network using a common structure
+  derived from the PC, FCI, and CCI algorithms with an alpha level of
+  0.001. This approach preserved the complexity of symptom interactions,
+  enabling unrestricted estimation of causal directions both among
+  symptoms (\emph{symptom --- symptom} interactions) and between
+  symptoms and precarity factors.} Lastly, to summarize the results, we
+identify the most frequently occurring edge endpoints across different
+experimental setups.\footnote{The detailed proportion of each edge
+  endpoint occurrence is provided in Section~\ref{sec-propmatrix}.} This
+ensures that only stable and consistent edges are retained, providing a
+clearer and more reliable understanding of the relationships between
+precarity factors and depression. See Figure~\ref{fig-workflow} for an
+overview of the analysis workflow.
 
 \begin{figure}
 
@@ -548,7 +739,7 @@ directly or through a latent confounder.
 \end{minipage}%
 
 \caption{\label{fig-sum}Resulting graphs of precarity factors and
-depression sum score using FCI and CCI}
+depression sum score using FCI and CCI.}
 
 \end{figure}%
 
@@ -625,7 +816,7 @@ rest of the network, appearing as an isolated node.
 }
 
 \caption{\label{fig-sym}Resulting graphs of precarity factors and
-individual depression symptoms using FCI and CCI}
+individual depression symptoms using FCI and CCI.}
 
 \end{figure}%
 
@@ -680,7 +871,7 @@ involving individual symptoms and individual precarity factors.
 }
 
 \caption{\label{fig-presum}Resulting graphs of precarity sum score and
-individual depression symptoms using FCI and CCI}
+individual depression symptoms using FCI and CCI.}
 
 \end{figure}%
 
@@ -828,6 +1019,11 @@ Approximate Reasoning}, \emph{78}, 116--124.
 Entner, D., \& Hoyer, P. O. (2010). On causal discovery from time series
 data using FCI. \emph{Probabilistic Graphical Models}, \emph{16}.
 
+\bibitem[\citeproctext]{ref-forre2018constraint}
+Forré, P., \& Mooij, J. M. (2018). Constraint-based causal discovery for
+non-linear structural causal models with cycles and latent confounders.
+\emph{arXiv Preprint arXiv:1807.03024}.
+
 \bibitem[\citeproctext]{ref-hyttinen2012learning}
 Hyttinen, A., Eberhardt, F., \& Hoyer, P. O. (2012). Learning linear
 cyclic causal models with latent variables. \emph{The Journal of Machine
@@ -875,6 +1071,12 @@ Statistics}, 6371--6387.
 \bibitem[\citeproctext]{ref-spirtes2001causation}
 Spirtes, P., Glymour, C., \& Scheines, R. (2001). \emph{Causation,
 prediction, and search}. MIT press.
+
+\bibitem[\citeproctext]{ref-spirtes_causal_1995}
+Spirtes, P., Meek, C., \& Richardson, T. (1995). Causal inference in the
+presence of latent variables and selection bias. \emph{Proceedings of
+the {Eleventh} Conference on {Uncertainty} in Artificial Intelligence},
+499--506.
 
 \bibitem[\citeproctext]{ref-strobl2019}
 Strobl, E. V. (2019). A constraint-based algorithm for causal discovery
@@ -1007,7 +1209,7 @@ Leonie}\label{precariousness-factors-by-leonie}
 \end{itemize}
 
 \begin{center}
-\includegraphics{draft_v1_files/figure-pdf/unnamed-chunk-8-1.pdf}
+\includegraphics{draft_v1_files/figure-pdf/unnamed-chunk-9-1.pdf}
 \end{center}
 
 \begin{itemize}
@@ -1049,11 +1251,11 @@ Leonie}\label{precariousness-factors-by-leonie}
 (EFA)}\label{exploratory-factor-analysis-efa}
 
 \begin{center}
-\includegraphics[width=0.55\textwidth,height=\textheight]{draft_v1_files/figure-pdf/unnamed-chunk-9-1.pdf}
+\includegraphics[width=0.55\textwidth,height=\textheight]{draft_v1_files/figure-pdf/unnamed-chunk-10-1.pdf}
 \end{center}
 
 \begin{center}
-\includegraphics[width=0.7\textwidth,height=\textheight]{draft_v1_files/figure-pdf/unnamed-chunk-10-1.pdf}
+\includegraphics[width=0.7\textwidth,height=\textheight]{draft_v1_files/figure-pdf/unnamed-chunk-11-1.pdf}
 \end{center}
 
 \subsubsection{Factor Loadings (Pattern
@@ -1108,7 +1310,7 @@ areas of precariousness.
 \subsection{PCA}\label{pca}
 
 \begin{center}
-\includegraphics[width=0.7\textwidth,height=\textheight]{draft_v1_files/figure-pdf/unnamed-chunk-11-1.pdf}
+\includegraphics[width=0.7\textwidth,height=\textheight]{draft_v1_files/figure-pdf/unnamed-chunk-12-1.pdf}
 \end{center}
 
 \begin{itemize}
@@ -1125,7 +1327,7 @@ areas of precariousness.
 \end{itemize}
 
 \begin{center}
-\includegraphics{draft_v1_files/figure-pdf/unnamed-chunk-12-1.pdf}
+\includegraphics{draft_v1_files/figure-pdf/unnamed-chunk-13-1.pdf}
 \end{center}
 
 \subsubsection{Explained variance (contributions) of
@@ -1166,7 +1368,7 @@ values (closer to 1) indicate better representation of a variable by a
 component.
 
 \begin{center}
-\includegraphics[width=0.7\textwidth,height=\textheight]{draft_v1_files/figure-pdf/unnamed-chunk-13-1.pdf}
+\includegraphics[width=0.7\textwidth,height=\textheight]{draft_v1_files/figure-pdf/unnamed-chunk-14-1.pdf}
 \end{center}
 
 \begin{itemize}
@@ -1201,7 +1403,7 @@ component.
 \subsection{ICA}\label{ica}
 
 \begin{center}
-\includegraphics[width=0.7\textwidth,height=\textheight]{draft_v1_files/figure-pdf/unnamed-chunk-14-1.pdf}
+\includegraphics[width=0.7\textwidth,height=\textheight]{draft_v1_files/figure-pdf/unnamed-chunk-15-1.pdf}
 \end{center}
 
 \subsubsection{Dominant Variables per
@@ -1262,25 +1464,25 @@ variables.
 
 \begin{minipage}{0.50\linewidth}
 \begin{center}
-\includegraphics{draft_v1_files/figure-pdf/unnamed-chunk-15-1.pdf}
+\includegraphics{draft_v1_files/figure-pdf/unnamed-chunk-16-1.pdf}
 \end{center}
 \end{minipage}%
 %
 \begin{minipage}{0.50\linewidth}
 \begin{center}
-\includegraphics{draft_v1_files/figure-pdf/unnamed-chunk-15-2.pdf}
+\includegraphics{draft_v1_files/figure-pdf/unnamed-chunk-16-2.pdf}
 \end{center}
 \end{minipage}%
 \newline
 \begin{minipage}{0.50\linewidth}
 \begin{center}
-\includegraphics{draft_v1_files/figure-pdf/unnamed-chunk-15-3.pdf}
+\includegraphics{draft_v1_files/figure-pdf/unnamed-chunk-16-3.pdf}
 \end{center}
 \end{minipage}%
 %
 \begin{minipage}{0.50\linewidth}
 \begin{center}
-\includegraphics{draft_v1_files/figure-pdf/unnamed-chunk-15-4.pdf}
+\includegraphics{draft_v1_files/figure-pdf/unnamed-chunk-16-4.pdf}
 \end{center}
 \end{minipage}%
 
@@ -1356,7 +1558,7 @@ differs from using traditional distance measures (like Euclidean
 distance) in a few key ways.
 
 \begin{center}
-\includegraphics[width=0.6\textwidth,height=\textheight]{draft_v1_files/figure-pdf/unnamed-chunk-16-1.pdf}
+\includegraphics[width=0.6\textwidth,height=\textheight]{draft_v1_files/figure-pdf/unnamed-chunk-17-1.pdf}
 \end{center}
 
 \paragraph{Comparison to Euclidean Distance
@@ -1442,11 +1644,11 @@ distributions of all variables to be used in the causal discovery
 analysis.
 
 \begin{center}
-\includegraphics{draft_v1_files/figure-pdf/unnamed-chunk-17-1.pdf}
+\includegraphics{draft_v1_files/figure-pdf/unnamed-chunk-18-1.pdf}
 \end{center}
 
 \begin{center}
-\includegraphics{draft_v1_files/figure-pdf/unnamed-chunk-18-1.pdf}
+\includegraphics{draft_v1_files/figure-pdf/unnamed-chunk-19-1.pdf}
 \end{center}
 
 \subsection{Results from PC algorithm}\label{results-from-pc-algorithm}
@@ -1478,7 +1680,7 @@ analysis.
 \end{minipage}%
 
 \caption{\label{fig-pc_sum}Resulting graphs of precarity factors and
-depression sum score using PC}
+depression sum score using PC.}
 
 \end{figure}%
 
@@ -1509,7 +1711,7 @@ depression sum score using PC}
 \end{minipage}%
 
 \caption{\label{fig-pc_sym}Resulting graphs of precarity factors and
-individual depression symptoms using PC}
+individual depression symptoms using PC.}
 
 \end{figure}%
 
@@ -1540,7 +1742,7 @@ individual depression symptoms using PC}
 \end{minipage}%
 
 \caption{\label{fig-pc_presum}Resulting graphs of precarity sum score
-and individual depression symptoms using PC}
+and individual depression symptoms using PC.}
 
 \end{figure}%
 
@@ -1694,7 +1896,7 @@ null distribution and improved scalability for high-dimensional data.
 }
 
 \caption{\label{fig-sum-mat}Proportions of edge endpoint types for
-graphs based on depression sum score}
+graphs based on depression sum score.}
 
 \end{figure}%
 
@@ -1707,7 +1909,7 @@ graphs based on depression sum score}
 }
 
 \caption{\label{fig-sym-mat}Proportions of edge endpoint types for
-graphs based on individual depression symptoms}
+graphs based on individual depression symptoms.}
 
 \end{figure}%
 
@@ -1720,7 +1922,8 @@ graphs based on individual depression symptoms}
 }
 
 \caption{\label{fig-presum-mat}Proportions of edge endpoint types for
-graphs based on individual depression symptoms with precarity sum score}
+graphs based on individual depression symptoms with precarity sum
+score.}
 
 \end{figure}%
 
