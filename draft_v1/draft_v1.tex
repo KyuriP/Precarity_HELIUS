@@ -301,7 +301,7 @@
 \affil[3]{\textit{Institute for Advanced Study, University of Amsterdam, Oude Turfmarkt 147, Amsterdam, 1012GC, the Netherland}}
 
 
-\date{2025-01-03}
+\date{2025-01-04}
 \begin{document}
 \maketitle
 \begin{abstract}
@@ -674,43 +674,43 @@ relationships between precarity factors (\emph{P.hou}, \emph{P.emp},
 (\emph{PHQsum}) under two different setups: (a) using both Gaussian CI
 test and RCoT, and (b) using RCoT alone. Black edges represent
 consistent causal relationships identified by both FCI and CCI, while
-gray edges denote inconsistent relationships that vary between the two
-methods. The edge endpoints of inconsistent gray edges are marked with
-circles. In graph (a), the key pathways suggest that employment
-precarity (\emph{P.emp}) and social precarity (\emph{P.soc}) do not
-cause depression (\emph{PHQsum}). Social precarity does not cause recent
+gray dashed edges denote inconsistent relationships that vary between
+the two methods. The inconsistent endpoints of the gray edges are marked
+with circles.
+
+In graph (a), the key pathways suggest that employment precarity
+(\emph{P.emp}) and social precarity (\emph{P.soc}) do not cause
+depression (\emph{PHQsum}). \emph{P.soc} does not cause recent
 relational stress (\emph{S.rel}) or financial stress (\emph{S.fin}), and
 these stressors are likely related by a latent confounder. Additionally,
 \emph{P.emp} and \emph{S.fin} are identified as non-causes of housing
 precarity (\emph{P.hou}). Both FCI and CCI detect a dependency between
 \emph{P.emp} and \emph{S.fin}, but they disagree on the direction of the
 relationship, leaving it unclear whether \emph{S.fin} causes
-\emph{P.emp} or if the connection is mediated by an unmeasured
-confounder. A similar ambiguity exists in the relationships between
-\emph{S.rel} and \emph{PHQsum} and between \emph{S.fin} and
-\emph{PHQsum}, with the methods diverging on whether these stressors
-influence depression or are linked through latent variables.
+\emph{P.emp} or whether a latent confounder mediates their relationship.
+Similar ambiguities are found in the connections between \emph{S.rel}
+and \emph{PHQsum} and between \emph{S.fin} and \emph{PHQsum}.
 
-Graph (b), derived solely from the nonparametric RCoT test. Both graphs
-consistently identify that employment precarity is not a cause of
-housing precarity or depression, and that social precarity does not
-cause depression or financial stress. The relationship between stressors
-and depression remains unresolved between the two algorithms. However,
-RCoT provides greater confidence that depression is not the cause of
-financial stress and suggests a stronger likelihood that the financial
-stress may contribute to depression or that their relationship is
-mediated by a latent confounder. The role of relational stress has
-become less pronounced, as the edge between \emph{P.soc} and
+Graph (b), derived solely from the nonparametric RCoT method. Both
+graphs consistently identify that \emph{P.emp} is not a cause of
+\emph{P.hou} or \emph{PHQsum}, and that \emph{P.soc} does not cause
+\emph{PHQsum} or \emph{S.fin}. The relationship between stressors and
+depression remains unresolved between the two algorithms. However, the
+graph derived from RCoT provides greater confidence that depression is
+not the cause of \emph{S.fin} and suggests a stronger likelihood that
+the financial stress may contribute to depression or that their
+relationship is mediated by a latent confounder. The role of relational
+stress has become less pronounced, as the edge between \emph{P.soc} and
 \emph{S.rel} is omitted, and the relationship between \emph{S.rel} and
 \emph{S.fin} is now inconsistent between the algorithms.
 
-Overall, both graphs together highlight the potential roles of recent
-stressors as being closely linked with depression, either as causes or
-through latent confounders. Employment and social precarity may also be
-influenced by depression, either directly or through latent variables.
-Lastly, housing precarity does not directly impact depression but
-remains connected to employment precarity and financial stress, either
-directly or through a latent confounder.
+Overall, both graphs together highlight the potential roles of stressors
+like \emph{S.fin} and \emph{S.rel}, which are closely tied to
+depression, either causally or via latent confounders. Employment and
+social precarity may also be influenced by depression, either directly
+or through latent variables. Lastly, housing precarity does not directly
+impact depression but remains connected to employment precarity and
+financial stress, likely mediated by direct or latent pathways.
 
 \begin{figure}
 
@@ -877,13 +877,16 @@ individual depression symptoms using FCI and CCI.}
 
 \section{Discussion}\label{discussion}
 
-The present study explored the causal relationships between precarity
-factors and depression by employing both sum score and symptom-level
-analyses using causal discovery algorithms. The use of both PHQ sum
-scores and individual symptom scores provided a comprehensive
-understanding of how different aspects of precarity influence
-depression, revealing nuanced pathways that may be obscured when
-considering aggregate measures alone.
+The present study examined the causal relationships between precarity
+factors and depression using causal discovery algorithms, incorporating
+both sum score and symptom-level analyses. By analyzing PHQ sum scores
+alongside individual symptom scores, and comparing aggregated precarity
+scores with individual precarity factors, we gained a comprehensive
+perspective on how different aspects of precarity influence depression.
+This dual approach highlighted nuanced pathways that may be overlooked
+when focusing solely on aggregate measures, while also capturing broader
+interactions that might remain undetected in analyses limited to
+individual factors.
 
 Our findings highlight the significant role of recent relational stress
 (\emph{S.rel}) as a potential causal factor for depression, consistently
@@ -921,36 +924,29 @@ effects are not captured within the scope of the measured variables.
 Several limitations should be acknowledged when interpreting these
 findings. The prevalence of bidirectional arrows and circle-marked
 endpoints in the graphs reflects unresolved ambiguities in the causal
-relationships suggested by the data. These uncertainties underscore the
-need for further research, ideally incorporating datasets with a higher
-proportion of symptomatic individuals. The HELIUS dataset, being
-predominantly composed of asymptomatic samples, posed challenges in
-identifying clear causal directions, particularly among symptom nodes.
-Future studies could address these limitations by incorporating
-time-series data to leverage temporal information about the
-relationships between precarity factors and depressive symptoms.
-Time-series data could provide time-specific insights and track how
-these relationships evolve over time. For instance, methods such as
-\emph{PCMCI} (Runge et al., 2019) and \emph{tsFCI} (Entner \& Hoyer,
-2010), along with other time-series adaptations of causal discovery
-algorithms, could help better account for temporal dependencies and
-refine the analysis.
+relationships suggested by the data. These uncertainties highlight the
+need for further research, particularly with higher-resolution datasets,
+such as time-series data. Incorporating time-series data could capture
+temporal dynamics between precarity factors and depressive symptoms,
+providing time-specific insights and revealing how these relationships
+evolve over time. Methods like \emph{PCMCI} (Runge et al., 2019),
+\emph{tsFCI} (Entner \& Hoyer, 2010), and other time-series adaptations
+of causal discovery algorithms could offer a more robust framework for
+addressing temporal dependencies and refining the analysis.
 
-Another limitation is the lack of clear evidence for cycles within the
-symptom network, despite using algorithms designed to account for cyclic
-relationships. The CCI algorithm predominantly produced bidirectional
-arrows, while FCI primarily generated directional arrows, yet neither
-displayed patterns indicative of definitive cyclic structures.
-Addressing cyclic relationships is particularly challenging with
-observational datasets alone. Future research could benefit from refined
-datasets that include intervention data. Methods such as \emph{LLC}
-(Hyttinen et al., 2012), \emph{NODGAS-Flow} (Sethuraman et al., 2023),
-and the recently developed \emph{Bicycle} algorithm (Rohbeck et al.,
-2024) are specifically designed to utilize both observational and
-intervention data to uncover potential cycles. Additionally, if
-time-series data becomes available, corresponding methods, as described
-above, could be applied to capture repetitive patterns in variable
-interactions that might suggest cyclic structures.
+Another notable limitation is the absence of clear evidence for cycles
+within the symptom network, despite employing algorithms designed to
+account for cyclic relationships. The CCI algorithm primarily produced
+bidirectional arrows, while FCI predominantly generated directional
+arrows, yet neither demonstrated patterns indicative of definitive
+cyclic structures. This suggests that addressing cyclic relationships is
+particularly challenging when relying solely on observational datasets.
+Future research could benefit from refined datasets that incorporate
+intervention data. Methods such as \emph{LLC} (Hyttinen et al., 2012),
+\emph{NODGAS-Flow }(Sethuraman et al., 2023), and the recently developed
+\emph{Bicycle} algorithm (Rohbeck et al., 2024), which utilize both
+observational and intervention data, may uncover potential cycles more
+effectively.
 
 Lastly, regarding conditional independence (CI) testing, the differences
 between the graphs generated by Gaussian CI and RCoT underscore the
@@ -960,28 +956,21 @@ Gaussian CI's strict linearity assumption would typically result in
 fewer detected relationships, not more. A possible explanation for this
 discrepancy is that Gaussian CI's reliance on partial correlations may
 overestimate relationships when specific non-linear dependencies exist
-in the data. In contrast, RCoT, free from such assumptions, may better
-capture these patterns under such conditions. However, while RCoT is
-technically non-parametric, its performance can still be influenced by
-the distributional characteristics of the data. Specifically, the RBF
-kernel, optimized for continuous data with smooth transitions, may
-struggle to capture relationships in datasets with discrete or mixed
-distributions. In such cases, the distances between discrete points may
-fail to convey meaningful similarity information. As a result, RCoT
-might miss certain dependencies, particularly when variables in the
-dataset lack smooth continuity. Future research could address these
-issues by exploring a broader range of CI testing approaches. One
-traditional approach to handle this is discretizing variables and use
-\(G^2\) test, which may better capture dependencies in non-continuous
-datasets (Dojer, 2016; Neapolitan et al., 2004). A more promising
-direction, however, lies in the development of hybrid kernels tailored
-for mixed datasets, effectively integrating both continuous and discrete
-variables into RCoT-like methods. By systematically employing and
-comparing a wider variety of CI testing techniques, researchers could
-gain more robust insights and mitigate the limitations inherent in
-specific approaches. This broader exploration holds the potential to
-enhance the reliability of findings, particularly in datasets with
-complex and heterogeneous structures.
+in the data. In contrast, RCoT, free from such assumptions, might better
+capture independence patterns under such conditions. However, RCoT is
+not without its limitations. While technically non-parametric, its
+performance can be influenced by the distributional characteristics of
+the data. The Gaussian RBF (radial basis function) kernel, optimized for
+continuous data with smooth transitions, may struggle with discrete or
+mixed datasets, where distances between discrete points may fail to
+convey meaningful similarity (Howlett, 2001). This limitation could
+explain why RCoT might miss certain dependencies, particularly in the
+HELIUS dataset, where some variables lack smooth continuity. Future
+research could tackle these challenges by developing hybrid kernels
+designed for mixed datasets, integrating both continuous and discrete
+variables into RCoT-like methods. This would have the potential to
+improve the reliability of findings, especially when working with
+datasets characterized by complex and heterogeneous structures.
 
 Despite its limitations, this study marks a meaningful step toward
 understanding the mechanisms linking precarity factors and depression.
@@ -992,7 +981,7 @@ preliminary and contain unresolved ambiguities, they offer a valuable
 starting point for leveraging causal discovery tools to investigate the
 causal interplay between depression and precarity factors. A promising
 next step would involve integrating these causal structures into
-computational models, such as the symptom dynamic model proposed by
+computational models, such as the symptom dynamic model proposed in
 \textbf{our comp-model paper}. By simulating intervention effects, such
 models could provide more realistic insights into how targeted actions
 might influence symptom networks and precarity factors over time. For
@@ -1023,6 +1012,10 @@ data using FCI. \emph{Probabilistic Graphical Models}, \emph{16}.
 Forré, P., \& Mooij, J. M. (2018). Constraint-based causal discovery for
 non-linear structural causal models with cycles and latent confounders.
 \emph{arXiv Preprint arXiv:1807.03024}.
+
+\bibitem[\citeproctext]{ref-howlett2001radial}
+Howlett, R. J. (2001). \emph{Radial basis function networks 1: Recent
+developments in theory and applications}.
 
 \bibitem[\citeproctext]{ref-hyttinen2012learning}
 Hyttinen, A., Eberhardt, F., \& Hoyer, P. O. (2012). Learning linear
