@@ -26,22 +26,22 @@ for node, pos in fixed_positions.items():
 
 
 # Manually define edges based on the adj.matrices
-dot.edge("anh", "dep", dir="both", arrowhead="odot", arrowtail="normal", style="dashed", color="#a9a9a9")
-dot.edge("anh", "slp", dir="both", arrowhead="odot", arrowtail="odot", style="dashed", color="#a9a9a9")
-dot.edge("anh", "ene", dir="both", arrowhead="odot", arrowtail="odot", style="dashed", color="#a9a9a9")
-dot.edge("anh", "app", dir="both", arrowhead="normal", arrowtail="normal")
-dot.edge("anh", "con", dir="both", arrowhead="odot", arrowtail="odot", style="dashed", color="#a9a9a9")
+dot.edge("anh", "dep", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
+dot.edge("anh", "slp", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
+dot.edge("anh", "ene", dir="both", arrowhead="normal", arrowtail="normal")
+dot.edge("anh", "app", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
+dot.edge("anh", "glt", dir="both", arrowhead="normal", arrowtail="normal")
+dot.edge("anh", "con", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
 dot.edge("anh", "Precarity", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
 
-dot.edge("dep", "slp", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
-dot.edge("dep", "ene", dir="both", arrowhead="normal", arrowtail="normal")
-
-dot.edge("dep", "app", dir="both", arrowhead="odot", arrowtail="odot", style="dashed", color="#a9a9a9")
-dot.edge("dep", "glt", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
-dot.edge("dep", "con", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
-dot.edge("dep", "mot", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
-dot.edge("dep", "sui", dir="both", arrowhead="odot", arrowtail="odot", style="dashed", color="#a9a9a9")
-dot.edge("dep", "Precarity", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
+dot.edge("dep", "slp", dir="both", arrowhead="odot", arrowtail="normal", style="dashed", color="#a9a9a9")
+dot.edge("dep", "ene", dir="both", arrowhead="odot", arrowtail="normal", style="dashed", color="#a9a9a9")
+dot.edge("dep", "app", dir="both", arrowhead="odot", arrowtail="normal", style="dashed", color="#a9a9a9")
+dot.edge("dep", "glt", dir="both", arrowhead="odot", arrowtail="normal", style="dashed", color="#a9a9a9")
+dot.edge("dep", "con", dir="both", arrowhead="odot", arrowtail="odot", style="dashed", color="#a9a9a9")
+dot.edge("dep", "mot", dir="both", arrowhead="odot", arrowtail="normal", style="dashed", color="#a9a9a9")
+dot.edge("dep", "sui", dir="both", arrowhead="odot", arrowtail="normal", style="dashed", color="#a9a9a9")
+dot.edge("dep", "Precarity", dir="both", arrowhead="odot", arrowtail="none", style="dashed", color="#a9a9a9")
 
 dot.edge("slp", "ene", dir="both", arrowhead="odot", arrowtail="odot", style="dashed", color="#a9a9a9")
 dot.edge("slp", "app", dir="both", arrowhead="normal", arrowtail="normal")

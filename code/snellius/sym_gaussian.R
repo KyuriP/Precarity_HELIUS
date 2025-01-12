@@ -24,14 +24,17 @@ source("helius/code/preprocess_dat.R")
 # Causal Discovery: Define Parameters and Run Analyses
 # ==============================================================================
 # Set parameters
-args <- commandArgs(trailingOnly = TRUE)
-
-alpha <- as.numeric(args[1]) # Significance level 
-threshold <- as.numeric(args[2]) # Threshold for stable edges 
-
-data <- depsym
-subsample_size <- nrow(data) #10000  # Size of each subsample
-num_subsamples <- 100    # Number of subsamples
+# args <- commandArgs(trailingOnly = TRUE)
+# 
+# alpha <- as.numeric(args[1]) # Significance level 
+# threshold <- as.numeric(args[2]) # Threshold for stable edges 
+alphas = c(0.01, 0.05)
+thresholds = c(0.6, 0.7)
+citests = "gaussCItest"
+algorithms = c("PC", "FCI", "CCI")
+data <- dep_sym # sumscore 
+subsample_size <- nrow(data)  # Size of each subsample
+num_subsamples <- 30     # Number of subsamples
 
 
 ## Set up fixed gaps and edges for individual symptom analysis *speed up*
@@ -68,16 +71,50 @@ fixedGaps_full[1:9, 1:9] <- matrix(c(
 ), nrow = 9, byrow = TRUE)
 
 
+# Create a data frame of all parameter combinations
+params <- tidyr::expand_grid(alpha = alphas, threshold = thresholds, citest = citests, algorithm = algorithms)
 
-# Run with GaussianCI
-pc_result <- causal_subsampling(data, algorithm = "PC", subsample_size = subsample_size, num_subsamples = num_subsamples, alpha = alpha, threshold = threshold, citest = "gaussCItest", fixedEdges = fixedEdges_full, fixedGaps = fixedGaps_full)
-saveRDS(pc_result, file = sprintf("helius/data/gaussianPC_alpha_%s_threshold_%s.rds", alpha, threshold))
 
-fci_result <- causal_subsampling(data, algorithm = "FCI", subsample_size = subsample_size, num_subsamples = num_subsamples, alpha = alpha, threshold = threshold, citest = "gaussCItest", fixedEdges = fixedEdges_full, fixedGaps = fixedGaps_full)
-saveRDS(fci_result, file = sprintf("helius/data/gaussianFCI_alpha_%s_threshold_%s.rds", alpha, threshold))
+# Setup parallel backend
+plan(multisession)
+message("Number of parallel workers: ", nbrOfWorkers())
 
-cci_result <- causal_subsampling(data, algorithm = "CCI", subsample_size = subsample_size, num_subsamples = num_subsamples, alpha = alpha, threshold = threshold, citest = "gaussCItest", fixedEdges = fixedEdges_full, fixedGaps = fixedGaps_full)
-saveRDS(cci_result, file = sprintf("helius/data/gaussianCCI_alpha_%s_threshold_%s.rds", alpha, threshold))
+# Function to run and save results for each combination
+run_and_save <- function(alpha, threshold, citest, algorithm) {
+  # Run causal_subsampling for the given parameters
+  result <- causal_subsampling(
+    data,
+    algorithm = algorithm,
+    subsample_size = subsample_size,
+    num_subsamples = num_subsamples,
+    alpha = alpha,
+    threshold = threshold,
+    citest = citest,
+    fixedEdges = fixedEdges_full,
+    fixedGaps = fixedGaps_full
+  )
+  
+  # Create file name
+  file_name <- glue::glue("data/symptom_gaussian2/{algorithm}_alpha_{alpha}_threshold_{threshold}_citest_{citest}.rds")
+  saveRDS(result, file = file_name)
+  
+  # Print a message to track progress
+  message(glue::glue("Completed: algorithm = {algorithm}, alpha = {alpha}, threshold = {threshold}, citest = {citest}"))
+}
+
+# Apply the function to each row in the parameter data frame
+pwalk(params, run_and_save, .progress = TRUE)
+
+
+# # Run with GaussianCI
+# pc_result <- causal_subsampling(data, algorithm = "PC", subsample_size = subsample_size, num_subsamples = num_subsamples, alpha = alpha, threshold = threshold, citest = "gaussCItest", fixedEdges = fixedEdges_full, fixedGaps = fixedGaps_full)
+# saveRDS(pc_result, file = sprintf("data/sym_gaussian2/PC_alpha_%s_threshold_%s_citest_gaussCI.rds", alpha, threshold))
+# 
+# fci_result <- causal_subsampling(data, algorithm = "FCI", subsample_size = subsample_size, num_subsamples = num_subsamples, alpha = alpha, threshold = threshold, citest = "gaussCItest", fixedEdges = fixedEdges_full, fixedGaps = fixedGaps_full)
+# saveRDS(fci_result, file = sprintf("data/sym_gaussian2/FCI_alpha_%s_threshold_%s_citest_gaussCI.rds", alpha, threshold))
+# 
+# cci_result <- causal_subsampling(data, algorithm = "CCI", subsample_size = subsample_size, num_subsamples = num_subsamples, alpha = alpha, threshold = threshold, citest = "gaussCItest", fixedEdges = fixedEdges_full, fixedGaps = fixedGaps_full)
+# saveRDS(cci_result, file = sprintf("data/sym_gaussian2/CCI_alpha_%s_threshold_%s_citest_gaussCI.rds", alpha, threshold))
 
 
 

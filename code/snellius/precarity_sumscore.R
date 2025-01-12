@@ -171,7 +171,7 @@ message("Number of parallel workers: ", nbrOfWorkers())
 alphas = c(0.01, 0.05)
 thresholds = c(0.6, 0.7)
 citests = c("gaussCItest", "RCoT")
-algorithms = c("FCI", "CCI") #c("PC", "FCI", "CCI")
+algorithms = c("PC", "FCI", "CCI")
 data <- sumpre_sym # sumscore 
 subsample_size <- nrow(data)  # Size of each subsample
 num_subsamples <- 30     # Number of subsamples

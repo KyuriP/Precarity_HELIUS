@@ -60,7 +60,10 @@ grouped_stable_edges <- split(stable_edges_data, comb$algorithm)
 
 # Group matrices by CItest
 grouped_stable_edges_ci <- split(stable_edges_data, comb$citest)
-
+## fci gauss
+fci_gauss_matrices <- grouped_stable_edges_ci$gaussCItest[grep("FCI", names(grouped_stable_edges_ci$gaussCItest))] 
+## cci gauss
+cci_gauss_matrices <- grouped_stable_edges_ci$gaussCItest[grep("CCI", names(grouped_stable_edges_ci$gaussCItest))]
 
 # summarize them by taking the most frequent symbol per element in matrices
 summarized_stable_edges <- lapply(grouped_stable_edges, function(group) {
@@ -84,6 +87,43 @@ summarized_stable_edges <- lapply(grouped_stable_edges, function(group) {
   }
   return(summarized)  # Return the summarized matrix for this group
 })
+
+
+## for matrices
+# Function to summarize matrices by finding the most frequent element at each position
+summarize_matrices <- function(group) {
+  # Get the dimensions from the first matrix in the group (assuming all matrices have the same dimensions)
+  nrow <- nrow(group[[1]])
+  ncol <- ncol(group[[1]])
+  
+  # Create a matrix to store the most frequent element for each position
+  summarized <- matrix(NA, nrow = nrow, ncol = ncol, 
+                       dimnames = dimnames(group[[1]]))  # Preserve row and column names
+  
+  # Iterate through each cell in the matrices
+  for (i in 1:nrow) {
+    for (j in 1:ncol) {
+      # Collect all values for the same position (i, j) across all matrices in the group
+      elements <- sapply(group, function(mat) mat[i, j])
+      
+      # Find the most frequent value for this position
+      most_frequent <- as.numeric(names(sort(table(elements), decreasing = TRUE))[1])
+      
+      # Store the most frequent value at position (i, j) in the summarized matrix
+      summarized[i, j] <- most_frequent
+    }
+  }
+  
+  # Return the summarized matrix for this group
+  return(summarized)
+}
+
+## compare the gaussian only case with the ones with both RCoT and gaussianci
+summarize_matrices(fci_gauss_matrices)
+summarized_stable_edges$FCI
+
+summarize_matrices(cci_gauss_matrices)
+summarized_stable_edges$CCI 
 
 
 ## Plot the resulting graph
