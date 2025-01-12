@@ -413,15 +413,19 @@ FCI predominantly estimates directed arrows (→) for symptom-precarity relation
 
 
 ```{r}
+#| layout-nrow: 2
 #| label: fig-presum
 #| fig-cap: "Resulting graphs of precarity sum score and individual depression symptoms using FCI and CCI."
+#| fig-subcap: 
+#|   - "FCI"
+#|   - "CCI"
 #| fig-align: center
-#| out-width: 80%
+#| out-width: 65%
 
-knitr::include_graphics("img/presum_graph_refined.png")
+knitr::include_graphics("img/FCI_presum.png")
+knitr::include_graphics("img/CCI_presum.png")
 
 ```
-
 
 
 
@@ -1099,5 +1103,5 @@ knitr::include_graphics("img/symgraph_mat.pdf")
 #| fig-cap: "Proportions of edge endpoint types for graphs based on individual depression symptoms with precarity sum score."
 #| fig-align: center
 #| out-width: 70%
-knitr::include_graphics("img/presumgraph_mat.pdf")
+knitr::include_graphics("img/presumgraph_mat2.pdf")
 ```
