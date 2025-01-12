@@ -941,18 +941,12 @@ knitr::include_graphics("img/pc_sym_onlyRCoT.png")
 
 
 ```{r}
-#| layout-nrow: 2
 #| label: fig-pc_presum
 #| fig-cap: "Resulting graphs of precarity sum score and individual depression symptoms using PC."
-#| fig-subcap:
-#|   - "Using both GaussianCI and RCoT"
-#|   - "Using only RCoT"
 #| fig-align: center
 #| out-width: 70%
 
-
-knitr::include_graphics("img/pc_presum_GaussianCIRCoT.png")
-knitr::include_graphics("img/pc_presum_onlyRCoT.png")
+knitr::include_graphics("img/PC_presum.png")
 ```
 
 \clearpage

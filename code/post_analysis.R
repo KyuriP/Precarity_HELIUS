@@ -64,6 +64,8 @@ grouped_stable_edges_ci <- split(stable_edges_data, comb$citest)
 fci_gauss_matrices <- grouped_stable_edges_ci$gaussCItest[grep("FCI", names(grouped_stable_edges_ci$gaussCItest))] 
 ## cci gauss
 cci_gauss_matrices <- grouped_stable_edges_ci$gaussCItest[grep("CCI", names(grouped_stable_edges_ci$gaussCItest))]
+## pc gauss
+pc_gauss_matrices <- grouped_stable_edges_ci$gaussCItest[grep("PC", names(grouped_stable_edges_ci$gaussCItest))]
 
 # summarize them by taking the most frequent symbol per element in matrices
 summarized_stable_edges <- lapply(grouped_stable_edges, function(group) {
@@ -125,6 +127,8 @@ summarized_stable_edges$FCI
 summarize_matrices(cci_gauss_matrices)
 summarized_stable_edges$CCI 
 
+summarize_matrices(pc_gauss_matrices) |> plotPC()
+summarized_stable_edges$PC
 
 ## Plot the resulting graph
 # per algorithm
