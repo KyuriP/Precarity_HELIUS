@@ -32,7 +32,7 @@ alphas = c(0.01, 0.05)
 thresholds = c(0.6, 0.7)
 citests = "gaussCItest"
 algorithms = c("PC", "FCI", "CCI")
-data <- dep_sym # sumscore 
+data <- depsym # sumscore 
 subsample_size <- nrow(data)  # Size of each subsample
 num_subsamples <- 30     # Number of subsamples
 
