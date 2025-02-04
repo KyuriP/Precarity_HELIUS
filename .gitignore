@@ -3,5 +3,3 @@
 .DS_Store
 code/.DS_Store
 code/graphviz/.DS_Store
-code/edge_proportion_sym.R
-code/edge_proportion_presum.R
