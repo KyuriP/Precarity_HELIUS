@@ -38,7 +38,7 @@ filenames <- glue::glue(
 # )
 
 # directory containing the files
-directory <- "Precarity_HELIUS/data/dep_sym_presum" #"Precarity_HELIUS/data/dep_sumscore"  
+directory <- "Precarity_HELIUS/data/dep_sym_presum" #"Precarity_HELIUS/data/dep_sym_presum" #"Precarity_HELIUS/data/dep_sumscore"  
 # directory <- "Precarity_HELIUS/data/dep_sumscore"  
 # directory <- "Precarity_HELIUS/data/dep_symscore"  
 

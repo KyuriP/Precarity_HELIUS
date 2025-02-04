@@ -22,7 +22,7 @@ source("Precarity_HELIUS/code/utils/libraries.R")   # Load libraries
 source("Precarity_HELIUS/code/utils/robust_func.R") # Load helper functions
 
 # Load the dataset 
-# dat <- read_sav("../../../data/HELIUS_LEONIE.sav") 
+dat <- read_sav("data/HELIUS_LEONIE.sav")
 
 ## =============================================================================
 ## Preprocess and scale the precariousness data
@@ -113,12 +113,26 @@ clust_data <- scaled_data |>
   dplyr::select(17:33) |>
   as.data.frame()
 
-# sum score data
+# depsum score data
 depsum <- clust_data |> dplyr::select(PHQsum, P.emp, P.soc, P.hou, S.rel, S.fin) 
 
 # symptom score data
 depsym <- clust_data |> dplyr::select(anh, dep, slp, ene, app, glt, con, mot, sui, P.emp, P.soc, P.hou, S.rel, S.fin) 
 
+# totally aggregated data
+# Merging S.rel and S.fin, and P.emp, P.soc, and P.hou into two variables
+agg_data <- scaled_data |>
+  mutate(
+    # Merging S.rel and S.fin into one variable
+    S_combined = rowMeans(cbind(frd_brk12, conf12, fincri12, inc_dif)),
+    
+    # Merging P.emp, P.soc, and P.hou into one variable
+    P_combined = rowMeans(cbind(emp_stat, work_sit, soc_freq, soc_adq, nb_safe, nb_res, nb_rent, cul_rec))
+  ) |>
+  # Select the new combined columns
+  dplyr::select(S_combined, P_combined, PHQsum) |>
+  # Convert to a data frame
+  as.data.frame()
 
 
 ## =============================================================================
@@ -130,7 +144,7 @@ alphas = c(0.01, 0.05)
 thresholds = c(0.5, 0.6, 0.7, 0.8)
 citests = c("gaussCItest", "RCoT")
 algorithms = c("PC", "FCI", "CCI")
-data <- depsum # sumscore 
+data <- agg_data#depsum # sumscore 
 # data <- depsym # individual symptoms
 subsample_size <- nrow(data)  # Size of each subsample
 num_subsamples <- 100     # Number of subsamples
@@ -154,14 +168,23 @@ run_and_save <- function(alpha, threshold, citest, algorithm) {
   
   # Create file name
   # sumscore version
-  file_name <- glue::glue("dat_sumscore/{algorithm}_alpha_{alpha}_threshold_{threshold}_citest_{citest}.rds")
+  file_name <- glue::glue("data/aggregated_dat/{algorithm}_alpha_{alpha}_threshold_{threshold}_citest_{citest}.rds")
   # individual symptom version
-  file_name <- glue::glue("dat_symscore/{algorithm}_alpha_{alpha}_threshold_{threshold}_citest_{citest}.rds")
+  file_name <- glue::glue("data/aggregated_dat/{algorithm}_alpha_{alpha}_threshold_{threshold}_citest_{citest}.rds")
   saveRDS(result, file = file_name)
   
   # Print a message to track progress
   message(glue("Completed: algorithm = {algorithm}, alpha = {alpha}, threshold = {threshold}, citest = {citest}"))
 }
+
+# Dynamically determine available cores and set workers
+available_cores <- parallel::detectCores() - 2  # Reserve some for the system
+workers <- min(available_cores, 8)  # Use 16 workers, or the number of available cores
+
+# Set the future plan
+plan(multisession, workers = workers)
+# Confirm the setup
+cat("Using", workers, "parallel workers.\n")
 
 # Apply the function to each row in the parameter data frame
 pwalk(params, run_and_save, .progress = TRUE)

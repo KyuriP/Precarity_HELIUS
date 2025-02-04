@@ -3,4 +3,9 @@
 .DS_Store
 code/.DS_Store
 code/graphviz/.DS_Store
+<<<<<<< Updated upstream
+=======
+code/edge_proportion_sym.R
+code/edge_proportion_presum.R
+>>>>>>> Stashed changes
 draft_v1/CD_draft_v1_LKE_MN ks.docx
