@@ -38,7 +38,8 @@ filenames <- glue::glue(
 # )
 
 # directory containing the files
-directory <- "Precarity_HELIUS/data/dep_sym_presum" #"Precarity_HELIUS/data/dep_sym_presum" #"Precarity_HELIUS/data/dep_sumscore"  
+directory <- "data/dat_sumscore" #"Precarity_HELIUS/data/dep_sym_presum" #"Precarity_HELIUS/data/dep_sym_presum" #"Precarity_HELIUS/data/dep_sumscore"  
+directory <- "data/symptom_both" 
 # directory <- "Precarity_HELIUS/data/dep_sumscore"  
 # directory <- "Precarity_HELIUS/data/dep_symscore"  
 
@@ -52,14 +53,29 @@ rds_data <- lapply(full_paths, readRDS)
 # Name the datasets for easy access
 names(rds_data) <- filenames
 
+# Check the loaded data
+print(names(rds_data))  # View the names of the datasets
+
+
 # Extract 'stable_edges' matrices from each list
 stable_edges_data <- lapply(rds_data, function(x) x$stable_edges)
 
 # Group matrices by algorithm
-grouped_stable_edges <- split(stable_edges_data, comb$algorithm)
+# grouped_stable_edges <- split(stable_edges_data, comb$algorithm)
+# Group files by algorithm
+grouped_stable_edges <- list(
+  PC = stable_edges_data[grep("PC", names(stable_edges_data))],
+  FCI = stable_edges_data[grep("FCI", names(stable_edges_data))],
+  CCI = stable_edges_data[grep("CCI", names(stable_edges_data))]
+)
 
 # Group matrices by CItest
-grouped_stable_edges_ci <- split(stable_edges_data, comb$citest)
+# grouped_stable_edges_ci <- split(stable_edges_data, comb$citest)
+grouped_stable_edges_ci <- list(
+  gaussCItest = stable_edges_data[grep("gaussCItest", names(stable_edges_data))],
+  RCoT = stable_edges_data[grep("RCoT", names(stable_edges_data))]
+)
+
 ## fci gauss
 fci_gauss_matrices <- grouped_stable_edges_ci$gaussCItest[grep("FCI", names(grouped_stable_edges_ci$gaussCItest))] 
 ## cci gauss
@@ -67,7 +83,13 @@ cci_gauss_matrices <- grouped_stable_edges_ci$gaussCItest[grep("CCI", names(grou
 ## pc gauss
 pc_gauss_matrices <- grouped_stable_edges_ci$gaussCItest[grep("PC", names(grouped_stable_edges_ci$gaussCItest))]
 
-# summarize them by taking the most frequent symbol per element in matrices
+## fci rcot
+fci_rcot_matrices <- grouped_stable_edges_ci$RCoT[grep("FCI", names(grouped_stable_edges_ci$RCoT))] 
+## cci rcot
+cci_rcot_matrices <- grouped_stable_edges_ci$RCoT[grep("CCI", names(grouped_stable_edges_ci$RCoT))]
+## pc rcot
+pc_rcot_matrices <- grouped_stable_edges_ci$RCoT[grep("PC", names(grouped_stable_edges_ci$RCoT))]
+
 summarized_stable_edges <- lapply(grouped_stable_edges, function(group) {
   # Check dimensions from the first matrix in the group
   nrow <- nrow(group[[1]])
@@ -83,10 +105,22 @@ summarized_stable_edges <- lapply(grouped_stable_edges, function(group) {
       # Collect all values for the same position (i, j) across all matrices in the group
       elements <- sapply(group, function(mat) mat[i, j])
       
-      # Find the most frequent value for this position
-      summarized[i, j] <- as.numeric(names(sort(table(elements), decreasing = TRUE))[1])
+      # Create a table of frequencies for the elements
+      freq_table <- table(elements)
+      
+      # Sort the frequencies in descending order
+      sorted_freq <- sort(freq_table, decreasing = TRUE)
+      
+      # Check for a tie: if the highest frequency is the same as the second highest, it's a tie
+      if (length(sorted_freq) > 1 && sorted_freq[1] == sorted_freq[2]) {
+        summarized[i, j] <- 4  # Assign 4 in case of a tie
+      } else {
+        # Otherwise, assign the most frequent value
+        summarized[i, j] <- as.numeric(names(sorted_freq)[1])
+      }
     }
   }
+  
   return(summarized)  # Return the summarized matrix for this group
 })
 
@@ -108,11 +142,19 @@ summarize_matrices <- function(group) {
       # Collect all values for the same position (i, j) across all matrices in the group
       elements <- sapply(group, function(mat) mat[i, j])
       
-      # Find the most frequent value for this position
-      most_frequent <- as.numeric(names(sort(table(elements), decreasing = TRUE))[1])
+      # Create a table of frequencies for the elements
+      freq_table <- table(elements)
       
-      # Store the most frequent value at position (i, j) in the summarized matrix
-      summarized[i, j] <- most_frequent
+      # Sort the frequencies in descending order
+      sorted_freq <- sort(freq_table, decreasing = TRUE)
+      
+      # Check for a tie: if the highest frequency is the same as the second highest, it's a tie
+      if (length(sorted_freq) > 1 && sorted_freq[1] == sorted_freq[2]) {
+        summarized[i, j] <- 4  # Assign 4 in case of a tie
+      } else {
+        # Otherwise, assign the most frequent value
+        summarized[i, j] <- as.numeric(names(sorted_freq)[1])
+      }
     }
   }
   
@@ -120,14 +162,24 @@ summarize_matrices <- function(group) {
   return(summarized)
 }
 
-## compare the gaussian only case with the ones with both RCoT and gaussianci
-summarize_matrices(fci_gauss_matrices)
-summarized_stable_edges$FCI
+## compare the gaussian only case with the ones with both RCoT and gaussian
+summarize_matrices(fci_gauss_matrices) |>plotAG()
+summarized_stable_edges$FCI |> plotAG()
 
-summarize_matrices(cci_gauss_matrices)
+summarize_matrices(cci_gauss_matrices) # |>plotAG()
 summarized_stable_edges$CCI 
 
 summarize_matrices(pc_gauss_matrices) |> plotPC()
+summarized_stable_edges$PC
+
+## compare the rcot only case 
+summarize_matrices(fci_rcot_matrices) |>plotAG()
+summarized_stable_edges$FCI |> plotAG()
+
+summarize_matrices(cci_rcot_matrices) |>plotAG()
+summarized_stable_edges$CCI |>plotAG()
+
+summarize_matrices(pc_rcot_matrices) #|> plotPC()
 summarized_stable_edges$PC
 
 ## Plot the resulting graph

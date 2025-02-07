@@ -1,0 +1,25 @@
+digraph {
+	edge_fontname=Palatino graph_fontname=Palatino node_fontname=Palatino
+	size="7,7"
+	dpi=300
+	ratio=fill
+	fontsize=20 label="" labelloc=top
+	node [fixedsize=true height=0.8 width=0.8]
+	splines=true
+	PHQsum [label=PHQsum pos="1,4!" shape=circle]
+	"P.emp" [label="P.emp" pos="0,3!" shape=circle]
+	"P.hou" [label="P.hou" pos="0,1!" shape=circle]
+	"P.soc" [label="P.soc" pos="2,3!" shape=circle]
+	"S.rel" [label="S.rel" pos="1,2!" shape=circle]
+	"S.fin" [label="S.fin" pos="1,0!" shape=circle]
+	PHQsum -> "P.emp" [arrowhead=normal arrowtail=odot dir=both]
+	PHQsum -> "P.soc" [arrowhead=normal arrowtail=odot dir=both]
+	PHQsum -> "S.fin" [arrowhead=normal arrowtail=normal dir=both]
+	PHQsum -> "S.rel" [arrowhead=normal arrowtail=normal dir=both]
+	"P.emp" -> "P.hou" [arrowhead=odot arrowtail=normal dir=both]
+	"P.emp" -> "S.fin" [arrowhead=normal arrowtail=normal dir=both]
+	"S.rel" -> "S.fin" [arrowhead=normal arrowtail=normal dir=both]
+	"S.rel" -> "P.soc" [arrowhead=normal arrowtail=odot color="#000080" dir=both style=dashed]
+	"P.soc" -> "S.fin" [arrowhead=odot arrowtail=normal dir=both]
+	"P.hou" -> "S.fin" [arrowhead=normal arrowtail=normal dir=both]
+}

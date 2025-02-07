@@ -15,7 +15,7 @@ dot.attr(ratio="fill")
 
 # Add title
 # dot.attr(label="RCoT", labelloc="top", fontsize="20")
-dot.attr(label="Gaussian & RCoT", labelloc="top", fontsize="20")
+dot.attr(label="", labelloc="top", fontsize="20")
 
 # Set global node attributes for uniform size
 dot.attr('node', fixedsize='true', width='0.8', height='0.8')
@@ -76,21 +76,53 @@ dot.node("S.fin", "S.fin", shape="circle", pos="1,0!")
 # dot.edge("P.soc", "S.fin", dir="both", arrowtail="normal", arrowhead="odot")  # <-o
 # dot.edge("P.hou", "S.fin", dir="both", arrowtail="odot", arrowhead="normal", color="gray", style ="dashed")  # o->
 
-# both gaussian and rcot situation
+# # both gaussian and rcot situation
+# dot.edge("PHQsum", "P.emp", dir="both", arrowtail="odot", arrowhead="normal")  # o->
+# dot.edge("PHQsum", "P.soc", dir="both", arrowtail="odot", arrowhead="normal")  # o->
+# dot.edge("PHQsum", "S.fin", dir="both", arrowtail="odot", arrowhead="odot", color="gray", style ="dashed", constraint="false")  # <-
+# dot.edge("PHQsum", "S.rel", dir="both", arrowtail="normal", arrowhead="odot", color="gray", style ="dashed")  # <->
+
+# dot.edge("P.emp", "P.hou", dir="both", arrowtail="normal", arrowhead="odot")  # <-o
+# dot.edge("P.emp", "S.fin", dir="both", arrowtail="normal", arrowhead="odot", color="gray", style ="dashed")  # <-o
+
+# dot.edge("S.rel", "S.fin", dir="both", arrowtail="normal", arrowhead="normal")  # <->
+# dot.edge("S.rel", "P.soc", dir="both", arrowtail="odot", arrowhead="normal")  # o->
+
+# dot.edge("P.soc", "S.fin", dir="both", arrowtail="normal", arrowhead="odot")  # <-o
+# dot.edge("P.hou", "S.fin", dir="both", arrowtail="odot", arrowhead="normal")  # o->
+
+
+## both gaussian and rcot situation for FCI only
+# dot.edge("PHQsum", "P.emp", dir="both", arrowtail="odot", arrowhead="normal")  # o->
+# dot.edge("PHQsum", "P.soc", dir="both", arrowtail="odot", arrowhead="normal")  # o->
+# dot.edge("PHQsum", "S.fin", dir="both", arrowtail="normal", arrowhead="odot")  # <-
+# dot.edge("PHQsum", "S.rel", dir="both", arrowtail="normal", arrowhead="odot")  # <->
+
+# dot.edge("P.emp", "P.hou", dir="both", arrowtail="normal", arrowhead="odot")  # <-o
+# dot.edge("P.emp", "S.fin", dir="both", arrowtail="normal", arrowhead="normal")  # <-o
+
+# dot.edge("S.rel", "S.fin", dir="both", arrowtail="odot", arrowhead="normal")  # <->
+# dot.edge("S.rel", "P.soc", dir="both", arrowtail="odot", arrowhead="normal", color="#000080", style ="dashed")  # o->
+
+# dot.edge("P.soc", "S.fin", dir="both", arrowtail="normal", arrowhead="odot")  # <-o
+# dot.edge("P.hou", "S.fin", dir="both", arrowtail="odot", arrowhead="normal")  # o->
+# # Render and view the graph
+# dot.render("FCI_depsum", view=True)
+
+
+## both gaussian and rcot situation for CCI only
 dot.edge("PHQsum", "P.emp", dir="both", arrowtail="odot", arrowhead="normal")  # o->
 dot.edge("PHQsum", "P.soc", dir="both", arrowtail="odot", arrowhead="normal")  # o->
-dot.edge("PHQsum", "S.fin", dir="both", arrowtail="odot", arrowhead="odot", color="gray", style ="dashed", constraint="false")  # <-
-dot.edge("PHQsum", "S.rel", dir="both", arrowtail="normal", arrowhead="odot", color="gray", style ="dashed")  # <->
+dot.edge("PHQsum", "S.fin", dir="both", arrowtail="normal", arrowhead="normal")  # <-
+dot.edge("PHQsum", "S.rel", dir="both", arrowtail="normal", arrowhead="normal")  # <->
 
 dot.edge("P.emp", "P.hou", dir="both", arrowtail="normal", arrowhead="odot")  # <-o
-dot.edge("P.emp", "S.fin", dir="both", arrowtail="normal", arrowhead="odot", color="gray", style ="dashed")  # <-o
+dot.edge("P.emp", "S.fin", dir="both", arrowtail="normal", arrowhead="normal")  # <-o
 
 dot.edge("S.rel", "S.fin", dir="both", arrowtail="normal", arrowhead="normal")  # <->
-dot.edge("S.rel", "P.soc", dir="both", arrowtail="odot", arrowhead="normal")  # o->
+dot.edge("S.rel", "P.soc", dir="both", arrowtail="odot", arrowhead="normal", color="#000080", style ="dashed")  # o->
 
 dot.edge("P.soc", "S.fin", dir="both", arrowtail="normal", arrowhead="odot")  # <-o
-dot.edge("P.hou", "S.fin", dir="both", arrowtail="odot", arrowhead="normal")  # o->
-
-
+dot.edge("P.hou", "S.fin", dir="both", arrowtail="normal", arrowhead="normal")  # o->
 # Render and view the graph
-dot.render("both_dot", view=True)
+dot.render("CCI_depsum", view=True)

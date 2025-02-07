@@ -28,6 +28,8 @@ plotAG <- function(amat, title_text = NULL)
   amat[amat == 1] <- "odot"
   amat[amat == 2] <- "vee"
   amat[amat == 3] <- "none"
+  amat[amat == 4] <- "tee"
+  
   iE <- 0
   for (i in 1:(p-1)) {
     x <- nn[i]

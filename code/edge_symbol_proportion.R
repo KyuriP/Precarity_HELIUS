@@ -24,6 +24,7 @@ names(rds_data) <- gsub("\\.rds$", "", basename(file_names))
 
 # Check the loaded data
 print(names(rds_data))  # View the names of the datasets
+
 # Group files by algorithm
 grouped_rds_data <- list(
   FCI = rds_data[grep("FCI", names(rds_data))],
