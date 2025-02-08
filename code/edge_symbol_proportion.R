@@ -94,12 +94,13 @@ dominant_symbol_CCI <- apply(proportion_array_CCI, c(1, 2), function(x) which.ma
 
 
 # Define blended gradient colors for all symbols
+# Modify the blend_colors function to include alpha control based on proportions
 blend_colors <- function(proportions) {
   # Normalize proportions to sum to 1
   proportions <- proportions / sum(proportions)
   
   # Define base colors for each symbol
-  base_colors <- c("darkgray", "mediumpurple4", "aquamarine4", "salmon")
+  base_colors <- c("gray91", alpha("dodgerblue4", 0.7), alpha("aquamarine4", 0.7), alpha("salmon", 0.7))
   
   # Convert base colors to RGB
   base_rgb <- t(col2rgb(base_colors) / 255)
@@ -107,8 +108,11 @@ blend_colors <- function(proportions) {
   # Compute the weighted average of the colors
   blended_rgb <- colSums(base_rgb * proportions)
   
-  # Convert back to HEX color
-  rgb(blended_rgb[1], blended_rgb[2], blended_rgb[3])
+  # Calculate alpha based on the maximum proportion (this could be modified as needed)
+  alpha_value <- max(proportions)  # Set alpha to the maximum proportion for a stronger color impact
+  
+  # Return the final blended color with the calculated alpha
+  rgb(blended_rgb[1], blended_rgb[2], blended_rgb[3], alpha = alpha_value)
 }
 
 # Generate blended colors for all cells in the matrix
@@ -140,7 +144,7 @@ custom_labels <- c(
 custom_legend_v <- Legend(
   labels = custom_labels,
   legend_gp = gpar(
-    fill = c("darkgray", "mediumpurple4", "aquamarine4", "salmon")),
+    fill = c("gray91", alpha("dodgerblue4", 0.7), alpha("aquamarine4", 0.7), alpha("salmon", 0.7))),
   labels_gp = gpar( fontsize = 12,                  # Ensure label font size increases
                     fontfamily = "Palatino"         # Set font to Palatino for labels
   ),
@@ -156,7 +160,7 @@ custom_legend_v <- Legend(
 custom_legend_h <- Legend(
   labels = custom_labels,
   legend_gp = gpar(
-    fill = c("darkgray", "mediumpurple4", "aquamarine4", "salmon")),
+    fill = c("gray91", alpha("dodgerblue4", 0.7), alpha("aquamarine4", 0.7), alpha("salmon", 0.7))),
   labels_gp = gpar( fontsize = 12,                  # Ensure label font size increases
                     fontfamily = "Palatino"         # Set font to Palatino for labels
   ),
@@ -173,10 +177,10 @@ custom_legend_h <- Legend(
 
 # Define colors for each category (used in heatmap only for dominant values)
 category_colors <- c(
-  "0" = "darkgray",
-  "1" = "mediumpurple4",
-  "2" = "aquamarine4",
-  "3" = "salmon"
+  "0" = "gray91",
+  "1" = alpha("dodgerblue4", 0.7),
+  "2" = alpha("aquamarine4", 0.7),
+  "3" = alpha("salmon", 0.7)
 )
 
 # Generate the heatmaps with proper bolding and multi-line text for non-zero proportions
@@ -276,7 +280,7 @@ heatmap_cci <- Heatmap(
 
 
 # Convert heatmaps to ggplot objects
-heatmap_FCI_plot <- ggplotify::as.ggplot(grid.grabExpr(draw(heatmap_fci))) + ggtitle("(a) FCI") +   
+heatmap_FCI_plot <- ggplotify::as.ggplot(grid.grabExpr(draw(heatmap_fci))) + #+ ggtitle("(a) FCI") +   
   theme(
     plot.title = element_text(
       hjust = 0.55,          # Center the title
@@ -286,7 +290,7 @@ heatmap_FCI_plot <- ggplotify::as.ggplot(grid.grabExpr(draw(heatmap_fci))) + ggt
     )
   )
 
-heatmap_CCI_plot <- ggplotify::as.ggplot(grid.grabExpr(draw(heatmap_cci))) + ggtitle("(b) CCI") +   
+heatmap_CCI_plot <- ggplotify::as.ggplot(grid.grabExpr(draw(heatmap_cci))) + #+ ggtitle("(b) CCI") +   
   theme(
     plot.title = element_text(
       hjust = 0.55,          # Center the title
@@ -321,8 +325,30 @@ sumgraph_mat_h <- ggpubr::ggarrange(
   heights = c(3, 3, 0.1)  # Adjust the relative width of each panel
 )
 print(sumgraph_mat_h)
+
+# FCI alone
+sumgraph_mat_h <- ggpubr::ggarrange(
+  heatmap_FCI_plot,
+  legend_h,
+  nrow = 2,  # Heatmaps side by side with legend
+  heights = c(3,0.2)  # Adjust the relative width of each panel
+)
+print(sumgraph_mat_h)
+
+# CCI alone
+sumgraph_mat_h <- ggpubr::ggarrange(
+  heatmap_CCI_plot,
+  legend_h,
+  nrow = 2,  # Heatmaps side by side with legend
+  heights = c(3,0.2)  # Adjust the relative width of each panel
+)
+print(sumgraph_mat_h)
+
 # save plot
-# ggpubr::ggexport(filename = "symgraph_mat.pdf", plot = sumgraph_mat_h,  width = 7, height = 15, units = "cm")
+# ggpubr::ggexport(filename = "depsum_mat_fci.pdf", plot = sumgraph_mat_h,  width = 6, height = 6.5, units = "cm") # depsum
+# ggpubr::ggexport(filename = "symptom_mat_fci.pdf", plot = sumgraph_mat_h,  width = 9, height = 9.5, units = "cm") # individual_symptom
+# ggpubr::ggexport(filename = "presum_mat_fci.pdf", plot = sumgraph_mat_h,  width = 8, height = 8.5, units = "cm") # individual_symptom
+# ggpubr::ggexport(filename = "symgraph_mat.pdf", plot = sumgraph_mat_h,  width = 7, height = 15, units = "cm") # together FCI & CCI
 
 
 

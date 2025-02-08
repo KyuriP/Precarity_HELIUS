@@ -95,34 +95,34 @@ dot.node("S.fin", "S.fin", shape="circle", pos="1,0!")
 ## both gaussian and rcot situation for FCI only
 # dot.edge("PHQsum", "P.emp", dir="both", arrowtail="odot", arrowhead="normal")  # o->
 # dot.edge("PHQsum", "P.soc", dir="both", arrowtail="odot", arrowhead="normal")  # o->
-# dot.edge("PHQsum", "S.fin", dir="both", arrowtail="normal", arrowhead="odot")  # <-
-# dot.edge("PHQsum", "S.rel", dir="both", arrowtail="normal", arrowhead="odot")  # <->
+# dot.edge("PHQsum", "S.fin", dir="both", arrowtail="normal", arrowhead="none")  # <-
+# dot.edge("PHQsum", "S.rel", dir="both", arrowtail="normal", arrowhead="normal")  # <->
 
 # dot.edge("P.emp", "P.hou", dir="both", arrowtail="normal", arrowhead="odot")  # <-o
-# dot.edge("P.emp", "S.fin", dir="both", arrowtail="normal", arrowhead="normal")  # <-o
+# dot.edge("P.emp", "S.fin", dir="both", arrowtail="normal", arrowhead="odot")  # <-o
 
-# dot.edge("S.rel", "S.fin", dir="both", arrowtail="odot", arrowhead="normal")  # <->
-# dot.edge("S.rel", "P.soc", dir="both", arrowtail="odot", arrowhead="normal", color="#000080", style ="dashed")  # o->
+# dot.edge("S.rel", "S.fin", dir="both", arrowtail="normal", arrowhead="normal")  # <->
+# dot.edge("S.rel", "P.soc", dir="both", arrowtail="odot", arrowhead="normal")  # o->
 
-# dot.edge("P.soc", "S.fin", dir="both", arrowtail="normal", arrowhead="odot")  # <-o
+# dot.edge("P.soc", "S.fin", dir="both", arrowtail="normal", arrowhead="tee", style="dashed")  # <-o
 # dot.edge("P.hou", "S.fin", dir="both", arrowtail="odot", arrowhead="normal")  # o->
 # # Render and view the graph
 # dot.render("FCI_depsum", view=True)
 
 
 ## both gaussian and rcot situation for CCI only
-dot.edge("PHQsum", "P.emp", dir="both", arrowtail="odot", arrowhead="normal")  # o->
+dot.edge("PHQsum", "P.emp", dir="both", arrowtail="tee", arrowhead="normal", style="dashed")  # o->
 dot.edge("PHQsum", "P.soc", dir="both", arrowtail="odot", arrowhead="normal")  # o->
-dot.edge("PHQsum", "S.fin", dir="both", arrowtail="normal", arrowhead="normal")  # <-
-dot.edge("PHQsum", "S.rel", dir="both", arrowtail="normal", arrowhead="normal")  # <->
+dot.edge("PHQsum", "S.fin", dir="both", arrowtail="tee", arrowhead="normal", style="dashed")  # <-
+dot.edge("PHQsum", "S.rel", dir="both", arrowtail="normal", arrowhead="tee", style="dashed")  # <->
 
 dot.edge("P.emp", "P.hou", dir="both", arrowtail="normal", arrowhead="odot")  # <-o
 dot.edge("P.emp", "S.fin", dir="both", arrowtail="normal", arrowhead="normal")  # <-o
 
 dot.edge("S.rel", "S.fin", dir="both", arrowtail="normal", arrowhead="normal")  # <->
-dot.edge("S.rel", "P.soc", dir="both", arrowtail="odot", arrowhead="normal", color="#000080", style ="dashed")  # o->
+dot.edge("S.rel", "P.soc", dir="both", arrowtail="odot", arrowhead="normal")  # o->
 
 dot.edge("P.soc", "S.fin", dir="both", arrowtail="normal", arrowhead="odot")  # <-o
-dot.edge("P.hou", "S.fin", dir="both", arrowtail="normal", arrowhead="normal")  # o->
+dot.edge("P.hou", "S.fin", dir="both", arrowtail="tee", arrowhead="normal", style="dashed")  # o->
 # Render and view the graph
 dot.render("CCI_depsum", view=True)

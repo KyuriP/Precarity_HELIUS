@@ -25,54 +25,163 @@ for node, pos in fixed_positions.items():
              fixedsize="true", width="1", height="1", fontsize="25")
 
 
-# Manually define edges based on the adj.matrices
-dot.edge("anh", "dep", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
-dot.edge("anh", "slp", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
+# # Manually define edges based on the adj.matrices
+# dot.edge("anh", "dep", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
+# dot.edge("anh", "slp", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
+# dot.edge("anh", "ene", dir="both", arrowhead="normal", arrowtail="normal")
+# dot.edge("anh", "app", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
+# dot.edge("anh", "glt", dir="both", arrowhead="normal", arrowtail="normal")
+# dot.edge("anh", "con", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
+# dot.edge("anh", "Precarity", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
+
+# dot.edge("dep", "slp", dir="both", arrowhead="odot", arrowtail="normal", style="dashed", color="#a9a9a9")
+# dot.edge("dep", "ene", dir="both", arrowhead="odot", arrowtail="normal", style="dashed", color="#a9a9a9")
+# dot.edge("dep", "app", dir="both", arrowhead="odot", arrowtail="normal", style="dashed", color="#a9a9a9")
+# dot.edge("dep", "glt", dir="both", arrowhead="odot", arrowtail="normal", style="dashed", color="#a9a9a9")
+# dot.edge("dep", "con", dir="both", arrowhead="odot", arrowtail="odot", style="dashed", color="#a9a9a9")
+# dot.edge("dep", "mot", dir="both", arrowhead="odot", arrowtail="normal", style="dashed", color="#a9a9a9")
+# dot.edge("dep", "sui", dir="both", arrowhead="odot", arrowtail="normal", style="dashed", color="#a9a9a9")
+# dot.edge("dep", "Precarity", dir="both", arrowhead="odot", arrowtail="none", style="dashed", color="#a9a9a9")
+
+# dot.edge("slp", "ene", dir="both", arrowhead="odot", arrowtail="odot", style="dashed", color="#a9a9a9")
+# dot.edge("slp", "app", dir="both", arrowhead="normal", arrowtail="normal")
+# dot.edge("slp", "con", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
+# dot.edge("slp", "mot", dir="both", arrowhead="odot", arrowtail="odot", style="dashed", color="#a9a9a9")
+# dot.edge("slp", "Precarity", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
+
+# dot.edge("ene", "app", dir="both", arrowhead="normal", arrowtail="normal")
+# dot.edge("ene", "con", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
+# dot.edge("ene", "mot", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
+
+# dot.edge("app", "glt", dir="both", arrowhead="normal", arrowtail="normal")
+# dot.edge("app", "con", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
+# dot.edge("app", "mot", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
+# dot.edge("app", "Precarity", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
+
+# dot.edge("glt", "con", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
+# dot.edge("glt", "mot", dir="both", arrowhead="odot", arrowtail="odot", style="dashed", color="#a9a9a9")
+# dot.edge("glt", "sui", dir="both", arrowhead="odot", arrowtail="normal", style="dashed", color="#a9a9a9")
+# dot.edge("glt", "Precarity", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
+
+# dot.edge("con", "mot", dir="both", arrowhead="normal", arrowtail="normal")
+
+# dot.edge("mot", "sui", dir="both", arrowhead="odot", arrowtail="normal")
+# dot.edge("mot", "Precarity", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
+
+# dot.edge("sui", "Precarity", dir="both", arrowhead="normal", arrowtail="normal")
+
+# # GaussCItest edge
+# dot.edge("con", "Precarity", dir="both", arrowhead="normal", arrowtail="odot",style="dashed", color="#000080")
+
+
+# # Render and view the graph
+# dot.render("presum_graph_refined", view=True)
+
+
+
+
+# ## FCI only (RCoT and Gaussian)
+# dot.edge("anh", "dep", dir="both", arrowhead="normal", arrowtail="odot")
+# dot.edge("anh", "slp", dir="both", arrowhead="normal", arrowtail="odot")
+# dot.edge("anh", "ene", dir="both", arrowhead="normal", arrowtail="normal")
+# dot.edge("anh", "app", dir="both", arrowhead="normal", arrowtail="odot")
+# dot.edge("anh", "glt", dir="both", arrowhead="normal", arrowtail="normal")
+# dot.edge("anh", "con", dir="both", arrowhead="normal", arrowtail="odot")
+# dot.edge("anh", "Precarity", dir="both", arrowhead="normal", arrowtail="tee", style="dashed")
+
+
+# dot.edge("dep", "slp", dir="both", arrowhead="odot", arrowtail="normal")
+# dot.edge("dep", "ene", dir="both", arrowhead="odot", arrowtail="normal")
+# dot.edge("dep", "app", dir="both", arrowhead="odot", arrowtail="normal")
+# dot.edge("dep", "glt", dir="both", arrowhead="odot", arrowtail="normal")
+# dot.edge("dep", "con", dir="both", arrowhead="odot", arrowtail="odot")
+# dot.edge("dep", "mot", dir="both", arrowhead="odot", arrowtail="normal")
+# dot.edge("dep", "sui", dir="both", arrowhead="normal", arrowtail="normal")
+# dot.edge("dep", "Precarity", dir="both", arrowhead="tee", arrowtail="none", style="dashed")
+
+
+# dot.edge("slp", "ene", dir="both", arrowhead="odot", arrowtail="normal")
+# dot.edge("slp", "app", dir="both", arrowhead="odot", arrowtail="odot")
+# dot.edge("slp", "glt", dir="both", arrowhead="normal", arrowtail="normal")
+# dot.edge("slp", "con", dir="both", arrowhead="normal", arrowtail="odot")
+# dot.edge("slp", "mot", dir="both", arrowhead="normal", arrowtail="normal")
+# dot.edge("slp", "Precarity", dir="both", arrowhead="normal", arrowtail="tee", style="dashed")
+
+# dot.edge("ene", "app", dir="both", arrowhead="normal", arrowtail="odot")
+# dot.edge("ene", "con", dir="both", arrowhead="normal", arrowtail="odot")
+# dot.edge("ene", "mot", dir="both", arrowhead="normal", arrowtail="normal")
+
+# dot.edge("app", "glt", dir="both", arrowhead="normal", arrowtail="normal")
+# dot.edge("app", "con", dir="both", arrowhead="normal", arrowtail="odot")
+# dot.edge("app", "mot", dir="both", arrowhead="normal", arrowtail="normal")
+# dot.edge("app", "Precarity", dir="both", arrowhead="normal", arrowtail="odot")
+
+# dot.edge("glt", "con", dir="both", arrowhead="normal", arrowtail="odot")
+# dot.edge("glt", "mot", dir="both", arrowhead="normal", arrowtail="normal")
+# dot.edge("glt", "sui", dir="both", arrowhead="odot", arrowtail="normal")
+# dot.edge("glt", "Precarity", dir="both", arrowhead="normal", arrowtail="tee", style="dashed")
+
+# dot.edge("con", "mot", dir="both", arrowhead="odot", arrowtail="normal")
+# dot.edge("con", "sui", dir="both", arrowhead="odot", arrowtail="normal")
+
+# dot.edge("mot", "sui", dir="both", arrowhead="odot", arrowtail="normal")
+# dot.edge("mot", "Precarity", dir="both", arrowhead="normal", arrowtail="odot")
+
+# dot.edge("sui", "Precarity", dir="both", arrowhead="normal", arrowtail="normal")
+
+# # Render and view the graph
+# dot.render("presum_graph_FCI", view=True)
+
+
+
+## CCI only (RCoT and Gaussian)
+dot.edge("anh", "dep", dir="both", arrowhead="normal", arrowtail="none")
+dot.edge("anh", "slp", dir="both", arrowhead="normal", arrowtail="normal")
 dot.edge("anh", "ene", dir="both", arrowhead="normal", arrowtail="normal")
-dot.edge("anh", "app", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
+dot.edge("anh", "app", dir="both", arrowhead="normal", arrowtail="normal")
 dot.edge("anh", "glt", dir="both", arrowhead="normal", arrowtail="normal")
-dot.edge("anh", "con", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
-dot.edge("anh", "Precarity", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
+dot.edge("anh", "con", dir="both", arrowhead="normal", arrowtail="normal")
+dot.edge("anh", "Precarity", dir="both", arrowhead="normal", arrowtail="tee", style="dashed")
 
-dot.edge("dep", "slp", dir="both", arrowhead="odot", arrowtail="normal", style="dashed", color="#a9a9a9")
-dot.edge("dep", "ene", dir="both", arrowhead="odot", arrowtail="normal", style="dashed", color="#a9a9a9")
-dot.edge("dep", "app", dir="both", arrowhead="odot", arrowtail="normal", style="dashed", color="#a9a9a9")
-dot.edge("dep", "glt", dir="both", arrowhead="odot", arrowtail="normal", style="dashed", color="#a9a9a9")
-dot.edge("dep", "con", dir="both", arrowhead="odot", arrowtail="odot", style="dashed", color="#a9a9a9")
-dot.edge("dep", "mot", dir="both", arrowhead="odot", arrowtail="normal", style="dashed", color="#a9a9a9")
-dot.edge("dep", "sui", dir="both", arrowhead="odot", arrowtail="normal", style="dashed", color="#a9a9a9")
-dot.edge("dep", "Precarity", dir="both", arrowhead="odot", arrowtail="none", style="dashed", color="#a9a9a9")
 
-dot.edge("slp", "ene", dir="both", arrowhead="odot", arrowtail="odot", style="dashed", color="#a9a9a9")
+dot.edge("dep", "slp", dir="both", arrowhead="none", arrowtail="normal")
+dot.edge("dep", "ene", dir="both", arrowhead="none", arrowtail="normal")
+dot.edge("dep", "app", dir="both", arrowhead="none", arrowtail="normal")
+dot.edge("dep", "glt", dir="both", arrowhead="none", arrowtail="normal")
+dot.edge("dep", "con", dir="both", arrowhead="none", arrowtail="tee", style="dashed")
+dot.edge("dep", "mot", dir="both", arrowhead="none", arrowtail="normal")
+dot.edge("dep", "sui", dir="both", arrowhead="tee", arrowtail="normal", style="dashed")
+dot.edge("dep", "Precarity", dir="both", arrowhead="none", arrowtail="none")
+
+
+dot.edge("slp", "ene", dir="both", arrowhead="normal", arrowtail="normal")
 dot.edge("slp", "app", dir="both", arrowhead="normal", arrowtail="normal")
-dot.edge("slp", "con", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
-dot.edge("slp", "mot", dir="both", arrowhead="odot", arrowtail="odot", style="dashed", color="#a9a9a9")
-dot.edge("slp", "Precarity", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
+dot.edge("slp", "glt", dir="both", arrowhead="normal", arrowtail="normal")
+dot.edge("slp", "con", dir="both", arrowhead="normal", arrowtail="normal")
+dot.edge("slp", "mot", dir="both", arrowhead="normal", arrowtail="normal")
+dot.edge("slp", "Precarity", dir="both", arrowhead="normal", arrowtail="none")
 
 dot.edge("ene", "app", dir="both", arrowhead="normal", arrowtail="normal")
-dot.edge("ene", "con", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
-dot.edge("ene", "mot", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
+dot.edge("ene", "con", dir="both", arrowhead="normal", arrowtail="normal")
+dot.edge("ene", "mot", dir="both", arrowhead="normal", arrowtail="normal")
 
 dot.edge("app", "glt", dir="both", arrowhead="normal", arrowtail="normal")
-dot.edge("app", "con", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
-dot.edge("app", "mot", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
-dot.edge("app", "Precarity", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
+dot.edge("app", "con", dir="both", arrowhead="normal", arrowtail="tee", style="dashed")
+dot.edge("app", "mot", dir="both", arrowhead="normal", arrowtail="normal")
+dot.edge("app", "Precarity", dir="both", arrowhead="normal", arrowtail="none")
 
-dot.edge("glt", "con", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
-dot.edge("glt", "mot", dir="both", arrowhead="odot", arrowtail="odot", style="dashed", color="#a9a9a9")
-dot.edge("glt", "sui", dir="both", arrowhead="odot", arrowtail="normal", style="dashed", color="#a9a9a9")
-dot.edge("glt", "Precarity", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
+dot.edge("glt", "con", dir="both", arrowhead="normal", arrowtail="tee", style="dashed")
+dot.edge("glt", "mot", dir="both", arrowhead="normal", arrowtail="normal")
+dot.edge("glt", "sui", dir="both", arrowhead="normal", arrowtail="normal")
+dot.edge("glt", "Precarity", dir="both", arrowhead="normal", arrowtail="none")
 
 dot.edge("con", "mot", dir="both", arrowhead="normal", arrowtail="normal")
+dot.edge("con", "sui", dir="both", arrowhead="odot", arrowtail="normal")
 
-dot.edge("mot", "sui", dir="both", arrowhead="odot", arrowtail="normal")
-dot.edge("mot", "Precarity", dir="both", arrowhead="normal", arrowtail="odot", style="dashed", color="#a9a9a9")
+dot.edge("mot", "sui", dir="both", arrowhead="normal", arrowtail="normal")
+dot.edge("mot", "Precarity", dir="both", arrowhead="normal", arrowtail="odot")
 
 dot.edge("sui", "Precarity", dir="both", arrowhead="normal", arrowtail="normal")
 
-# GaussCItest edge
-dot.edge("con", "Precarity", dir="both", arrowhead="normal", arrowtail="odot",style="dashed", color="#000080")
-
-
 # Render and view the graph
-dot.render("presum_graph_refined", view=True)
+dot.render("presum_graph_CCI", view=True)
