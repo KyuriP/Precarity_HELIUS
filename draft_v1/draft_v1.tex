@@ -301,34 +301,36 @@
 \affil[3]{\textit{Institute for Advanced Study, University of Amsterdam, Oude Turfmarkt 147, Amsterdam, 1012GC, the Netherland}}
 
 
-\date{2025-01-16}
+\date{2025-02-08}
 \begin{document}
 \maketitle
 \begin{abstract}
-\noindent Understanding the causal mechanisms linking precarity factors
-and depression is critical for developing effective interventions. This
-study utilizes the HELIUS dataset to explore these relationships using
-advanced causal discovery methods. By applying algorithms such as FCI,
-and CCI, and combining traditional Gaussian CI tests with non-parametric
-approaches like RCoT, we investigate how precarity factors---including
-employment, social, financial, housing, and relational stress---affect
-depression, both as a sum score and at the individual symptom level. Our
-findings reveal that relational stress consistently emerges as a
-potential causal factor for depression, while symptoms such as sleep
-disturbances, guilt, and anhedonia are particularly sensitive to
-external stressors, acting as potential early warning signals or
-intervention points for prevention. Moreover, the results highlight
-complexities in the data, including the influence of latent confounders
-and the challenges of capturing cyclic relationships. Despite some
-limitations, such as unresolved ambiguities in causal directions and
-challenges with mixed data distributions, this study demonstrates the
-utility of causal discovery tools in disentangling the intricate
-interplay between social and mental health dynamics. By mapping these
-causal structures into computational models, future research can
-simulate intervention effects, providing actionable insights to mitigate
-the impact of precarity on mental health. This study serves as a
-foundational effort, offering both methodological advancements and
-practical implications for addressing depression at a population level.
+\noindent Understanding the causal mechanisms linking precariousness and
+depression is critical for developing effective interventions. This
+study utilizes data from the HELIUS cohort study to explore these
+relationships using advanced causal discovery methods. By applying
+algorithms such as FCI, and CCI, and combining traditional Gaussian CI
+tests with non-parametric approaches like RCoT, we investigate how
+different indicators of precariousness---including factors related to
+employment, social relations and relational stress, financial situation,
+and housing---affect depressed mood, both as a sum score and at the
+individual symptom level. Our findings reveal that relational stress
+consistently emerges as a potential causal factor for depressed mood,
+while symptoms such as sleep disturbances, guilt, and anhedonia are
+particularly sensitive to external stressors, acting as potential early
+warning signals or intervention points for prevention. Moreover, the
+results highlight complexities in the data, including the influence of
+latent confounders and the challenges of capturing cyclic relationships.
+Despite some limitations, such as unresolved ambiguities in causal
+directions and challenges with mixed data distributions, this study
+demonstrates the utility of causal discovery tools in disentangling the
+intricate interplay between social and mental health dynamics. By
+mapping these causal structures into computational models, future
+research can simulate intervention effects, providing actionable
+insights to mitigate the impact of precariousness on mental health. This
+study serves as a foundational effort, offering both methodological
+advancements and practical implications for addressing depression at a
+population level.
 \end{abstract}
 
 \renewcommand*\contentsname{Table of contents}
@@ -341,44 +343,45 @@ practical implications for addressing depression at a population level.
 \section{Introduction}\label{introduction}
 
 Mental health problems in urban areas have been reported to be on the
-rise. Governments have been attempting to intervene, but the complexity
-of mental health systems presents significant challenges in planning
-effective interventions, let alone understanding the underlying
-mechanisms driving these issues.
+rise the complexity of mental health systems presents significant
+challenges in understanding the underlying mechanisms driving these
+issues, let alone planning effective interventions.
 
-Recent research has aimed to identify underlying factors contributing to
-mental health problems, often referred to as precariousness factors.
-These factors encompass various aspects of life, such as employment,
-social connections, financial stability, housing, and cultural
-dimensions. This comprehensive perspective on precarity helps to
-highlight how different aspects of life may be interconnected. While
-this research has advanced our understanding of the complex interplay
-between precariousness factors, a key question remains unanswered: how
-do these factors influence mental health? Specifically, the lack of
-directional information --- knowing what influences what --- limits our
-ability to identify and prioritize effective intervention targets.
+Research has aimed to identify underlying factors contributing to mental
+health problems. Recent research looked into the association between
+mental health and indicators of precariousness in various dimensions of
+life, indicating a high level of uncertainty and instability in people's
+lives, such as factors related to employment, social relations,
+finances, housing, and culture (ref Leonie's paper). This comprehensive
+perspective on precariousness helped to highlight how different aspects
+of life may be interconnected. While this research has advanced our
+understanding of which indicators of precariousness are related to
+mental health, a key question remains unanswered: how do these factors
+influence mental health? Specifically, the lack of directional
+information --- knowing what influences what --- limits our ability to
+identify and prioritize effective intervention targets.
 
 This study aims to investigate the causal relationships between
-precariousness factors and mental health outcomes, with a specific focus
-on depression, the most prevalent mental health issue in urban
-populations. Using causal discovery methods, we explore how different
-aspects of precarity influence depression and delve deeper into the
+different dimensions of precariousness and mental health outcomes, to
+with a specific focus on depression, the most prevalent mental health
+issue. Using causal discovery methods, we explore how different aspects
+of precariousness influence depression and delve deeper into the
 dynamics at the symptom level. By examining individual depressive
 symptoms, we aim to identify which symptoms may act as initiators by
-being particularly sensitive to specific precariousness factors. Through
-this analysis, our goal is to uncover the causal mechanisms underlying
-mental health challenges and provide a foundation for developing more
-effective and targeted interventions.
+being particularly sensitive to precariousness. Through this analysis,
+our goal is to uncover the causal mechanisms underlying mental health
+challenges and provide a foundation for developing more effective and
+targeted interventions.
 
 \section{Methods}\label{methods}
 
 \subsection{Data}\label{data}
 
-We use the HELIUS dataset, which captures the diverse population of
-Amsterdam across various ethnicities and provides comprehensive health
-and lifestyle data. To operationalize precariousness factors, we draw on
-the framework outlined in previous research (i.e., Leonie's paper) and
-select a set of relevant variables.
+We use data from the HELIUS study, a multi-ethnic cohort that includes
+participants of Dutch, Turkish, Moroccan, Surinamese and Ghanaian origin
+(Snijder et al., 2017). To operationalize precariousness factors, we
+draw on the framework outlined in previous research (i.e., Leonie's
+paper) and select a set of relevant variables.
 
 To ensure a robust representation of each precariousness factor, we
 conducted various exploratory analyses to identify consistent and
@@ -643,7 +646,7 @@ existing findings (\textbf{cite the comp\_model paper}).\footnote{We
   symptoms and precarity factors.} Lastly, to summarize the results, we
 identify the most frequently occurring edge endpoints across different
 experimental setups.\footnote{The detailed proportion of each edge
-  endpoint occurrence is provided in Section~\ref{sec-propmatrix}.} This
+  endpoint occurrence is provided in \textbf{?@sec-propmatrix}.} This
 ensures that only stable and consistent edges are retained, providing a
 clearer and more reliable understanding of the relationships between
 precarity factors and depression. See Figure~\ref{fig-workflow} for an
@@ -718,11 +721,11 @@ financial stress, likely mediated by direct or latent pathways.
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{img/both_dot.png}
+\includegraphics[width=1\textwidth,height=\textheight]{img/FCI_depsum.png}
 
 }
 
-\subcaption{\label{fig-sum-1}Using both GaussianCI and RCoT}
+\subcaption{\label{fig-sum-1}FCI PAG}
 
 \end{minipage}%
 %
@@ -730,16 +733,16 @@ financial stress, likely mediated by direct or latent pathways.
 
 \centering{
 
-\includegraphics[width=1\textwidth,height=\textheight]{img/rcot_dot.png}
+\includegraphics[width=1\textwidth,height=\textheight]{img/depsum_mat_fci.pdf}
 
 }
 
-\subcaption{\label{fig-sum-2}Using only RCoT}
+\subcaption{\label{fig-sum-2}Proportion matrix}
 
 \end{minipage}%
 
-\caption{\label{fig-sum}Resulting graphs of precarity factors and
-depression sum score using FCI and CCI.}
+\caption{\label{fig-sum}Resulting graph of precarity factors and
+depression sum score using FCI and proportion of edge endpoint types.}
 
 \end{figure}%
 
@@ -809,14 +812,33 @@ rest of the network, appearing as an isolated node.
 
 \begin{figure}
 
+\begin{minipage}{\linewidth}
+
 \centering{
 
-\includegraphics[width=0.8\textwidth,height=\textheight]{img/symptom_graph_refined.png}
+\includegraphics[width=0.7\textwidth,height=\textheight]{img/symptom_graph_FCI.png}
 
 }
 
-\caption{\label{fig-sym}Resulting graphs of precarity factors and
-individual depression symptoms using FCI and CCI.}
+\subcaption{\label{fig-sym-1}FCI PAG}
+
+\end{minipage}%
+\newline
+\begin{minipage}{\linewidth}
+
+\centering{
+
+\includegraphics[width=0.7\textwidth,height=\textheight]{img/symptom_mat_fci.pdf}
+
+}
+
+\subcaption{\label{fig-sym-2}Proportion matrix}
+
+\end{minipage}%
+
+\caption{\label{fig-sym}Resulting graph of precarity factors and
+individual depression symptoms using FCI and proportion of edge endpoint
+types.}
 
 \end{figure}%
 
@@ -841,7 +863,7 @@ disagreement between FCI and CCI regarding edge directionality, as
 evidenced by more dashed edges. FCI tends to estimate more undirected
 edges (circles), while CCI more frequently assigns directed arrows
 between symptom-symptom relationships. For a detailed breakdown, see
-Section~\ref{sec-propmatrix}, which shows the proportion of symbols
+\textbf{?@sec-propmatrix}, which shows the proportion of symbols
 produced by each algorithm. When examining overall precarity, we observe
 that more symptoms are now connected to the precarity score
 (\emph{Precarity}) compared to the individual precarity factor analysis
@@ -868,11 +890,11 @@ involving individual symptoms and individual precarity factors.
 
 \centering{
 
-\includegraphics[width=0.65\textwidth,height=\textheight]{img/FCI_presum.png}
+\includegraphics[width=0.6\textwidth,height=\textheight]{img/presum_graph_FCI.png}
 
 }
 
-\subcaption{\label{fig-presum-1}FCI}
+\subcaption{\label{fig-presum-1}FCI PAG}
 
 \end{minipage}%
 \newline
@@ -880,16 +902,17 @@ involving individual symptoms and individual precarity factors.
 
 \centering{
 
-\includegraphics[width=0.65\textwidth,height=\textheight]{img/CCI_presum.png}
+\includegraphics[width=0.6\textwidth,height=\textheight]{img/presum_mat_fci.pdf}
 
 }
 
-\subcaption{\label{fig-presum-2}CCI}
+\subcaption{\label{fig-presum-2}Proportion matrix}
 
 \end{minipage}%
 
-\caption{\label{fig-presum}Resulting graphs of precarity sum score and
-individual depression symptoms using FCI and CCI.}
+\caption{\label{fig-presum}Resulting graph of precarity sum score and
+individual depression symptoms using FCI and proportion of edge endpoint
+types.}
 
 \end{figure}%
 
@@ -1078,6 +1101,12 @@ Sethuraman, M. G., Lopez, R., Mohan, R., Fekri, F., Biancalani, T., \&
 Hütter, J.-C. (2023). NODAGS-flow: Nonlinear cyclic causal structure
 learning. \emph{International Conference on Artificial Intelligence and
 Statistics}, 6371--6387.
+
+\bibitem[\citeproctext]{ref-snijder2017cohort}
+Snijder, M. B., Galenkamp, H., Prins, M., Derks, E. M., Peters, R. J.,
+Zwinderman, A. H., \& Stronks, K. (2017). Cohort profile: The healthy
+life in an urban setting (HELIUS) study in amsterdam, the netherlands.
+\emph{BMJ Open}, \emph{7}(12), e017873.
 
 \bibitem[\citeproctext]{ref-spirtes2001causation}
 Spirtes, P., Glymour, C., \& Scheines, R. (2001). \emph{Causation,
@@ -1662,6 +1691,106 @@ analysis.
 \includegraphics{draft_v1_files/figure-pdf/unnamed-chunk-19-1.pdf}
 \end{center}
 
+\subsection{Results from CCI
+algorithm}\label{results-from-cci-algorithm}
+
+\begin{figure}
+
+\begin{minipage}{0.50\linewidth}
+
+\centering{
+
+\includegraphics[width=1\textwidth,height=\textheight]{img/CCI_depsum.png}
+
+}
+
+\subcaption{\label{fig-sum-cci-1}CCI MAAG}
+
+\end{minipage}%
+%
+\begin{minipage}{0.50\linewidth}
+
+\centering{
+
+\includegraphics[width=1\textwidth,height=\textheight]{img/depsum_mat_cci.pdf}
+
+}
+
+\subcaption{\label{fig-sum-cci-2}Proportion matrix}
+
+\end{minipage}%
+
+\caption{\label{fig-sum-cci}Resulting graph of precarity factors and
+depression sum score using CCI and proportion of edge endpoint types.}
+
+\end{figure}%
+
+\begin{figure}
+
+\begin{minipage}{\linewidth}
+
+\centering{
+
+\includegraphics[width=0.6\textwidth,height=\textheight]{img/symptom_graph_CCI.png}
+
+}
+
+\subcaption{\label{fig-sym-cci-1}CCI MAAG}
+
+\end{minipage}%
+\newline
+\begin{minipage}{\linewidth}
+
+\centering{
+
+\includegraphics[width=0.6\textwidth,height=\textheight]{img/symptom_mat_cci.pdf}
+
+}
+
+\subcaption{\label{fig-sym-cci-2}Proportion matrix}
+
+\end{minipage}%
+
+\caption{\label{fig-sym-cci}Resulting graph of precarity factors and
+individual depression symptoms using CCI and proportion of edge endpoint
+types.}
+
+\end{figure}%
+
+\begin{figure}
+
+\begin{minipage}{\linewidth}
+
+\centering{
+
+\includegraphics[width=0.6\textwidth,height=\textheight]{img/presum_graph_CCI.png}
+
+}
+
+\subcaption{\label{fig-presum-cci-1}CCI MAAG}
+
+\end{minipage}%
+\newline
+\begin{minipage}{\linewidth}
+
+\centering{
+
+\includegraphics[width=0.6\textwidth,height=\textheight]{img/presum_mat_cci.pdf}
+
+}
+
+\subcaption{\label{fig-presum-cci-2}Proportion matrix}
+
+\end{minipage}%
+
+\caption{\label{fig-presum-cci}Resulting graph of precarity sum score
+and individual depression symptoms using CCI and proportion of edge
+endpoint types.}
+
+\end{figure}%
+
+\clearpage
+
 \subsection{Results from PC algorithm}\label{results-from-pc-algorithm}
 
 \begin{figure}
@@ -1699,7 +1828,7 @@ depression sum score using PC.}
 
 \centering{
 
-\includegraphics[width=0.7\textwidth,height=\textheight]{img/PC_symptom.png}
+\includegraphics[width=0.6\textwidth,height=\textheight]{img/PC_symptom.png}
 
 }
 
@@ -1712,7 +1841,7 @@ individual depression symptoms using PC.}
 
 \centering{
 
-\includegraphics[width=0.7\textwidth,height=\textheight]{img/PC_presum.png}
+\includegraphics[width=0.6\textwidth,height=\textheight]{img/PC_presum.png}
 
 }
 
@@ -1859,48 +1988,6 @@ H_0: \|C_{AB \cdot C}\|_F^2 = 0, \quad H_1: \|C_{AB \cdot C}\|_F^2 > 0.
 RCoT is computationally efficient and well-suited for large conditioning
 sets (\(|Z| \geq 4\)). Its simplicity enables robust calibration of the
 null distribution and improved scalability for high-dimensional data.
-
-\subsection{Summarized Stable Edges Proportion}\label{sec-propmatrix}
-
-\begin{figure}
-
-\centering{
-
-\includegraphics[width=1\textwidth,height=\textheight]{img/sumgraph_mat.pdf}
-
-}
-
-\caption{\label{fig-sum-mat}Proportions of edge endpoint types for
-graphs based on depression sum score.}
-
-\end{figure}%
-
-\begin{figure}
-
-\centering{
-
-\includegraphics[width=1\textwidth,height=\textheight]{img/symgraph_mat.pdf}
-
-}
-
-\caption{\label{fig-sym-mat}Proportions of edge endpoint types for
-graphs based on individual depression symptoms.}
-
-\end{figure}%
-
-\begin{figure}
-
-\centering{
-
-\includegraphics[width=0.7\textwidth,height=\textheight]{img/presumgraph_mat2.pdf}
-
-}
-
-\caption{\label{fig-presum-mat}Proportions of edge endpoint types for
-graphs based on individual depression symptoms with precarity sum
-score.}
-
-\end{figure}%
 
 
 
