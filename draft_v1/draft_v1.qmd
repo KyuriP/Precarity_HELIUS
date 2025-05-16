@@ -1,5 +1,5 @@
 ---
-title: "Causal Discovery on Precarity and Depression"
+title: "From Causal Discovery to Intervention Simulation: Modeling Precarity and Depression in the HELIUS Study"
 #subtitle: Using the HELIUS dataset
 author: 
   - name: Kyuri Park
@@ -44,7 +44,11 @@ nocite: |
   @*
 csl: apa.csl
 abstract: |
-  \noindent Understanding the causal mechanisms linking precariousness and depression is critical for developing effective interventions. This study utilizes data from the HELIUS cohort study to explore these relationships using advanced causal discovery methods. By applying algorithms such as FCI, and CCI, and combining traditional Gaussian CI tests with non-parametric approaches like RCoT, we investigate how different indicators of precariousness—including factors related to employment, social relations and relational stress, financial situation, and housing—affect depressed mood, both as a sum score and at the individual symptom level. Our findings reveal that relational stress consistently emerges as a potential causal factor for depressed mood, while symptoms such as sleep disturbances, guilt, and anhedonia are particularly sensitive to external stressors, acting as potential early warning signals or intervention points for prevention. Moreover, the results highlight complexities in the data, including the influence of latent confounders and the challenges of capturing cyclic relationships. Despite some limitations, such as unresolved ambiguities in causal directions and challenges with mixed data distributions, this study demonstrates the utility of causal discovery tools in disentangling the intricate interplay between social and mental health dynamics. By mapping these causal structures into computational models, future research can simulate intervention effects, providing actionable insights to mitigate the impact of precariousness on mental health. This study serves as a foundational effort, offering both methodological advancements and practical implications for addressing depression at a population level.
+  \noindent This study investigates the dynamic relationship between precarious life conditions and depression by combining constraint-based causal discovery with computational modeling. Using cross-sectional data from the HELIUS study, we applied cycle-capable causal discovery algorithms to uncover directional relationships between financial stress, domain-specific precariousness indicators, and depressive symptoms. Our multi-resolution analysis—spanning both aggregate and symptom-level constructs—identified financial stress as a robust driver of depression, and highlighted key symptoms, such as sleep disturbance and depressed mood, as likely initiators or reinforcers of downstream precariousness.
+  To explore how these structural insights shape intervention effectiveness, we developed a simplified nonlinear dynamical model simulating the co-evolution of depression and social precarity under varying levels of financial stress reduction. Simulation results revealed that the system's responsiveness depends not only on the intensity of external intervention but also on internal structural features such as feedback strength and noise. In particular, some configurations exhibited bistability, requiring interventions to surpass a critical threshold to trigger lasting improvement, while others responded more proportionally.
+  Together, these findings emphasize that internal feedback dynamics—not just external adversity—can shape the impact of mental health interventions. More broadly, our study offers a scalable framework for integrating causal discovery and dynamical simulation to better understand and inform policy responses to complex psychosocial phenomena.
+  
+  <!-- Understanding the causal mechanisms linking precariousness and depression is critical for developing effective interventions. This study utilizes data from the HELIUS cohort study to explore these relationships using advanced causal discovery methods. By applying algorithms such as FCI, and CCI, and combining traditional Gaussian CI tests with non-parametric approaches like RCoT, we investigate how different indicators of precariousness—including factors related to employment, social relations and relational stress, financial situation, and housing—affect depressed mood, both as a sum score and at the individual symptom level. Our findings reveal that relational stress consistently emerges as a potential causal factor for depressed mood, while symptoms such as sleep disturbances, guilt, and anhedonia are particularly sensitive to external stressors, acting as potential early warning signals or intervention points for prevention. Moreover, the results highlight complexities in the data, including the influence of latent confounders and the challenges of capturing cyclic relationships. Despite some limitations, such as unresolved ambiguities in causal directions and challenges with mixed data distributions, this study demonstrates the utility of causal discovery tools in disentangling the intricate interplay between social and mental health dynamics. By mapping these causal structures into computational models, future research can simulate intervention effects, providing actionable insights to mitigate the impact of precariousness on mental health. This study serves as a foundational effort, offering both methodological advancements and practical implications for addressing depression at a population level. -->
 ---
 
 ```{r, include=FALSE}
@@ -149,14 +153,28 @@ colnames(scaled_data) <- c(
 
 # Introduction
 
-Mental health problems in urban areas are on the rise, yet the complexity of mental health systems poses significant challenges in understanding the underlying mechanisms driving these issues — let alone designing effective interventions.
-Research has long sought to identify underlying factors contributing to mental health problems. Recent research looked into the association between mental health and indicators of precariousness in various dimensions of life, indicating a high level of uncertainty and instability in people’s lives, such as factors related to employment, social relations, finances, housing, and culture (ref Leonie’s paper). This comprehensive perspective on precariousness helped to highlight how different aspects of life may be interconnected. While this research has advanced our understanding of which indicators of precariousness are related to mental health, a key question remains unanswered: how do these factors influence mental health? Specifically, the lack of directional insight — knowing what influences what — limits our ability to identify and prioritize effective intervention targets.
+Mental health disorders represent a growing global health concern, especially in urbanized regions [@WHO_2022; @gruebner2017cities]. In 2019, one in eight people worldwide were living with a mental health condition, with the highest disability-adjusted life years (DALYs) due to mental and addictive disorders concentrated in high-income countries such as those in Northern Europe, North America, and Australia [@rehm2019global; @WHO_2022]. Despite growing awareness, governments have struggled to design effective responses. Mental health outcomes arise from complex, multi-level dynamics—intertwined with the social, economic, and spatial structures of urban environments—making both diagnosis and intervention design deeply challenging [@van2021advancing].
 
-This study aims to investigate the causal relationships between different dimensions of precariousness and mental health outcomes, to with a specific focus on depression, the most prevalent mental health issue. 
-Using causal discovery methods, we explore how various aspects of precariousness contribute to depression and whether depression, in turn, exacerbates precariousness, potentially creating a feedback loop.
-Furthermore, we zoom in at the symptom level, examining individual depressive symptoms to identify those that may act as initiators — triggering the activation of the symptom network — by displaying heightened sensitivity to specific precariousness factors.
-We also investigate symptoms that may function as bridging elements, linking the dynamics of depression with precariousness by feeding back into precarious conditions, potentially reinforcing the cycle of mental health deterioration and precarious conditions.
-Through this analysis, we aim to uncover the causal mechanisms driving mental health challenges related to precariousness and establish a foundation for more targeted and effective interventions by identifying the key driving forces within this system.
+Recent work has shifted focus from individual-level vulnerability to broader social and structural determinants. While high-income nations show elevated overall DALYs, within-country disparities reveal that income inequality is a significant predictor of mental health burden [@rehm2019global]. Moreover, precarious working conditions, housing instability, and neighborhood disadvantage have all been linked to increased risk of depression and anxiety [@pevalin2017impact; @fone2014effect; @rugulies2023work; @ronnblad2019precarious]. This growing literature highlights that poor mental health is not merely a personal issue, but one rooted in sustained socioeconomic stress and structural uncertainty.
+
+Building on this, recent studies have introduced the concept of precariousness as a multidimensional condition characterized by instability and lack of control across several life domains—including employment, finances, housing, social relations, and cultural belonging [@elsenburg2025clustering]. This broader view reveals how different forms of insecurity can co-occur and compound, forming an ecosystem of risk. However, despite growing evidence of association between precariousness and mental health, a fundamental question remains unresolved: *How do these factors causally influence one another?* Most existing studies rely on cross-sectional correlations, leaving open questions about directionality and feedback. Without stronger causal insight, it remains difficult to identify priority targets for intervention or to anticipate unintended effects.
+
+This study aims to investigate the causal mechanisms linking precariousness and depression—and how those mechanisms shape system responses to external intervention. Specifically, we ask: *How does the internal configuration of the precarity–depression relationship affect the outcomes of stress-reducing interventions?*
+To answer this, we combine two approaches. First, we use cycle-capable causal discovery algorithms to infer directional relationships among financial stress, domain-specific precariousness factors, and depressive symptoms. By analyzing both aggregate scores (e.g., PHQ-9 total, composite precarity index) and disaggregated variables (individual symptoms and life-domain indicators), we identify both broad associations and fine-grained causal pathways.
+Second, we translate these insights into a computational dynamical model that simulates how depression and precarity co-evolve under varying levels of external stress. This model enables us to probe how system properties—such as feedback strength and stochastic noise—govern responsiveness to intervention. In some configurations, the system exhibits bistability, remaining stuck in a high-risk state unless external support exceeds a critical threshold. In others, it shows unistable behavior, responding more gradually to incremental changes.
+By integrating causal discovery with dynamic simulation, we aim to demonstrate how the internal structure of the depression–precarity system shapes its susceptibility to change—and, by extension, how intervention strategies might be tailored to the architecture of underlying vulnerability.
+
+
+<!-- Mental health problems are rising globally, and populations facing chronic stress and socioeconomic instability bear a disproportionate share of this burden. Despite growing recognition of these challenges, designing effective policies remains difficult—largely because mental health outcomes emerge from complex, interacting factors that do not operate in isolation. To inform better interventions, we must move beyond identifying which factors are associated with mental health problems and instead uncover how those factors influence one another, the underlying causal mechanisms. -->
+
+<!-- Precarious life conditions—such as unstable housing, insecure employment, and financial hardship—are now well established as key correlates of depression and other mental health outcomes. However, the causal dynamics linking these domains remain poorly understood. In particular, it is unclear how different forms of precariousness and depressive symptoms influence one another, and whether their interplay creates self-reinforcing loops that stabilize poor mental health and social adversity over time.  -->
+
+<!-- This study aims to investigate the causal mechanisms linking precariousness and depression, and to examine how those mechanisms shape the system’s response to external intervention. Specifically, we ask: How do different configurations of the precarity–depression relationship affect the outcomes of interventions aimed at reducing external stress? -->
+
+<!-- To address this, we combine causal discovery and mechanistic modeling. We apply cycle-capable causal discovery algorithms to infer directional relationships among financial stress, precariousness indicators, and depressive symptoms. Our analysis includes both aggregate scores (e.g., PHQ-9 total, precarity composite index) and disaggregated variables (individual symptoms and domain-specific precariousness), allowing us to capture both broad associations and fine-grained pathways. -->
+
+<!-- Building on the discovered causal patterns, we simulate a set of scenarios using a computational model that captures the co-evolution of depression and precarity under varying levels of financial stress. This framework allows us to examine how internal system properties—particularly feedback strength and stochastic noise—influence responsiveness to intervention. In some regimes, the system exhibits bistability, resisting change unless pushed past a critical threshold. In others, it transitions gradually, reflecting unistable dynamics. Through this integrative approach, we aim to show how the internal architecture of the depression–precarity system fundamentally shapes its susceptibility to change—highlighting the importance of structural understanding in designing effective, equitable mental health interventions. -->
+
 
 
 
@@ -164,15 +182,15 @@ Through this analysis, we aim to uncover the causal mechanisms driving mental he
 
 ## Data
 
-We use data from the HELIUS study, a multi-ethnic cohort that includes participants of Dutch, Turkish, Moroccan, Surinamese and Ghanaian origin [@snijder2017cohort]. To operationalize precariousness factors, we draw on the framework outlined in previous research (i.e., Leonie's paper) and select a set of relevant variables.
-
-To ensure a robust representation of each precariousness factor, we conducted various exploratory analyses to identify consistent and meaningful factor structures. Based on these analyses, we identified five precariousness factors, including two related to recent stressors, each comprising multiple variables as outlined below. Detailed information on the exploratory analyses can be found in the [Appendix](#sec-appendix).
+We use data from the HELIUS (HEalthy LIfe in an Urban Setting) study, which has been described in detail elsewhere [@stronks2013unravelling; @snijder2017cohort]. It  captures the diverse population of the city of Amsterdam by including the six main ethnic groups and which provides comprehensive health and lifestyle data, including depressive symptoms as measured by the PHQ-9 [@galenkamp2017measurement]. To operationalize indicators of precariousness, we draw on the framework outlined in previous research [@elsenburg2025clustering] and select a set of relevant variables.
+To ensure a robust representation of precariousness in our causal discovery models, we conducted various exploratory analyses to identify consistent and meaningful data-driven factor structures. Based on these analyses, we identified five precariousness factors, including two related to recent stressors, each comprising multiple variables as outlined below. DFurther details on the HELIUS study and factor extraction are provided in the [Appendix](#sec-appendix).
 
 -   Employment precariousness: `emp_stat`, `work_sit`.
 -   Social precariousness: `soc_freq`, `soc_adq`.
 -   Housing precariousness: `nb_safe`, `nb_res`, `nb_rent`, `cul_rec`.
 -   Recent relational stressors: `frd_brk12`, `conf12`.
 -   Recent financial stressors: `fincri12`, `inc_diff`.
+
 
 After preprocessing, the HELIUS dataset comprises 21,628 samples. Along with the five precariousness factors, we also compute an overall precarity score as the combined value of these factors. Additionally, PHQ-9 scores are included to represent depression, both as a total sum score and as individual symptom scores. In the subsequent causal discovery analysis, we examine the relationship between depression and precarity using both aggregated sum scores and their individual-level representations. Refer to @fig-dist for the overall distributions of the variables used in the analysis.
 
@@ -210,133 +228,75 @@ ggplot(clust_data_long, aes(x = value)) +
   theme_minimal()
 ```
 
-## Causal Discovery
 
-There are numerous causal discovery algorithms available; however, in this study, we focus on algorithms suited to the potential cyclic relationships within our system. Specifically, we use *FCI* (Fast Causal Inference) and *CCI* (Cyclic Causal Inference), both capable of accounting for such cycles [@mooij2020constraint; @strobl2019]. Additionally, we include the *PC* algorithm as a reference, given its simplicity and prominence as one of the most widely known causal discovery methods [@spirtes2001causation]. 
+## Causal Discovery{#sec-analysis}
 
+To uncover directional relationships between precariousness and depression, we used constraint-based causal discovery algorithms that allow for feedback loops and latent confounding. Specifically, we applied the *Fast Causal Inference* (FCI) and *Cyclic Causal Inference* (CCI) algorithms, both of which can detect cycles and non-acyclic structures [@mooij2020constraint; @strobl2019]. For reference, we also included the *PC* algorithm, one of the most widely used methods for acyclic causal discovery [@spirtes2001causation].
 
+A key challenge in applying these algorithms to the HELIUS dataset is that many variables are non-Gaussian and their relationships are likely nonlinear. To address this, we supplemented the commonly used Gaussian conditional independence (CI) test—based on partial correlations—with a non-parametric alternative: the *Randomized Conditional Correlation Test* (RCoT). RCoT approximates kernel-based CI testing using random Fourier features, significantly reducing computational demands while maintaining sensitivity to nonlinear dependencies [@strobl2019approximate; @zhang2012kernel].
 
-\begin{table}[ht]
-\centering
-\small % Make the font size smaller
-\caption{Assumptions of causal discovery algorithms}
-\begin{tabular}{lccccc}
-\toprule
-Algorithm & Acyclicity & \makecell{Causal \\ sufficiency} & 
-\makecell{Absence of \\ selection bias} & Linearity & Output \\ 
-\midrule
-PC  & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & CPDAG \\ 
-FCI & $-^{a}$ & $\checkmark$ & $-^{a}$ & $-^{a}$ & PAG \\ 
-CCI & x & x & x & $\checkmark$ & \makecell{\footnotesize(partially oriented) \\ MAAG} \\ 
-\bottomrule
-\end{tabular}
-\caption*{\footnotesize{\textit{Note}. $^{a}$The FCI algorithm, introduced by Spirtes (1995), is a constraint-based causal discovery method for DAGs that accounts for latent confounding and selection bias. Mooij \& Claassen (2020) later showed its applicability to cyclic causal discovery with latent confounding under general faithfulness and Markov conditions, assuming non-linear causal relationships.}}
-\end{table}
+We examined the causal structure using three complementary approaches:
 
-<!-- For word docx compiling -->
-<!-- **Table 1**: Assumptions of causal discovery algorithms. -->
+1. Aggregate-level analysis: relationships between five domain-specific precariousness factors and the PHQ-9 sum score.
+2. Fully disaggregated analysis: relationships between individual precariousness items and individual depressive symptoms.
+3. Mixed analysis: relationships between individual symptoms and a composite index of overall precariousness.
 
-<!-- | Algorithm | Acyclicity | Causal sufficiency | Absence of selection bias | Linearity | Output | -->
-<!-- |-----------|------------|--------------------|---------------------------|-----------|--------| -->
-<!-- | PC        | ✓          | ✓                  | ✓                         | ✓         |  CPDAG | -->
-<!-- | FCI       | -¹         | ✓                  | -¹                        | -¹        |  PAG   | -->
-<!-- | CCI       | x          | x                  | x                         | ✓         |  MAAG  | -->
-<!-- ------------------------------------------------------------------------------------------------ -->
-<!-- ¹FCI can detect cycles in systems that lack selection bias and exhibit non-linear relationships (Mooij & Claassen, 2020). -->
+The aggregate analysis reduces dimensionality and yields interpretable summaries of how domains of precarity relate to overall depression severity. However, it may obscure finer-grained effects. The disaggregated analysis allows for precise mapping of which symptoms are influenced by (or influence) specific precariousness conditions, but it introduces complexity due to the high dimensionality and distributional properties of the data. The mixed approach, in turn, integrates these perspectives by examining how individual symptoms respond to cumulative precarity across domains.
+
+To ensure robust estimation and guard against sensitivity to parameter settings, we implemented a systematic grid of analysis conditions:
+
+* Significance levels: $\alpha$ = 0.01 and 0.05
+* Bootstrap thresholds: 0.5, 0.6, 0.7, 0.8
+* CI tests: Gaussian and RCoT
+* Algorithms: FCI, CCI, and PC
+
+Each combination was bootstrapped 100 times for sum-score level analyses and 30 times for symptom-level analyses, yielding a total of 1,600 graphs per algorithm for the full analysis. For symptom networks, we fixed the skeleton structure using a consensus graph estimated across PC, FCI, and CCI ($\alpha$ = 0.01, RCoT). This constraint improves computational efficiency without limiting the estimation of directional edges between symptoms and precariousness variables.
+
+To summarize the results, we adopted a two-level aggregation strategy. First, within each analysis condition, we recorded the most frequently observed edge-endpoint type (e.g., directed, undirected, uncertain) from the bootstraps. Then, across all conditions, we tallied the most frequent endpoint type per edge. In cases of ties, we assigned dashed edges to reflect uncertainty. For transparency, we accompany each graph with a table showing the relative frequencies of each edge symbol.
+
+This procedure yields a final graph for each algorithm and analysis type—offering both robustness and interpretability. See @fig-workflow for an overview of the causal discovery pipeline.
+
+For detailed explanations of the algorithms, edge interpretations, and graph types (e.g., PAG, MAAG, CPDAG), as well as algorithmic assumptions and limitations, see the [Appendix](#sec-appendix).
 
 
+<!-- To uncover directional relationships between precariousness and depression, we used constraint-based causal discovery algorithms capable of detecting feedback loops and latent confounding. Specifically, we applied the *Fast Causal Inference* (FCI) and *Cyclic Causal Inference* (CCI) algorithms, both of which support cyclic and non-acyclic structures [@mooij2020constraint; @strobl2019]. Additionally, we include the *PC* algorithm as a reference, given its simplicity and prominence as one of the most widely known causal discovery methods [@spirtes2001causation]. -->
+
+<!-- One practical challenge in applying these algorithms to the HELIUS dataset is that most variables do not follow a Gaussian distribution, and the relationships among variables are unlikely to be strictly linear. To address this, we supplement the commonly used Gaussian conditional independence (CI) test, which relies on partial correlations, with a non-parametric CI test based on reproducing kernel methods [@zhang2012kernel]. -->
+<!-- While kernel-based conditional independence tests (KCIT) are theoretically effective in capturing non-linear dependencies and subtle interactions in data with non-Gaussian noise, they are computationally demanding for large datasets like HELIUS. Their quadratic scaling with sample size is primarily due to the need to invert large kernel matrices, making them impractical for large-scale analysis [@rahimi2007random]. -->
+<!-- To mitigate this issue, we use the Randomized Conditional Correlation Test (RCoT), which approximates kernel methods using random Fourier features. This approach reduces computational complexity from quadratic to linear scaling with sample size, significantly lowering computational costs while maintaining robustness [@strobl2019approximate]. For a more detailed explanation of RCoT, refer to @sec-rcot. -->
+
+<!-- We analyze the causal structure using three complementary approaches: (1) Examining the relationship between the five individual precariousness factors and the PHQ sum score, which represents overall depression severity. -->
+<!-- (2) Investigating the relationship between individual depressive symptoms and individual precariousness factors. (3) Assessing the relationship between individual depressive symptoms and overall precariousness (the sum of all precariousness factors). -->
+<!-- Using the PHQ sum score as a measure of depression simplifies the analysis by reducing dimensionality, improving computational efficiency, and providing a broad, interpretable perspective on how precariousness factors relate to overall depression severity. However, this aggregated approach may overlook granular symptom-level relationships. -->
+
+<!-- By zooming in on individual symptoms, we capture a more detailed picture of how specific depressive symptoms interact with different precariousness factors. This approach allows us to map individual causal pathways, identifying which symptoms are particularly sensitive to certain precarious conditions and vice versa. However, this level of detail introduces methodological challenges, including non-standard distributions of symptom variables and the high-dimensional nature of the analysis, which can reduce statistical power and significantly increase computational demands—especially when using non-parametric conditional independence (CI) tests. -->
+
+<!-- Finally, analyzing individual symptoms in relation to overall precariousness provides an integrative perspective, revealing how depression symptoms collectively relate to precarious conditions. This approach complements the fully disaggregated analysis by aggregating precariousness factors, potentially uncovering relationships that may be too weak to detect when examined separately. This is particularly relevant when a symptom is associated with multiple precariousness factors, but these associations are not strong enough to emerge in an individual-level analysis. -->
+<!-- By integrating these three approaches — ranging from partially aggregated to fully disaggregated — we aim to achieve a balance between capturing detailed granularity and gaining a broader understanding of the relationship between precarity and depression.  -->
 
 
-As shown in Table 1, the resulting graphs from FCI and CCI differ slightly (*PAG*: partial ancestral graph; *MAAG*: maximal almost ancestral graph) due to their reliance on different underlying assumptions. 
-Despite these differences, both graphs belong to the class of *ancestral graphs*, which are designed to encode causal relationships between variables, where the presence of an edge indicates causal *ancestry.*
-In these graphs, directed edges, $A \stararrow B$, indicate that $B$ is not an ancestor of $A$ in every graph within the Markov equivalence class, $Equiv(G)$. 
-The Markov equivalence class represents a set of graphs that encode the same conditional independence relationships, ensuring that the same *d-separation* conditions hold across all graphs in the class [@spirtes2001causation].
-Conversely, an edge marked as $A \startail B$ indicates that $B$ is an ancestor of $A$ across all graphs in $Equiv(G)$. 
-Circle endpoints, $A \starcirc B$, represent ambiguity in the ancestral relationship, meaning $B$'s ancestral status relative to $A$ varies across graphs in $Equiv(G)$.[^4] 
-Finally, when an edge is represented as $A \arrowarrow B$, it implies that neither $A$ nor $B$ is an ancestor of the other, suggesting the presence of a latent confounder influencing both variables.
+<!-- Furthermore, to address sensitivity to parameter values and enhance the robustness of our results, we implement multiple settings combined with bootstrapping. For each condition, we generate 100 bootstrap samples, estimate causal graphs, and retain only the edge-endpoints that exceed predefined thresholds. If no edge-endpoint type surpasses the threshold, we assign a circle ($\circ$) to indicate uncertainty in the edge direction. -->
 
-The algorithms also differ in how they detect cycles and represent cyclic relationships in their resulting graphs.
-In CCI's MAAG, $A$ \textemdash\ $B$ indicates that $A$ is an ancestor of $B$, and simultaneously $B$ is an ancestor of $A$, referring to a cyclic relationship between $A \stackedarrows B$. 
-FCI, on the other hand, identifies potential cycles more subtly. In its PAG, fully-connected nodes with circle endpoints ($\circirc$) may suggest the presence of cyclic structures.
-FCI, therefore, provides a sufficient condition to distinguish variables that are not part of a cycle, offering a more nuanced approach to handling cyclic relationships [@mooij2020constraint].
+<!-- The analyses are conducted under the following conditions: -->
 
-Table 1 highlights further differences in the assumptions underlying these algorithms. CCI operates under the assumption of a linear system, whereas FCI, particularly when used to infer cyclic relationships, assumes a non-linear system without selection bias and adheres to more general faithfulness and Markov conditions (i.e., *$\sigma$-separation* and *$\sigma$-faithfulness* setting) [@forre2018constraint].
-When the respective assumptions of each algorithm are met, their inferred cyclic relationships align with those illustrated in @fig-examplegraphs. 
+<!-- -   Significance levels ($\alpha$): 0.01 and 0.05 -->
+<!-- -   Thresholds: 0.5, 0.6, 0.7, and 0.8 -->
+<!-- -   CI test: Gaussian CI test, RCoT -->
+<!-- -   Algorithms: FCI, CCI, and PC -->
 
-While CCI's MAAG provides an explicit representation of cyclic relationships, it has certain theoretical limitations, as the MAAG may not always fully preserve d-separation relations from the original graph, $\mathcal{G}$ [@strobl2019]. Given these considerations, we examine and compare results from both algorithms, placing more weight on the FCI results, which are presented in the main results section, while discussing CCI results where relevant, with detailed findings provided in the [Appendix](#sec-appendix).
-A full discussion of causal discovery concepts and algorithmic details is beyond the scope of this paper; however, readers seeking a more in-depth understanding can refer to @park2024discovering for a comprehensive exploration of these methods and their applications.
+<!-- This setup yields 16 combinations (2 significance levels × 4 thresholds × 2 CI tests), applied across three algorithms. Each combination is repeated for 100 bootstrap samples, yielding a total of 1,600 graphs per algorithm.  -->
+<!-- For analyses involving individual symptom variables, we simplify the setup by focusing on thresholds of 0.6 and 0.7 and reducing the number of bootstrap samples to 30, easing computational demands. -->
+<!-- To further enhance efficiency, we fix the skeleton of the symptom network using a common structure derived from PC, FCI, and CCI algorithms ($\alpha$ = 0.01, RCoT CI test). This step constrains which edges can be present among symptoms but does not restrict the estimation of causal directions within the symptom network. Additionally, the entire causal structure between symptoms and precariousness factors remains fully estimable, ensuring that key relationships are still inferred. -->
+<!-- Beyond its computational benefits — particularly in reducing the time required for skeleton estimation — this fixed structure also aligns well with commonly reported symptom network structures in the literature [@park2025individual], ensuring consistency with existing findings. -->
 
+<!-- To obtain a final, stable summary of causal relationships, we identify the most frequently occurring edge-endpoints across different experimental setups. First, within each condition, we determine the most frequent edge-endpoint from all bootstrap samples. Then, across different conditions, we aggregate these selected symbols and determine the overall most common edge-endpoint for each graph entry. -->
 
+<!-- Since we have an even number of experimental setups, ties may occasionally occur. In such cases, we explicitly denote them in the resulting graph using dashed lines. To further help with the interpretation and understanding of the resulting graph, we provide a corresponding table for each graph, showing the proportion of each edge-endpoint type to clarify how dominant a given symbol is in each case. -->
 
-[^4]: $*$ serves as a \textit{meta-symbol}, representing one of the three possible edge-endpoints. For instance, $A \tailstar B$ can indicate any of the following edges: $A$ \textemdash\ $B$, $A\tailarrow B$, or $A \tailcirc B$ [@park2024discovering].
-
-```{r}
-#| layout-ncol: 3
-#| label: fig-examplegraphs
-#| fig-cap: Example graph $\mathcal{G}$ featuring a cycle and the corresponding MAAG from CCI and PAG from FCI.
-#| fig-subcap: 
-#|   - Example graph $\mathcal{G}$
-#|   - Corresponding MAAG 
-#|   - Corrsponding PAG
-#| fig-align: center
-#| out-width: 60%
+<!-- By double summarizing the results in this way, we generate one final graph per algorithm for each analysis approach: the partially aggregated analysis, which uses either the sum of precariousness factors or the sum of depression factors to capture overall trends, and the fully disaggregated analysis, which examines individual precariousness and depression factors separately. -->
+<!-- This approach ensures that only stable and consistent edges — those that persist across different parameter settings — are retained, leading to a robust and reliable understanding of the relationships between precariousness factors and depression. See @fig-workflow for an overview of the analysis workflow. -->
 
 
-knitr::include_graphics("img/original_DCG.png")
-knitr::include_graphics("img/FCI_graph.png")
-knitr::include_graphics("img/CCI_graph.png")
-```
-
-The graph produced by the PC algorithm is a *CPDAG* (completed partially directed acyclic graph), where directed edges ($A$ → $B$) indicate that $A$ is a direct cause (parent) of $B$. Unlike FCI and CCI, the CPDAG does not include circle symbols. Instead, when the PC algorithm cannot determine the direction of causality, it represents this uncertainty with bidirectional arrows. 
-While the PC algorithm serves as a useful reference, its strict assumptions — acyclicity and the absence of latent confounders—limit its applicability in more complex scenarios. For this reason, our primary focus remains on the results obtained from FCI and CCI, with all PC algorithm results provided in the [Appendix](#sec-appendix) for completeness. 
-
-
-One practical challenge in applying these algorithms to the HELIUS dataset is that most variables do not follow a Gaussian distribution, and the relationships among variables are unlikely to be strictly linear. To address this, we supplement the commonly used Gaussian conditional independence (CI) test, which relies on partial correlations, with a non-parametric CI test based on reproducing kernel methods [@zhang2012kernel].
-While kernel-based conditional independence tests (KCIT) are theoretically effective in capturing non-linear dependencies and subtle interactions in data with non-Gaussian noise, they are computationally demanding for large datasets like HELIUS. Their quadratic scaling with sample size is primarily due to the need to invert large kernel matrices, making them impractical for large-scale analysis [@rahimi2007random].
-To mitigate this issue, we use the Randomized Conditional Correlation Test (RCoT), which approximates kernel methods using random Fourier features. This approach reduces computational complexity from quadratic to linear scaling with sample size, significantly lowering computational costs while maintaining robustness [@strobl2019approximate]. For a more detailed explanation of RCoT, refer to @sec-rcot.
-
-
-
-## Analysis{#sec-analysis}
-
-We analyze the causal structure using three complementary approaches: (1) Examining the relationship between the five individual precariousness factors and the PHQ sum score, which represents overall depression severity.
-(2) Investigating the relationship between individual depressive symptoms and individual precariousness factors. (3) Assessing the relationship between individual depressive symptoms and overall precariousness (the sum of all precariousness factors).
-Using the PHQ sum score as a measure of depression simplifies the analysis by reducing dimensionality, improving computational efficiency, and providing a broad, interpretable perspective on how precariousness factors relate to overall depression severity. However, this aggregated approach may overlook granular symptom-level relationships.
-
-By zooming in on individual symptoms, we capture a more detailed picture of how specific depressive symptoms interact with different precariousness factors. This approach allows us to map individual causal pathways, identifying which symptoms are particularly sensitive to certain precarious conditions and vice versa. However, this level of detail introduces methodological challenges, including non-standard distributions of symptom variables and the high-dimensional nature of the analysis, which can reduce statistical power and significantly increase computational demands—especially when using non-parametric conditional independence (CI) tests.
-
-Finally, analyzing individual symptoms in relation to overall precariousness provides an integrative perspective, revealing how depression symptoms collectively relate to precarious conditions. This approach complements the fully disaggregated analysis by aggregating precariousness factors, potentially uncovering relationships that may be too weak to detect when examined separately. This is particularly relevant when a symptom is associated with multiple precariousness factors, but these associations are not strong enough to emerge in an individual-level analysis.
-By integrating these three approaches — ranging from partially aggregated to fully disaggregated — we aim to achieve a balance between capturing detailed granularity and gaining a broader understanding of the relationship between precarity and depression. 
-
-<!-- The PHQ sum score and precarity sum score capture overarching trends between overall depression and precarity, while symptom-level analysis with individual precarity factors reveals detailed dynamics, essential for tailoring specific interventions. --> 
-
-Furthermore, to address sensitivity to parameter values and enhance the robustness of our results, we implement multiple settings combined with bootstrapping. For each condition, we generate 100 bootstrap samples, estimate causal graphs, and retain only the edge-endpoints that exceed predefined thresholds. If no edge-endpoint type surpasses the threshold, we assign a circle ($\circ$) to indicate uncertainty in the edge direction.
-
-The analyses are conducted under the following conditions:
-
--   Significance levels ($\alpha$): 0.01 and 0.05
--   Thresholds: 0.5, 0.6, 0.7, and 0.8
--   CI test: Gaussian CI test, RCoT
--   Algorithms: FCI, CCI, and PC
-
-This setup yields 16 combinations (2 significance levels × 4 thresholds × 2 CI tests), applied across three algorithms. Each combination is repeated for 100 bootstrap samples, yielding a total of 1,600 graphs per algorithm. 
-For analyses involving individual symptom variables, we simplify the setup by focusing on thresholds of 0.6 and 0.7 and reducing the number of bootstrap samples to 30, easing computational demands.
-To further enhance efficiency, we fix the skeleton of the symptom network using a common structure derived from PC, FCI, and CCI algorithms ($\alpha$ = 0.01, RCoT CI test). This step constrains which edges can be present among symptoms but does not restrict the estimation of causal directions within the symptom network. Additionally, the entire causal structure between symptoms and precariousness factors remains fully estimable, ensuring that key relationships are still inferred.
-Beyond its computational benefits — particularly in reducing the time required for skeleton estimation — this fixed structure also aligns well with commonly reported symptom network structures in the literature [@park2025individual], ensuring consistency with existing findings.
-
-<!-- [^2] -->
-To obtain a final, stable summary of causal relationships, we identify the most frequently occurring edge-endpoints across different experimental setups. First, within each condition, we determine the most frequent edge-endpoint from all bootstrap samples. Then, across different conditions, we aggregate these selected symbols and determine the overall most common edge-endpoint for each graph entry.
-
-Since we have an even number of experimental setups, ties may occasionally occur. In such cases, we explicitly denote them in the resulting graph using dashed lines. To further help with the interpretation and understanding of the resulting graph, we provide a corresponding table for each graph, showing the proportion of each edge-endpoint type to clarify how dominant a given symbol is in each case.
-
-By double summarizing the results in this way, we generate one final graph per algorithm for each analysis approach: the partially aggregated analysis, which uses either the sum of precariousness factors or the sum of depression factors to capture overall trends, and the fully disaggregated analysis, which examines individual precariousness and depression factors separately.
-This approach ensures that only stable and consistent edges — those that persist across different parameter settings — are retained, leading to a robust and reliable understanding of the relationships between precariousness factors and depression. See @fig-workflow for an overview of the analysis workflow.
-
-<!-- [^2]: -->
-<!-- We fixed the skeleton of the symptom network using a common structure derived from the PC, FCI, and CCI algorithms with an alpha level of 0.01 using RCoT CI test. This approach preserved the complexity of symptom interactions, enabling unrestricted estimation of causal directions both among symptoms (*symptom --- symptom* interactions) and between symptoms and precarity factors. -->
-
-<!-- [^3]: -->
-<!-- The detailed proportion of each edge endpoint occurrence is provided in [@sec-propmatrix]. -->
 
 
 
@@ -350,15 +310,88 @@ This approach ensures that only stable and consistent edges — those that persi
 knitr::include_graphics("img/simsetup2.png")
 
 ```
-<!-- \begin{figure}[htbp] -->
-<!--     \centering -->
-<!--         \caption{Simulation workflow} -->
-<!--         \includegraphics[width=0.9\textwidth]{img/simsetup.png} -->
-<!-- \end{figure} -->
+
+
+## Modeling Dynamics between Precarity and Depression
+
+
+To explore how internal system structure shapes responses to external support, we implement a high-level computational model that formalizes key mechanisms suggested by the causal discovery analysis. Rather than attempting to replicate the full estimated causal graph, this model abstracts the essential structure into a compact, tractable system focused on dynamic interactions between depression and social precariousness, both influenced by financial stress.
+
+As illustrated in @fig-concept, the model includes three components: depression ($D$), represented by the PHQ-9 sum score, social precariousness ($P$), and external financial stress ($S$). Depression and precariousness are modeled as coupled state variables that influence each other over time, with $S$ acting as a shared input. These dynamics are formalized as a pair of nonlinear stochastic differential equations (SDEs):
+
+
+$$
+\begin{aligned}
+dP &= \lambda_P \left( \tanh(\alpha_1 S + \alpha_2 D) - P \right) dt + \sigma_1 dW_1 \\
+dD &= \lambda_D \left( \tanh(\beta_1 S + \beta_2 P) - D \right) dt + \sigma_2 dW_2 
+\end{aligned}
+$$
+
+Here, $D$ denotes depression, $P$ denotes social precariousness, and $S$ is the external stressor associated with financial stress. The parameters $\lambda_D$ and $\lambda_P$ control the timescales over which variable adjusts toward its input-driven target state. The coefficients $\alpha_1, \alpha_2$ and $\beta_1, \beta_2$ represent the strengths of the causal influences between variables. 
+Stochastic fluctuations are introduced through the terms $\sigma_1 dW_1$ and $\sigma_2 dW_2$, where $dW_1$ and $dW_2$ are independent Wiener processes. The system uses the hyperbolic tangent function ($tanh$) to bound the influence of inputs, ensuring smooth, saturating dynamics and preventing runaway feedback loops. Importantly, the nonlinearity introduced by the $tanh$ function also allows the system to exhibit bistability, supporting the existence of two stable states: one corresponding to low depression and precariousness, and the other to high depression and precariousness.
+
+
+<!-- Building on the causal structure derived from the result of causal discovery, we implement a high-level simulation model to explore the potential impact of targeted interventions on precariousness. This serves as a proof-of-concept for translating causal relationships into dynamic systems that can generate actionable insights. -->
+
+<!-- The structure of the simulation model, illustrated in @fig-concept, captures the dynamic interplay between depression ($PHQsum$) and social precariousness ($P.soc$), both of which are influenced by an external financial stressor ($S.fin$). Importantly, the model incorporates cyclic dependencies between depression and precariousness, reflecting their reciprocal influence over time. -->
+<!-- This system is formalized as a set of non-linear stochastic differential equations (SDEs): -->
+
+<!-- $$ -->
+<!-- \begin{aligned} -->
+<!-- dP &= \lambda_P \left( \tanh(\alpha_1 S + \alpha_2 D) - P \right) dt + \sigma_1 dW_1 \\ -->
+<!-- dD &= \lambda_D \left( \tanh(\beta_1 S + \beta_2 P) - D \right) dt + \sigma_2 dW_2  -->
+<!-- \end{aligned} -->
+<!-- $$ -->
+
+
+<!-- Here, $D$ denotes depression, $P$ denotes social precariousness, and $S$ is the external stressor associated with financial stress. The parameters $\lambda_D$ and $\lambda_P$ control the timescales over which variable adjusts toward its input-driven target state. The coefficients $\alpha_1, \alpha_2$ and $\beta_1, \beta_2$ represent the strengths of the causal influences between variables.  -->
+<!-- Stochastic fluctuations are introduced through the terms $\sigma_1 dW_1$ and $\sigma_2 dW_2$, where $dW_1$ and $dW_2$ are independent Wiener processes. The system uses the hyperbolic tangent function ($tanh$) to bound the influence of inputs, ensuring smooth, saturating dynamics and preventing runaway feedback loops. Importantly, the nonlinearity introduced by the $tanh$ function also allows the system to exhibit bistability, supporting the existence of two stable states: one corresponding to low depression and precariousness, and the other to high depression and precariousness. -->
+
+
+```{r}
+#| label: fig-concept
+#| fig-cap: "Conceptual high-level causal structure of precariousness and depression system."
+#| fig-align: center
+#| out-width: 35%
+
+
+knitr::include_graphics("img/conceptmodel.png")
+```
+
+
+
+### Model Calibration
+
+To identify realistic parameter settings for the simulation model, we calibrated six free parameters—$\alpha_1$, $\alpha_2$, $\beta_1$, $\beta_2$, and noise amplitudes $\sigma_1$, $\sigma_2$—using the Non-dominated Sorting Genetic Algorithm II (NSGA-II) [@deb2002fast], a multi-objective evolutionary optimization method well-suited for noisy and high-dimensional search spaces. The goal was to match simulated system behavior to empirical summary statistics derived from the HELIUS dataset, including the means and variances of depression ($D$) and social precariousness ($P$), as well as their partial correlations after adjusting for financial stress ($S$), specifically $\rho_{DP.S}$, $\rho_{DS.P}$, and $\rho_{PS.D}$. 
+Given the stochastic nature of the model, each candidate parameter set was evaluated by simulating 1,000 independent trajectories, each representing an individual with a fixed $S$ value sampled from the observed distribution. Final-state values were extracted and aggregated to compute population-level summary statistics. Fitness was assessed as the absolute deviation from the empirical targets, aggregated across all objectives. 
+NSGA-II was implemented via the nsga2R package [@nsga2R], with a population of 300 evolved over 300 generations using standard hyperparameters (crossover probability = 0.9, mutation probability = 0.25, and tournament size = 2). This process yielded a diverse ensemble of Pareto-efficient solutions balancing trade-offs between objectives. From the resulting Pareto front (@fig-pareto), we selected the top 30 parameter sets with the lowest combined error to use in the subsequent simulations assessing intervention effects.
+
+
+```{r}
+#| label: fig-pareto
+#| fig-cap: >
+#|   Pareto front of simulated parameter sets.
+#|   *Each point represents a solution evaluated by its total variance error (x-axis) and total partial correlation error (y-axis), with color indicating total mean error.
+#|   Red crosses highlight the top 30 solutions used for simulation.*
+#| fig-align: center
+#| out-width: 80%
+knitr::include_graphics("img/paretoplot.png")
+```
+
+### Intervention Simulation
+
+To evaluate the effects of hypothetical support, we simulate scenarios in which each individual’s financial stress level ($S$) is proportionally reduced toward the minimum observed value. This models a population-wide intervention applied at varying strengths --- from no reduction in stress (0%) to complete alignment with the minimum observed stress level (100%).
+
+For each of the top 30 calibrated parameter sets, we simulate the system’s evolution across 300 individuals under a continuum of intervention levels. Each simulation run generates final values for $D$ and $P$, which are then used to assess how internal model parameters influence the system’s behavior under changing external conditions.
+
+
 
 
 # Results
-## Depression as sum score
+
+## Causal Structure Linking Precarity and Depression
+
+### Depression as sum score
 The sum score graphs provide a high-level summary of how precarity factors collectively influence overall depression severity, focusing on aggregated relationships.
 @fig-sum illustrates the causal relationships between precariousness factors (*P.hou*, *P.emp*, *P.soc*, *S.rel*, *S.fin*) and the depression sum score (*PHQsum*), as identified by the FCI algorithm.
 As described in [@sec-analysis], dashed edges indicate ties, with the exact edge endpoint where the tie occurs is represented by a bold horizontal bar.
@@ -410,7 +443,7 @@ knitr::include_graphics("img/depsum_mat_fci.pdf")
 <!-- \end{figure} -->
 
 
-## Individual depression symptom
+### Individual depression symptom
 
 Moving from the sum score representation to the disaggregated symptom-level graph provides a more granular perspective on the causal relationships between precariousness factors and depression symptoms. Unlike the sum score graph, which aggregates all symptoms into a single measure—potentially obscuring nuanced relationships—the symptom-level graph highlights heterogeneity in how precariousness factors influence individual depressive symptoms: con (concentration), slp (sleep), ene (energy), app (appetite), mot (motor), sui (suicidal), anh (anhedonia), glt (guilt), and dep (depressed mood), and vice versa.
 
@@ -468,7 +501,7 @@ knitr::include_graphics("img/symptom_mat_fci.pdf")
 ```
 
 
-## Precarity as sum score
+### Precarity as sum score
 
 Lastly, we examine the relationships between individual symptoms and overall precarity, an aggregated measure represented by the sum of five precariousness factors. This analysis provides a complementary perspective, capturing broader patterns that may not be evident in the disaggregated symptom-precariousness analysis. By aggregating precariousness factors into a single score, this approach may capture distributed relationships across different precarity factors that were previously overlooked in the disaggregated analysis.
 
@@ -503,45 +536,121 @@ knitr::include_graphics("img/presum_mat_fci.pdf")
 ```
 
 
+## Simulating the Dynamics Between Precarity and Depression Under Intervention
+
+To evaluate how internal system structure influences the effect of external support, we simulated outcomes under a range of intervention strengths across the top 30 parameter sets from the calibrated model ensemble. The top panel of @fig-intervention shows mean levels of depression ($D$) and precarity ($P$) after simulation, with each line representing one parameter set. Lines are color-coded by combined feedback and input strength, calculated as the product $\alpha_1 \times \alpha_2 \times \beta_1 \times \beta_2$.
+
+Parameter sets with stronger interactions exhibit more pronounced declines in both depression and precarity in response to intervention. At full intervention—modeled as a complete shift of external stress ($S$) toward its observed minimum—the mean depression level decreases from -0.113 to -0.963, and precarity from -0.100 to -0.958. These changes correspond to reductions of approximately 90.8\% relative to their initial magnitudes, indicating that targeted intervention can shift the system toward a substantially lower-risk equilibrium.
+
+To better understand these dynamics, we focused on two illustrative parameter sets: one with strong feedback/input coupling and low noise (a "bistable" candidate), and one with weaker coupling and higher noise (a "unistable" candidate). In nonlinear systems, bistability refers to the existence of two distinct stable equilibria—meaning the system’s long-term outcome depends on its starting point or perturbations.
+
+In our model, bistability arises from the interaction between strong internal coupling—particularly the product $\alpha_2 \times \beta_2$—and the system’s nonlinearity. The $\tanh(\cdot)$ activation function saturates at high input values, meaning sufficient gain is required to push the system into nonlinear regimes where multiple stable points emerge. If the feedback gain is too low, or the system is overwhelmed by noise, it behaves more linearly and settles into a single equilibrium—yielding a unistable configuration.[^1]
+
+[^1]: This resembles a classic *pitchfork bifurcation* in discrete dynamical systems: when the gain $k$ in a scalar map like $x_{t+1} = \tanh(k x_t)$ exceeds a critical value, the system shifts from a single fixed point to two stable attractors and one unstable one. In our model, high values of $\alpha_2 \times \beta_2$ similarly enable the emergence of multiple attractor states.
+
+The bottom panel of @fig-intervention illustrates these contrasting behaviors. In the bistable model, a clear bifurcation emerges: small interventions have little effect, but once a threshold is crossed, the system abruptly transitions to a low-risk state. In the unistable model, the transition is gradual and continuous, with outcomes improving incrementally as stress is reduced.
+
+These findings underscore that the impact of intervention depends not only on its intensity, but on the system's internal configuration. In bistable regimes, small or moderate interventions may be insufficient unless they push the system past a tipping point. Unistable systems, by contrast, respond more linearly, offering greater predictability and flexibility in designing incremental interventions.
+
+This distinction is especially relevant for mental health interventions in populations exposed to persistent stressors like housing instability, financial strain, or job insecurity. In such contexts, external adversity may be reinforced through internal feedback loops between psychological distress and precarious conditions. Recognizing when a system is bistable may help identify when strong, early, or multifaceted interventions are needed to produce lasting change—while unistable dynamics may justify more gradual or targeted efforts.
+
+Tailoring intervention strategies to the system’s underlying structure may enhance their effectiveness and sustainability, particularly in addressing the compounding effects of socioeconomic precarity on mental health.
+
+
+<!-- The final outcomes, specifically the mean levels of depression ($D$) and precarity ($P$), are presented in the top panel of @fig-intervention. Each trajectory corresponds to a parameter set and is color-coded by its combined feedback and input strength, defined as the product $\alpha_1 \times \alpha_2 \times \beta_1 \times \beta_2$. -->
+
+<!-- Systems with stronger parameter interactions exhibit more pronounced shifts in behavior, particularly under intensive interventions. At full intervention (i.e., maximum stress reduction), the mean depression level decreased from -0.113 to -0.963, and precarity from -0.100 to -0.958. These changes represent reductions of approximately 90.8\% relative to their respective baseline magnitudes, indicating that effective intervention can push the system close to its lowest-risk equilibrium. -->
+
+<!-- To explore these dynamics in more detail, we focused on two representative parameter sets: one with high feedback/input strength and low noise (a bistable candidate), and another with weak parameter interactions and high noise (a unistable candidate). In nonlinear dynamical systems, bistability refers to the existence of two distinct stable equilibria—meaning the long-term outcome depends on initial conditions or perturbations. -->
+
+<!-- In our model, bistability emerges from an interplay between the strength of parameter-driven feedback/input loops and the magnitude of stochastic noise. The internal loop between $D$ and $P$ — governed by the product $\alpha_2 \times \beta_2$ — allows changes in one variable to reinforce the other. At the same time, the $\tanh(\cdot)$ nonlinearity in the system saturates for large inputs, flattening the system’s responsiveness. For multiple stable equilibria to emerge, the internal gain must be large enough to push the system into these nonlinear (saturated) regions. If this gain is too small, or if noise is too high, the system behaves more linearly and converges to a single stable point — a unistable regime.[^1]  -->
+
+<!-- [^1]: This condition resembles the classical *pitchfork* bifurcation in discrete dynamical systems: when the gain $k$ in a scalar system such as $x_{t+1} = \tanh(k x_t)$ exceeds a critical threshold (e.g., $k>1$), the system admits three fixed points—two stable and one unstable—thus producing bistability. In our two-variable model, sufficiently high values of $\alpha_2 \times \beta_2$ similarly give rise to a self-reinforcing loop that sustains two attractor states. -->
+
+
+
+<!-- This behavior is illustrated in the bottom panel of @fig-intervention. In the bistable model, we observe a bifurcation in final outcomes: as stress is reduced, the system undergoes a sharp transition from a high-$D$/$P$ regime to a low one—indicating a tipping point. In contrast, the unistable model shows a smooth, continuous response to increasing intervention, consistent with a single stable equilibrium. -->
+
+<!-- These findings highlight how a system’s internal structure — including both nonlinear feedback gain and noise levels — fundamentally shapes its response to intervention. In bistable regimes, small or moderate interventions may have little effect unless they exceed a critical threshold sufficient to tip the system out of a high-risk state. In unistable systems, by contrast, outcomes improve more gradually and predictably with increasing support. -->
+
+<!-- This distinction is particularly relevant when addressing persistent stressors associated with precariousness, such as unstable housing, employment insecurity, or chronic financial strain. In these contexts, the effects of external adversity may be reinforced internally through feedback loops between stress exposure and mental health. Such dynamics can stabilize harmful states and limit responsiveness to minor interventions—emphasizing the need for targeted, high-leverage support. -->
+
+<!-- Recognizing whether a population’s mental health dynamics follow a bistable or unistable structure can guide policy design. For bistable systems, early or forceful interventions may be required to trigger lasting improvement. For unistable systems, more moderate or incremental measures may suffice. By tailoring strategies to the system’s underlying structure, interventions can be made more effective and context-sensitive—ultimately enhancing support for those facing precarity-driven mental health risks. -->
+
+```{r}
+#| label: fig-intervention
+#| fig-cap: "**Top**: Final Mean D and P Across Intervention Sizes. *Mean trajectories of depression ($D$) and precarity ($P$) across varying intervention strengths, simulated over the top 30 parameter sets. Each line represents one parameter set and is colored by its combined feedback and input strength.* **Bottom**: Smoothed Density Heatmap of Final $D$ and $P$ for Two Parameter Sets. *One exhibits unistability (top two panels) and the other exhibits bistability (bottom two panels). Bistable dynamics reveal a sharp transition between distinct outcome regimes, while unistable dynamics show gradual, continuous change across the intervention gradient.*"
+#| fig-align: center
+#| out-width: 100%
+
+knitr::include_graphics("img/intervention_plot2.pdf")
+```
+
+
+
+
 
 # Discussion
 
-This study examined the causal relationships between precariousness factors and depression using causal discovery algorithms, integrating both sum score and symptom-level analyses. By analyzing PHQ sum scores alongside individual symptom scores, and comparing aggregated precarity scores with individual precariousness factors, we gained a comprehensive perspective on how different aspects of precariousness influence depression. This dual approach revealed nuanced pathways that may be overlooked when relying solely on aggregate measures, while also capturing broader interactions that might remain undetected in analyses focused on individual factors.
+<!-- Summmary & Interpretation of Findings -->
+This study combined constraint-based causal discovery and dynamical modeling to investigate how depression and socioeconomic precarity interact—and how their internal structure modulates responsiveness to intervention. Using cross-sectional data from the HELIUS study, we applied cycle-capable discovery algorithms to estimate plausible directional relationships among financial stress, multiple domains of precariousness, and depressive symptoms. By analyzing both aggregate constructs and individual variables, we aimed to capture patterns that may be masked in either extreme of abstraction (i.e., purely aggregate or disaggregated analyses).
 
-<!-- Interpretation of Findings -->
-Our findings highlight the significant role of recent financial stress (S.fin) as a potential causal factor for depression, consistently observed across both sum score and symptom-level analyses. This consistency underscores the profound impact of financial stressors on mental health. The symptom-level analysis further identified specific symptoms—particularly sleep disturbances (slp), depressed mood (dep), guilt (glt), and anhedonia (anh)—as being especially sensitive to external precarious conditions.
+The causal analysis consistently identified financial stress (*S.fin*) as a key plausible driver of depression, appearing across both aggregated and disaggregated models. At the symptom level, we found that sleep disturbance (*slp*), depressed mood (*dep*), guilt (*glt*), and anhedonia (*anh*) were especially sensitive to external stressors. Among these, *dep* emerged as a central hub: not only was it heavily influenced by other symptoms, it also exerted directional influence on social precarity (*P.soc*), suggesting a feedback loop in which worsening mood contributes to social disconnection, which in turn may exacerbate depressive symptoms. The CCI algorithm even suggested a possible cyclic relationship between dep and overall precarity, hinting at a structurally self-reinforcing mechanism.
+*Slp* also played a key initiating role. It showed directed connections to both social and employment precarity and exhibited many outgoing edges within the symptom network. This suggests *slp* may function as an early warning signal or entry point into the depression–precarity cycle, making it a promising target for preventive intervention. In contrast, *P.soc* more often appeared as an effect rather than a cause—receiving arrows from symptoms like *dep* and *glt*, but rarely sending them. This asymmetry implies that social precarity may often reflect downstream consequences of worsening mental health rather than being its root cause.
+These patterns offer actionable insights for intervention. Addressing symptoms like *slp* early may prevent escalation into broader depressive states or worsening precarity. Intervening on *dep*, as a central node with potential feedback effects, could also disrupt the self-reinforcing dynamics between mental health and social isolation.
 
-Among these symptoms, dep stands out as a distinct causal factor for precarity in both aggregated and disaggregated analyses, with CCI even suggesting a possible cyclic relationship between them. This implies that depression and precariousness may reinforce one another, potentially leading to a worsening cycle over time. Within the symptom network, dep also exhibits a high degree of connectivity, but with mostly incoming arrows, suggesting that as symptom dynamics intensify, dep is quickly impacted by multiple factors—particularly P.soc (social precarity), further fueling the depression-precariousness cycle.
-
-Beyond dep, slp emerges as a critical symptom in this dynamic. It connects with both social and employment precariousness, while also playing a central role in symptom interactions, affecting other symptoms more than most others. This suggests that slp may act as an initiator within the depressive symptom system, potentially triggering or amplifying symptom cascades.
-
-Among the precariousness factors, P.soc appears to be one of the most pivotal—not as a driver of symptoms, but rather as a consequence of depression. It maintains the strongest connectivity with symptoms, yet its directionality indicates that it is largely shaped by depressive symptoms rather than acting as a primary cause. Together, these patterns suggest a broader directional dynamic in which financial stress (S.fin) exacerbates depressive symptoms, which in turn feed into social precarity, perpetuating the cycle.
-
-This directional insight suggests that interventions targeting specific depressive symptoms, particularly dep, may help prevent downstream effects on worsening precarious conditions. Alternatively, early intervention focusing on slp may be a promising strategy, as slp appears to act as a potential initiator or activator within the depressive symptom network. This positioning suggests that slp could serve as an early warning sign, offering a valuable target for preventive interventions aimed at breaking the depression-precariousness cycle before it intensifies.
+To examine how such structures shape responsiveness to support, we developed a simplified two-variable nonlinear dynamical model capturing the feedback between depression and precarity, modulated by financial stress. Calibrated against empirical summary statistics from the HELIUS dataset, the model allowed us to simulate how these dynamics evolve under varying levels of stress reduction.
+The simulations revealed that intervention effectiveness depends not just on the magnitude of external stressors, but on the internal configuration of the system itself. In bistable regimes—characterized by strong feedback and low noise—the system could remain stuck in a high-risk state unless an intervention crosses a critical threshold, tipping it into a healthier equilibrium. By contrast, unistable systems—driven by weaker coupling or greater noise—responded more gradually and proportionally to increasing support.
+These dynamics carry practical policy implications. In bistable systems, even moderate interventions may have little effect unless they are forceful enough to tip the system toward a lower-risk state. This underscores the importance of early or intensive support when targeting self-reinforcing cycles of depression and precarity. Unistable systems, by contrast, are more responsive to incremental support, suggesting that sustained, moderate interventions may be sufficient in such contexts.
 
 
-<!-- emerged as potential initiators or activators within the depressive symptom network, suggesting that they may serve as early warning signs or valuable targets for preventive interventions. -->
+<!-- <!-- Interpretation of Findings --> 
+<!-- Our findings highlight the significant role of recent financial stress (S.fin) as a potential causal factor for depression, consistently observed across both sum score and symptom-level analyses. This consistency underscores the profound impact of financial stressors on mental health. The symptom-level analysis further identified specific symptoms—particularly sleep disturbances (slp), depressed mood (dep), guilt (glt), and anhedonia (anh)—as being especially sensitive to external precarious conditions. -->
 
-<!-- Employment precarity (*P.emp*) and social precarity (*P.soc*) were more likely to be influenced by depressive symptoms rather than acting as direct causes. The symptom-level graph provided additional clarity by identifying that sleep disturbances influenced employment precarity (*slp* o-> *P.emp*) and feelings of guilt affected social precarity (*glt* o-> *P.soc*). This directional insight suggests that interventions targeting specific depressive symptoms may have downstream effects on improving certain aspects of precarity. -->
+<!-- Among these symptoms, dep stands out as a distinct causal factor for precarity in both aggregated and disaggregated analyses, with CCI even suggesting a possible cyclic relationship between them. This implies that depression and precariousness may reinforce one another, potentially leading to a worsening cycle over time. Within the symptom network, dep also exhibits a high degree of connectivity, but with mostly incoming arrows, suggesting that as symptom dynamics intensify, dep is quickly impacted by multiple factors—particularly P.soc (social precarity), further fueling the depression-precariousness cycle. -->
 
-<!-- Interestingly, financial stress (*S.fin*) did not exhibit causal relationships with individual depressive symptoms in the symptom-level analysis, contrasting with its apparent role in the sum score graphs. This divergence indicates that while financial stress may influence overall depression severity, its impact on specific symptoms may not be significant. -->
-<!-- Also, housing precarity (*P.hou*) emerged as an isolated node in the symptom-level graph, losing all connections with other precarity factors. This isolation suggests that housing precarity may operate independently of the depressive symptom network or that its effects are not captured within the scope of the measured variables. -->
+<!-- Beyond dep, slp emerges as a critical symptom in this dynamic. It connects with both social and employment precariousness, while also playing a central role in symptom interactions, affecting other symptoms more than most others. This suggests that slp may act as an initiator within the depressive symptom system, potentially triggering or amplifying symptom cascades. -->
+
+<!-- Among the precariousness factors, P.soc appears to be one of the most pivotal—not as a driver of symptoms, but rather as a consequence of depression. It maintains the strongest connectivity with symptoms, yet its directionality indicates that it is largely shaped by depressive symptoms rather than acting as a primary cause. Together, these patterns suggest a broader directional dynamic in which financial stress (S.fin) exacerbates depressive symptoms, which in turn feed into social precarity, perpetuating the cycle. -->
+
+<!-- This directional insight suggests that interventions targeting specific depressive symptoms, particularly dep, may help prevent downstream effects on worsening precarious conditions. Alternatively, early intervention focusing on slp may be a promising strategy, as slp appears to act as a potential initiator or activator within the depressive symptom network. This positioning suggests that slp could serve as an early warning sign, offering a valuable target for preventive interventions aimed at breaking the depression-precariousness cycle before it intensifies. -->
+
+<!-- Building on these insights, we developed a simplified computational model capturing the core mechanisms identified in the data: bidirectional feedback between depression and precarity, driven by external stress. Calibrated against empirical summary statistics, the model allowed us to explore how different parameter configurations—particularly feedback strength and stochastic noise—modulate the system’s response to simulated interventions. Some systems exhibited bistability, resisting change until pushed past a critical threshold, while others responded more gradually and predictably. These patterns have direct policy implications: in bistable regimes, intensive or early interventions may be required to shift individuals out of high-risk states, whereas in unistable systems, more moderate, sustained support may suffice. -->
+
+<!-- A key contribution of this work is to show that the structure of the depression–precarity system matters: not all forms of adversity respond equally to intervention, and this heterogeneity may stem from internal feedback dynamics as much as from external conditions. Recognizing whether a given population operates within a bistable or unistable regime could inform the design and timing of mental health interventions—particularly in contexts of chronic socioeconomic stress. -->
+
+<!-- Building on these findings, we developed a simplified two-variable nonlinear dynamical system to simulate the co-evolution of depression and social precarity under varying levels of financial stress. This model served as a conceptual abstraction of the inferred causal structure, enabling us to assess how the system’s internal configuration—particularly feedback strength, input coupling, and stochastic noise—modulates its behavior in response to intervention. -->
+
+<!-- Simulation results revealed that system structure critically influences responsiveness to intervention. In regimes with strong internal feedback loop and low noise, the model exhibits bistability: it can remain in a high-risk state unless a sufficiently large intervention tips it into a lower-risk configuration. By contrast, systems with weaker interactions or higher noise display unistable dynamics, where outcomes improve more gradually and proportionally with increasing intervention strength. -->
+
+
 
 
 <!-- Limitations -->
-Several limitations should be acknowledged when interpreting these findings. The prevalence of bidirectional arrows and circle-marked endpoints in the graphs reflects unresolved ambiguities in the causal relationships suggested by the data. These uncertainties highlight the need for further research, particularly with higher-resolution datasets, such as time-series data.  Incorporating time-series data could capture temporal dynamics between precarity factors and depressive symptoms, providing time-specific insights and revealing how these relationships evolve over time. Methods like *PCMCI* [@runge2019detecting], *tsFCI* [@entner2010causal], and other time-series adaptations of causal discovery algorithms could offer a more robust framework for addressing temporal dependencies and refining the analysis.
+That said, our study has several limitations. While the FCI and CCI algorithms are designed to recover causal structure from cross-sectional data—including feedback and latent confounding—many edge directions in our results remain ambiguous, as indicated by the prevalence of circle endpoints and bidirectional arrows, especially in weakly connected regions of the graph. These uncertainties were most evident in the links between individual symptoms and precariousness factors, where edge estimates varied across algorithms and conditional independence (CI) tests. This likely reflects limited statistical signal in high-dimensional settings, where large conditioning sets reduce power and small effect sizes are harder to detect. Although the CCI algorithm is explicitly designed to detect cycles, we found little clear evidence of feedback: most candidate loops appeared only as bidirectional edges, which may reflect latent confounding or statistical imprecision rather than true cyclic structure. This could point to either an absence of strong feedback at the symptom level or limitations in the sensitivity of full-graph discovery approaches applied to densely interconnected variables. More focused strategies, such as local structure tests or theory-guided subgraph modeling, may help resolve these ambiguities. In addition, while our analyses relied solely on observational data, some structural uncertainties—particularly those involving latent confounding or bidirectional influence—may ultimately require interventional or semi-interventional designs. Extensions such as LLC [@hyttinen2012learning], NODAGS-Flow [@sethuraman2023nodags], or Bicycle [@rohbeck2024], which integrate observational and interventional data, may prove valuable where such data are available.
+
+Second, our findings showed sensitivity to the choice of conditional independence (CI) test. The Gaussian CI test, which assumes linear relationships and Gaussian noise, often produced denser graphs—likely due to its tendency to overestimate weak or noisy linear associations. In contrast, RCoT, a nonparametric alternative, avoids these assumptions but relies on a Gaussian radial basis function (RBF) kernel to assess dependence. While flexible in capturing nonlinear relationships, this kernel is optimized for smooth, continuous variables and may underperform with discrete or ordinal data. Its similarity estimates can be unreliable when applied to variables with discontinuities, potentially leading to missed dependencies—particularly relevant in the HELIUS dataset, where some variables are ordinal or mixed-type [@howlett2001radial]. To address this, future work should consider adapting kernel-based CI tests to better handle mixed data structures—for example, by employing hybrid kernels that explicitly combine continuous and discrete similarity measures. This could improve the reliability of nonparametric causal discovery in settings with heterogeneous variable types.
+
+Finally, the structure of the dynamical model introduces its own limitations. While the model was designed to reflect key features of the discovered causal structure, it represents a highly simplified system: only two variables—depression and social precarity—modulated by external financial stress. This abstraction allowed for tractable analysis and visual intuition, particularly around nonlinear behaviors such as bistability, but omits other potentially influential constructs highlighted in the causal graphs, including relational stress, employment conditions and housing conditions. Moreover, the model’s nonlinearity—introduced via the hyperbolic tangent function—was chosen for convenience rather than empirical justification. While this function supports saturation and the emergence of tipping points, the presence of bistability is a product of simulation, not empirical verification. It remains possible that simpler, linear dynamics could account for the observed data just as well. Future work should further investigate whether bistability is a necessary feature of depression–precarity dynamics, and explore alternative functional forms—both linear and nonlinear—using richer data and stronger empirical constraints.
 
 
-Another notable limitation is the absence of clear evidence for cycles within the symptom network, despite employing algorithms designed to account for cyclic relationships. The CCI algorithm primarily produced bidirectional arrows, while FCI predominantly generated directional arrows, yet neither demonstrated patterns indicative of definitive cyclic structures. This suggests that addressing cyclic relationships is particularly challenging when relying solely on observational datasets. Future research could benefit from refined datasets that incorporate intervention data. Methods such as *LLC* [@hyttinen2012learning], *NODGAS-Flow *[@sethuraman2023nodags], and the recently developed *Bicycle* algorithm [@rohbeck2024], which utilize both observational and intervention data, may uncover potential cycles more effectively. 
+
+
+<!-- Several limitations should be acknowledged when interpreting these findings. The prevalence of bidirectional arrows and circle-marked endpoints in the graphs reflects unresolved ambiguities in the causal relationships suggested by the data. These uncertainties highlight the need for further research, particularly with higher-resolution datasets, such as time-series data.  Incorporating time-series data could capture temporal dynamics between precarity factors and depressive symptoms, providing time-specific insights and revealing how these relationships evolve over time. Methods like *PCMCI* [@runge2019detecting], *tsFCI* [@entner2010causal], and other time-series adaptations of causal discovery algorithms could offer a more robust framework for addressing temporal dependencies and refining the analysis. -->
+<!-- Another notable limitation is the absence of clear evidence for cycles within the symptom network, despite employing algorithms designed to account for cyclic relationships. The CCI algorithm primarily produced bidirectional arrows, while FCI predominantly generated directional arrows, yet neither demonstrated patterns indicative of definitive cyclic structures. This suggests that addressing cyclic relationships is particularly challenging when relying solely on observational datasets. Future research could benefit from refined datasets that incorporate intervention data. Methods such as *LLC* [@hyttinen2012learning], *NODGAS-Flow *[@sethuraman2023nodags], and the recently developed *Bicycle* algorithm [@rohbeck2024], which utilize both observational and intervention data, may uncover potential cycles more effectively.  -->
+<!-- Lastly, regarding conditional independence (CI) testing, the differences between the graphs generated by Gaussian CI and RCoT underscore the methodological sensitivities in detecting causal relationships. Gaussian CI produced denser graphs, which is somewhat counterintuitive, as the Gaussian CI's strict linearity assumption would typically result in fewer detected relationships, not more. -->
+<!-- A possible explanation for this discrepancy is that Gaussian CI's reliance on partial correlations may overestimate relationships when specific non-linear dependencies exist in the data. In contrast, RCoT, free from such assumptions, might better capture independence patterns under such conditions. -->
+<!-- However, RCoT is not without its limitations. While technically non-parametric, its performance can be influenced by the distributional characteristics of the data. The Gaussian RBF (radial basis function) kernel, optimized for continuous data with smooth transitions, may struggle with discrete or mixed datasets, where distances between discrete points may fail to convey meaningful similarity [@howlett2001radial]. This limitation could explain why RCoT might miss certain dependencies, particularly in the HELIUS dataset, where some variables lack smooth continuity. -->
+<!-- Future research could tackle these challenges by developing hybrid kernels designed for mixed datasets, integrating both continuous and discrete variables into RCoT-like methods. This would have the potential to improve the reliability of findings, especially when working with datasets characterized by complex and heterogeneous structures. -->
+
+<!-- A key limitation of our study lies in the structure and assumptions of the dynamical model. While the model is grounded in causal patterns identified from the data, it is intentionally simplified, focusing solely on two interacting variables—depression and social precarity—modulated by financial stress. This abstraction facilitates tractable simulation and exploration of systemic behaviors such as bistability. However, it excludes several factors identified in the causal graph as potentially influential, including relational stress, housing conditions, and other contextual or protective variables like coping strategies or social support. These omissions constrain the model’s ability to represent the multifaceted nature of real-world dynamics. -->
+<!-- Additionally, the model’s nonlinearity—implemented via a hyperbolic tangent function—was chosen for its analytical properties, such as bounded outputs and saturating responses, rather than empirical grounding. While such nonlinearities are necessary to produce bistable dynamics, the presence of bistability in our model is a product of simulation rather than empirical verification. We do not currently have time-series data to confirm the existence of tipping points or regime shifts in real-world trajectories of depression and precarity. It is also possible that a linear model would suffice to capture much of the observed behavior, and that the current structure overcomplicates model formulation. Future work should seek for securing stronger evidence for bistability in the system and empirically test for the nonlinearity and compare model variants—linear and nonlinear—against richer longitudinal data to validate which formulations best capture the underlying dynamics. -->
+
+
+
 
 
 <!-- The numerous bidirectional arrows in the CCI outputs also imply the presence of latent confounders. Expanding the analysis to include additional variables, such as other mental health conditions and coping mechanisms, could provide a more comprehensive understanding of the factors influencing depressive symptoms. Additionally, integrating qualitative approaches could enrich these findings, offering contextual insights into the quantitative relationships identified. Understanding individuals' lived experiences of precarity and depression could inform the development of more tailored and effective interventions. -->
-
-
-Lastly, regarding conditional independence (CI) testing, the differences between the graphs generated by Gaussian CI and RCoT underscore the methodological sensitivities in detecting causal relationships. Gaussian CI produced denser graphs, which is somewhat counterintuitive, as the Gaussian CI's strict linearity assumption would typically result in fewer detected relationships, not more.
-A possible explanation for this discrepancy is that Gaussian CI's reliance on partial correlations may overestimate relationships when specific non-linear dependencies exist in the data. In contrast, RCoT, free from such assumptions, might better capture independence patterns under such conditions.
-However, RCoT is not without its limitations. While technically non-parametric, its performance can be influenced by the distributional characteristics of the data. The Gaussian RBF (radial basis function) kernel, optimized for continuous data with smooth transitions, may struggle with discrete or mixed datasets, where distances between discrete points may fail to convey meaningful similarity [@howlett2001radial]. This limitation could explain why RCoT might miss certain dependencies, particularly in the HELIUS dataset, where some variables lack smooth continuity.
-Future research could tackle these challenges by developing hybrid kernels designed for mixed datasets, integrating both continuous and discrete variables into RCoT-like methods. This would have the potential to improve the reliability of findings, especially when working with datasets characterized by complex and heterogeneous structures.
 
 
 <!-- However, it could be also that RCoT performed somewhat suboptimal. while RCoT is technically non-parametric, its performance can still be influenced by the distributional characteristics of the data. Specifically, the Gaussian RBF (radial basis function) kernel, optimized for continuous data with smooth transitions, may struggle to capture relationships in datasets with discrete or mixed distributions. In such cases, the distances between discrete points may fail to convey meaningful similarity information. As a result, RCoT might miss certain dependencies, particularly when variables in the dataset lack smooth continuity like in our HELIUS dataset. -->
@@ -554,12 +663,14 @@ Future research could tackle these challenges by developing hybrid kernels desig
 <!-- 1. still impressive -- symptom directions aligns much well with the other empirical studies. -->
 <!-- 2. understood better which aspect of precarity is more important for depression and we can target depends on what level of intervention we are planning. -->
 
-<!-- Implications for Research and Practice -->
-Despite its limitations, this study marks a meaningful step toward understanding the mechanisms linking precarity factors and depression. By applying causal discovery methods, it moves beyond traditional association-based analyses, providing insights that can inform more precise and targeted interventions.
-While the resulting graphs are preliminary and contain unresolved ambiguities, they offer a valuable starting point for leveraging causal discovery tools to investigate the causal interplay between depression and precarity factors. A promising next step would involve integrating these causal structures into computational models, such as the symptom dynamic model proposed in @park2025individual. By simulating intervention effects, such models could provide more realistic insights into how targeted actions might influence symptom networks and precarity factors over time. For example, interventions focused on improving sleep hygiene or alleviating guilt could be evaluated for their cascading effects on employment and social relationships, offering actionable guidance for designing population-level mental health strategies.
-<!-- Conclusion -->
-As one of the early applications of causal discovery tools to the complex dynamics of depression and precarity factors, this study lays a foundation for future research. We hope it inspires further refinement of these methods and ultimately contribute to more effective solutions for alleviating depression and improving societal well-being.
+<!-- Implications -->
+Our results reveal that the effectiveness of interventions targeting depression and precarity is shaped not only by the strength of external stressors but also by the internal structure of the system. The interplay between feedback strength and noise determines whether a system responds gradually or only after crossing a tipping point—highlighting the need for intervention strategies attuned to these underlying dynamics.
 
+These findings underscore the importance of considering internal feedback—not just external adversity—when designing interventions. Mental health systems are not always passively responsive to support; their structure can constrain how much impact any given policy has. By diagnosing these structural features—through tools like causal discovery and computational modeling—researchers and policymakers can better tailor interventions to the underlying mechanics of vulnerability.
+
+Beyond these specific findings, this study offers a generalizable framework for studying complex mental health phenomena. Causal discovery enables principled hypothesis generation from observational data, while dynamical modeling helps test how those structures behave under intervention. Together, these methods move us from descriptive patterns to mechanistic insight, with practical relevance for real-world mental health policy.
+
+Future work could build richer dynamical models grounded in higher-resolution empirical data—potentially incorporating time, interventions, or more granular psychosocial constructs. Such extensions would help validate whether mechanisms proposed here, such as bistability, manifest in real-world trajectories. Ultimately, we hope this study encourages further integration of causal structure learning and system-level modeling to improve mental health outcomes under conditions of socioeconomic precarity.
 
 # References
 
@@ -569,6 +680,98 @@ As one of the early applications of causal discovery tools to the complex dynami
 
 
 # Appendix {#sec-appendix}
+
+## HELIUS study 
+
+The HELIUS (HEalthy LIfe in an Urban Setting) study is a large-scale, multiethnic cohort study conducted in Amsterdam. Participants were randomly selected from the municipality register and stratified by ethnic origin to ensure balanced representation across six major groups. Invitation letters were sent by mail, followed by a reminder after two weeks. Non-respondents were contacted via home visits where applicable.
+
+Of those invited, approximately 55% responded (Dutch: 55%, Surinamese: 62%, Ghanaian: 57%, Turkish: 46%, Moroccan: 48%). Among those contacted, 50% agreed to participate (Dutch: 60%, Surinamese: 51%, Ghanaian: 61%, Turkish: 41%, Moroccan: 43%), resulting in an overall participation rate of 28%.
+
+Participants completed either a digital or paper version of the questionnaire, with assistance offered when needed, and received a confirmation letter for a physical examination appointment.
+
+At baseline (2011–2015), 24,780 individuals were enrolled. Of these, 23,936 participants completed the questionnaire that included items relevant to precariousness. After excluding individuals with missing data on key variables, the final analytical sample consisted of 21,628 participants.
+
+The HELIUS study received approval from the Medical Ethics Committee of the Academic Medical Center (AMC), and written informed consent was obtained from all participants prior to enrollment.
+
+
+## Causal Discovery Primer
+
+As shown in Table 1, the resulting graphs from FCI and CCI differ slightly (*PAG*: partial ancestral graph; *MAAG*: maximal almost ancestral graph) due to their reliance on different underlying assumptions. 
+Despite these differences, both graphs belong to the class of *ancestral graphs*, which are designed to encode causal relationships between variables, where the presence of an edge indicates causal *ancestry.*
+In these graphs, directed edges, $A \stararrow B$, indicate that $B$ is not an ancestor of $A$ in every graph within the Markov equivalence class, $Equiv(G)$. 
+The Markov equivalence class represents a set of graphs that encode the same conditional independence relationships, ensuring that the same *d-separation* conditions hold across all graphs in the class [@spirtes2001causation].
+Conversely, an edge marked as $A \startail B$ indicates that $B$ is an ancestor of $A$ across all graphs in $Equiv(G)$. 
+Circle endpoints, $A \starcirc B$, represent ambiguity in the ancestral relationship, meaning $B$'s ancestral status relative to $A$ varies across graphs in $Equiv(G)$.[^4] 
+Finally, when an edge is represented as $A \arrowarrow B$, it implies that neither $A$ nor $B$ is an ancestor of the other, suggesting the presence of a latent confounder influencing both variables.
+
+\begin{table}[ht]
+\centering
+\small % Make the font size smaller
+\caption{Assumptions of causal discovery algorithms}
+\begin{tabular}{lccccc}
+\toprule
+Algorithm & Acyclicity & \makecell{Causal \\ sufficiency} & 
+\makecell{Absence of \\ selection bias} & Linearity & Output \\ 
+\midrule
+PC  & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & CPDAG \\ 
+FCI & $-^{a}$ & $\checkmark$ & $-^{a}$ & $-^{a}$ & PAG \\ 
+CCI & x & x & x & $\checkmark$ & \makecell{\footnotesize(partially oriented) \\ MAAG} \\ 
+\bottomrule
+\end{tabular}
+\caption*{\footnotesize{\textit{Note}. $^{a}$The FCI algorithm, introduced by Spirtes (1995), is a constraint-based causal discovery method for DAGs that accounts for latent confounding and selection bias. Mooij \& Claassen (2020) later showed its applicability to cyclic causal discovery with latent confounding under general faithfulness and Markov conditions, assuming non-linear causal relationships.}}
+\end{table}
+
+<!-- For word docx compiling -->
+<!-- **Table 1**: Assumptions of causal discovery algorithms. -->
+
+<!-- | Algorithm | Acyclicity | Causal sufficiency | Absence of selection bias | Linearity | Output | -->
+<!-- |-----------|------------|--------------------|---------------------------|-----------|--------| -->
+<!-- | PC        | ✓          | ✓                  | ✓                         | ✓         |  CPDAG | -->
+<!-- | FCI       | -¹         | ✓                  | -¹                        | -¹        |  PAG   | -->
+<!-- | CCI       | x          | x                  | x                         | ✓         |  MAAG  | -->
+<!-- ------------------------------------------------------------------------------------------------ -->
+<!-- ¹FCI can detect cycles in systems that lack selection bias and exhibit non-linear relationships (Mooij & Claassen, 2020). -->
+
+
+
+
+The algorithms also differ in how they detect cycles and represent cyclic relationships in their resulting graphs.
+In CCI's MAAG, $A$ \textemdash\ $B$ indicates that $A$ is an ancestor of $B$, and simultaneously $B$ is an ancestor of $A$, referring to a cyclic relationship between $A \stackedarrows B$. 
+FCI, on the other hand, identifies potential cycles more subtly. In its PAG, fully-connected nodes with circle endpoints ($\circirc$) may suggest the presence of cyclic structures.
+FCI, therefore, provides a sufficient condition to distinguish variables that are not part of a cycle, offering a more nuanced approach to handling cyclic relationships [@mooij2020constraint].
+
+Table 1 highlights further differences in the assumptions underlying these algorithms. CCI operates under the assumption of a linear system, whereas FCI, particularly when used to infer cyclic relationships, assumes a non-linear system without selection bias and adheres to more general faithfulness and Markov conditions (i.e., *$\sigma$-separation* and *$\sigma$-faithfulness* setting) [@forre2018constraint].
+When the respective assumptions of each algorithm are met, their inferred cyclic relationships align with those illustrated in @fig-examplegraphs. 
+
+While CCI's MAAG provides an explicit representation of cyclic relationships, it has certain theoretical limitations, as the MAAG may not always fully preserve d-separation relations from the original graph, $\mathcal{G}$ [@strobl2019]. Given these considerations, we examine and compare results from both algorithms, placing more weight on the FCI results, which are presented in the main results section, while discussing CCI results where relevant, with detailed findings provided in the [Appendix](#sec-appendix).
+A full discussion of causal discovery concepts and algorithmic details is beyond the scope of this paper; however, readers seeking a more in-depth understanding can refer to @park2024discovering for a comprehensive exploration of these methods and their applications.
+
+
+
+[^4]: $*$ serves as a \textit{meta-symbol}, representing one of the three possible edge-endpoints. For instance, $A \tailstar B$ can indicate any of the following edges: $A$ \textemdash\ $B$, $A\tailarrow B$, or $A \tailcirc B$ [@park2024discovering].
+
+```{r}
+#| layout-ncol: 3
+#| label: fig-examplegraphs
+#| fig-cap: Example graph $\mathcal{G}$ featuring a cycle and the corresponding MAAG from CCI and PAG from FCI.
+#| fig-subcap: 
+#|   - Example graph $\mathcal{G}$
+#|   - Corresponding MAAG 
+#|   - Corrsponding PAG
+#| fig-align: center
+#| out-width: 60%
+
+
+knitr::include_graphics("img/original_DCG.png")
+knitr::include_graphics("img/FCI_graph.png")
+knitr::include_graphics("img/CCI_graph.png")
+```
+
+The graph produced by the PC algorithm is a *CPDAG* (completed partially directed acyclic graph), where directed edges ($A$ → $B$) indicate that $A$ is a direct cause (parent) of $B$. Unlike FCI and CCI, the CPDAG does not include circle symbols. Instead, when the PC algorithm cannot determine the direction of causality, it represents this uncertainty with bidirectional arrows. 
+While the PC algorithm serves as a useful reference, its strict assumptions — acyclicity and the absence of latent confounders—limit its applicability in more complex scenarios. For this reason, our primary focus remains on the results obtained from FCI and CCI, with all PC algorithm results provided in the [Appendix](#sec-appendix) for completeness. 
+
+
+
 
 ## Precariousness factors by Leonie
 
@@ -1196,6 +1399,11 @@ $$
 
 
 RCoT is computationally efficient and well-suited for large conditioning sets ($|Z| \geq 4$). Its simplicity enables robust calibration of the null distribution and improved scalability for high-dimensional data.
+
+
+# Acknowledgements {.unnumbered}
+
+The HELIUS study is conducted by the Amsterdam University Medical Centers, location AMC and the Public Health Service of Amsterdam. Both organisations provided core support for HELIUS. The HELIUS study is also funded by the Dutch Heart Foundation, the Netherlands Organization for Health Research and Development (ZonMw), the European Union (FP-7), and the European Fund for the Integration of non-EU immigrants (EIF). We are most grateful to the participants of the HELIUS study and the management team, research nurses, interviewers, research assistants and other staff who have taken part in gathering the data of this study.
 
 <!-- ### Advantages of RCIT and RCoT -->
 
