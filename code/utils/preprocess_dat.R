@@ -23,7 +23,7 @@ source("Precarity_HELIUS/code/utils/libraries.R")   # Load libraries
 source("Precarity_HELIUS/code/utils/robust_func.R") # Load helper functions
 
 # Load the dataset 
-dat <- read_sav("data/helius_dat/HELIUS_LEONIE.sav")
+dat <- read_sav("Precarity_HELIUS/data/helius_dat/HELIUS_LEONIE.sav")
 
 ## =============================================================================
 ## Preprocess and scale the precariousness data
