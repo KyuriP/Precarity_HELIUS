@@ -133,7 +133,7 @@ agg_data <- scaled_data |>
   dplyr::select(S_combined, P_combined, PHQsum) |>
   # Convert to a data frame
   as.data.frame()
-
+c
 
 ## =============================================================================
 ## Causal discovery: run analysis under each setup
