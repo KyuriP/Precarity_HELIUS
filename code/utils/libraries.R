@@ -9,6 +9,8 @@ library(purrr)       # Functional programming tools
 library(magrittr)    # Pipe operators and functional utilities
 library(stringr)     # String manipulation
 library(glue)        # Dynamic string interpolation
+library(tidyverse)
+library(MASS)
 
 # Data input/output
 library(haven)       # Reading SPSS .sav files
@@ -16,6 +18,10 @@ library(haven)       # Reading SPSS .sav files
 # Visualization
 library(ggplot2)     # Data visualization
 library(qgraph)      # Graph-based visualizations
+library(plotly)
+library(GGally)
+library(viridis)
+library(patchwork)
 
 # Parallel processing
 library(furrr)       # Parallelized mapping functions
@@ -34,4 +40,7 @@ library(graph)       # Graph structure utilities
 # SDE handling
 library(sde)
 library(deSolve)
+
+# Optimization
+library(nsga2R)
 
