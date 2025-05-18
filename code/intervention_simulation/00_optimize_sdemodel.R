@@ -90,8 +90,6 @@ multi_obj_fun_parallel <- function(params, N_runs = 1000) {
 # Run NSGA-II
 plan(multisession) # parallel processing
 
-
-plan(multisession)
 result7 <- nsga2R::nsga2R(
   fn = function(params) multi_obj_fun_parallel(params),  # Fix N_runs
   varNo = 6,                   # Number of parameters
@@ -108,6 +106,6 @@ result7 <- nsga2R::nsga2R(
 )
 
 # save result
-# saveRDS(result7, "multioptim_result_6var7optim_500pop_fixedS.rds")
+# saveRDS(result7, "Precarity_HELIUS/data/intervention/multioptim_result_6var7optim_500pop_fixedS.rds")
 
 

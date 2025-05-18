@@ -47,7 +47,7 @@ param_sets_candidates <- list(
 # ------------------------------------------------------------------------------
 
 intervention_sizes <- seq(0, 1, by = 0.01)
-set.seed(42)
+set.seed(42) # set random seed
 S_vals <- sample(depsum$S.fin, 300, replace = TRUE)
 
 # Simulates the final D and P values for each S value and intervention strength

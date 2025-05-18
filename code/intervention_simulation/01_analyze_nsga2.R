@@ -62,5 +62,4 @@ paretoplot <- ggplot(df_filtered, aes(x = total_variance_error, y = total_partia
 # ggsave("Precarity_HELIUS/figures/pareto_frontier.pdf", paretoplot, width = 8, height = 6)
 
 # Save top solutions
-top_solutions_out <- top_solutions %>% mutate(ParamID = paste0("Sol_", row_number()))
-# saveRDS(top_solutions_out, "Precarity_HELIUS/data/intervention/top_solutions_nsga2.rds")
+# saveRDS(top_solutions, "Precarity_HELIUS/data/intervention/top_solutions_nsga2.rds")
