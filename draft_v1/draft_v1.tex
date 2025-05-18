@@ -303,7 +303,7 @@ Precarity and Depression in the HELIUS Study}
 \affil[3]{\textit{Institute for Advanced Study, University of Amsterdam, Oude Turfmarkt 147, Amsterdam, 1012GC, the Netherland}}
 
 
-\date{2025-05-14}
+\date{2025-05-18}
 \begin{document}
 \maketitle
 \begin{abstract}
@@ -1043,14 +1043,22 @@ with each line representing one parameter set. Lines are color-coded by
 combined feedback and input strength, calculated as the product
 \(\alpha_1 \times \alpha_2 \times \beta_1 \times \beta_2\).
 
-Parameter sets with stronger interactions exhibit more pronounced
-declines in both depression and precarity in response to intervention.
-At full intervention---modeled as a complete shift of external stress
-(\(S\)) toward its observed minimum---the mean depression level
-decreases from -0.113 to -0.963, and precarity from -0.100 to -0.958.
-These changes correspond to reductions of approximately 90.8\% relative
-to their initial magnitudes, indicating that targeted intervention can
-shift the system toward a substantially lower-risk equilibrium.
+Parameter sets with stronger interaction dynamics exhibited more
+pronounced reductions in both depression and precariousness following
+intervention. At full intervention---modeled as shifting the external
+stressor (\(S\)) to its observed minimum---the reduction in depression
+ranged from {[}0.68\emph{SD} -- 0.97\emph{SD}{]}, and for social
+precariousness from {[}0.77\emph{SD} -- 0.94\emph{SD}{]}, corresponding
+to the lowest to highest values of parameter strength.\footnote{Standard
+  deviations (\emph{SD}) are based on the original scale of each
+  variable: \(\textit{SD}_D = 1.0\) for depression (\(D\)) and
+  \(\textit{SD}_P = 0.9\) for precariousness (\(P\)). Parameter strength
+  is defined as the product \(\beta_1 \alpha_1 \beta_2 \alpha_2\),
+  reflecting the combined influence of internal feedback and external
+  input sensitivity.} These results suggest that systems with stronger
+internal dynamics are more responsive to external change, enabling
+targeted interventions to more effectively shift the system toward a
+lower-risk equilibrium.
 
 To better understand these dynamics, we focused on two illustrative
 parameter sets: one with strong feedback/input coupling and low noise (a
@@ -1067,13 +1075,17 @@ meaning sufficient gain is required to push the system into nonlinear
 regimes where multiple stable points emerge. If the feedback gain is too
 low, or the system is overwhelmed by noise, it behaves more linearly and
 settles into a single equilibrium---yielding a unistable
-configuration.\footnote{This resembles a classic \emph{pitchfork
-  bifurcation} in discrete dynamical systems: when the gain \(k\) in a
-  scalar map like \(x_{t+1} = \tanh(k x_t)\) exceeds a critical value,
-  the system shifts from a single fixed point to two stable attractors
-  and one unstable one. In our model, high values of
-  \(\alpha_2 \times \beta_2\) similarly enable the emergence of multiple
-  attractor states.}
+configuration.\footnote{This is similar to a well-known pattern in
+  dynamical systems called a \emph{pitchfork bifurcation}. In simple
+  terms, when the system's internal feedback becomes strong enough---for
+  example, when \(k\) in the equation \(x_{t+1} = \tanh(k x_t)\) passes
+  a certain threshold---the system changes from having one stable state
+  to having two possible stable states (and one unstable one in
+  between). In our model, this kind of shift happens when the feedback
+  loop between depression and precariousness---captured by the product
+  \(\alpha_2 \times \beta_2\)---becomes strong. It allows the system to
+  settle into different long-term states, depending on initial
+  conditions.}
 
 The bottom panel of Figure~\ref{fig-intervention} illustrates these
 contrasting behaviors. In the bistable model, a clear bifurcation
