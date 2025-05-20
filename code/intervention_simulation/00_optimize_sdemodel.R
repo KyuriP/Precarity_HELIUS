@@ -97,7 +97,7 @@ result7 <- nsga2R::nsga2R(
   lowerBounds = rep(0, 6),
   upperBounds = rep(2, 6),
   popSize = 500,
-  generations = 100,
+  generations = 300,
   cprob = 0.9,                 # Crossover probability
   mprob = 1 / 4,               # Mutation probability
   tourSize = 2,               # Tournament size
