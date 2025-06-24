@@ -1,3 +1,18 @@
+## =============================================================================
+## Linear Feedback SDE Model Analysis: Covariance-Based Calibration & Trajectory Dynamics
+## =============================================================================
+#' This script implements a stochastic linear feedback model of depression (D) and
+#' precarity (P), influenced by stressor (S), using empirical covariances for calibration.
+#'
+#' 0. Load and calculate empirical covariance structure from ‘clust_data’.
+#' 1. Estimate α₍dp₎ by minimizing discrepancy between modeled and observed covariances.
+#' 2. Analyze parameter trade-offs across a grid of α₍dp₎ values with annotated plots.
+#' 3. Run snapshot simulations at key time points and visualize mean responses to interventions.
+#' 4. Simulate full trajectories under “intervention ON/OFF” and examine recovery dynamics
+#'     with both individual paths and averaged curves.
+#' 5. Assemble all visuals into a combined multi-panel figure.
+## =============================================================================
+
 # Load data & libraries
 source("Precarity_HELIUS/code/utils/preprocess_dat.R") 
 
