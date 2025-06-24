@@ -1,0 +1,2634 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+%
+\documentclass[
+]{article}
+
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage[]{palatino}
+\ifPDFTeX\else  
+    % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\setcounter{secnumdepth}{5}
+% Make \paragraph and \subparagraph free-standing
+\makeatletter
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}{
+    \@ifstar
+      \xxxParagraphStar
+      \xxxParagraphNoStar
+  }
+  \newcommand{\xxxParagraphStar}[1]{\oldparagraph*{#1}\mbox{}}
+  \newcommand{\xxxParagraphNoStar}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}{
+    \@ifstar
+      \xxxSubParagraphStar
+      \xxxSubParagraphNoStar
+  }
+  \newcommand{\xxxSubParagraphStar}[1]{\oldsubparagraph*{#1}\mbox{}}
+  \newcommand{\xxxSubParagraphNoStar}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+\makeatother
+
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+% definitions for citeproc citations
+\NewDocumentCommand\citeproctext{}{}
+\NewDocumentCommand\citeproc{mm}{%
+  \begingroup\def\citeproctext{#2}\cite{#1}\endgroup}
+\makeatletter
+ % allow citations to break across lines
+ \let\@cite@ofmt\@firstofone
+ % avoid brackets around text for \cite:
+ \def\@biblabel#1{}
+ \def\@cite#1#2{{#1\if@tempswa , #2\fi}}
+\makeatother
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newenvironment{CSLReferences}[2] % #1 hanging-indent, #2 entry-spacing
+ {\begin{list}{}{%
+  \setlength{\itemindent}{0pt}
+  \setlength{\leftmargin}{0pt}
+  \setlength{\parsep}{0pt}
+  % turn on hanging indent if param 1 is 1
+  \ifodd #1
+   \setlength{\leftmargin}{\cslhangindent}
+   \setlength{\itemindent}{-1\cslhangindent}
+  \fi
+  % set entry spacing
+  \setlength{\itemsep}{#2\baselineskip}}}
+ {\end{list}}
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{\hfill\break\parbox[t]{\linewidth}{\strut\ignorespaces#1\strut}}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+
+\usepackage[noblocks]{authblk}
+\renewcommand*{\Authsep}{, }
+\renewcommand*{\Authand}{, }
+\renewcommand*{\Authands}{, }
+\renewcommand\Affilfont{\small}
+\usepackage{amssymb}
+\usepackage{booktabs} % Add to your preamble for cleaner table lines
+\usepackage{makecell} % Add to your preamble for multi-line cells
+\usepackage{tikz}
+\usepackage{amsmath}
+\usetikzlibrary{arrows.meta, shapes.geometric}
+
+%% Define TikZ arrow styles
+\newcommand{\starstar}{% 
+\begin{tikzpicture}[baseline=-3pt]
+    \draw [{Rays[n=6]}-{Rays[n=6]}] (0,0) -- (0.55,0);
+\end{tikzpicture}
+}
+
+\newcommand{\circstar}{% 
+\begin{tikzpicture}
+    \draw [{Circle[open]}-{Rays[n=6]}] (0,0) -- (0.55, 0);
+\end{tikzpicture}
+}
+
+\newcommand{\starcirc}{% 
+\begin{tikzpicture}
+    \draw [{Rays[n=6]}-{Circle[open]}] (0,0) -- (0.55, 0);
+\end{tikzpicture}
+}
+
+\newcommand{\stararrow}{% 
+\begin{tikzpicture}
+    \draw [{Rays[n=6]}-{Straight Barb[length=2.5pt]}] (0,0) -- (0.5, 0);
+\end{tikzpicture}
+}
+
+\newcommand{\arrowstar}{% 
+\begin{tikzpicture}
+    \draw [{Straight Barb[length=2.5pt]}-{Rays[n=6]}] (0,0) -- (0.5, 0);
+\end{tikzpicture}
+}
+
+\newcommand{\circarrow}{% 
+\begin{tikzpicture}
+    \draw [{Circle[open]}-{Straight Barb[length=2.5pt]}] (0,0) -- (0.5, 0);
+\end{tikzpicture}
+}
+
+\newcommand{\tailcirc}{% 
+\begin{tikzpicture}[baseline=-3pt] 
+    \draw [-{Circle[open]}] (0,0) -- (0.4, 0);
+\end{tikzpicture}
+}
+
+\newcommand{\circtail}{% 
+\begin{tikzpicture}[baseline=-3pt] 
+    \draw [{Circle[open]}-] (0,0) -- (0.4, 0);
+\end{tikzpicture}
+}
+
+\newcommand{\circirc}{% 
+\begin{tikzpicture}[baseline=-3pt] 
+    \draw [{Circle[open]}-{Circle[open]}] (0,0) -- (0.5, 0);
+\end{tikzpicture}
+}
+
+\newcommand{\tailstar}{% 
+\begin{tikzpicture}[baseline=-3pt] 
+    \draw [-{Rays[n=6]}] (0,0) -- (0.5, 0);
+\end{tikzpicture}
+}
+
+\newcommand{\startail}{% 
+\begin{tikzpicture}
+    \draw [{Rays[n=6]}-] (0,0) -- (0.5, 0);
+\end{tikzpicture}
+}
+
+\newcommand{\tailarrow}{% 
+\begin{tikzpicture}
+    \draw [-{Straight Barb[length=2.5pt]}](0,0) -- (0.4, 0);
+\end{tikzpicture}
+}
+
+\newcommand{\arrowtail}{% 
+\begin{tikzpicture}
+    \draw [{Straight Barb[length=2.5pt]}-](0,0) -- (0.4, 0);
+\end{tikzpicture}
+}
+
+\newcommand{\arrowarrow}{% 
+\begin{tikzpicture}
+    \draw [{Straight Barb[length=2.5pt]}-{Straight Barb[length=2.5pt]}](0,0) -- (0.4, 0);
+\end{tikzpicture}
+}
+
+\newcommand\stackedarrows{%
+        \mathrel{\vcenter{\mathsurround0pt
+                \ialign{##\crcr
+                \noalign{\nointerlineskip}$\arrowtail$\crcr
+                \noalign{\nointerlineskip}$\tailarrow$\crcr
+                }
+        }}%
+}
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\AtBeginDocument{%
+\ifdefined\contentsname
+  \renewcommand*\contentsname{Table of contents}
+\else
+  \newcommand\contentsname{Table of contents}
+\fi
+\ifdefined\listfigurename
+  \renewcommand*\listfigurename{List of Figures}
+\else
+  \newcommand\listfigurename{List of Figures}
+\fi
+\ifdefined\listtablename
+  \renewcommand*\listtablename{List of Tables}
+\else
+  \newcommand\listtablename{List of Tables}
+\fi
+\ifdefined\figurename
+  \renewcommand*\figurename{Figure}
+\else
+  \newcommand\figurename{Figure}
+\fi
+\ifdefined\tablename
+  \renewcommand*\tablename{Table}
+\else
+  \newcommand\tablename{Table}
+\fi
+}
+\@ifpackageloaded{float}{}{\usepackage{float}}
+\floatstyle{ruled}
+\@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
+\floatname{codelisting}{Listing}
+\newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
+\makeatother
+
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\usepackage{bookmark}
+
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same} % disable monospaced font for URLs
+\hypersetup{
+  pdftitle={From Causal Discovery to Intervention Simulation: Modeling Precariousness and Depression in the HELIUS Study},
+  pdfauthor={Kyuri Park; Leonie K. Elsenburg; Mary Nicolao; Karien Stronks; Vítor V. Vasconcelos},
+  colorlinks=true,
+  linkcolor={blue},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={Blue},
+  pdfcreator={LaTeX via pandoc}}
+
+
+\title{From Causal Discovery to Intervention Simulation: Modeling
+Precariousness and Depression in the HELIUS Study}
+
+
+\author[1]{Kyuri Park}
+\author[2]{Leonie K. Elsenburg}
+\author[2]{Mary Nicolao}
+\author[2]{Karien Stronks}
+\author[1, 3]{Vítor V. Vasconcelos}
+
+\affil[1]{\textit{Computational Science Lab, Informatics Institute, University of Amsterdam, PO Box 94323, Amsterdam, 1090GH, the Netherlands}}
+\affil[2]{\textit{Department of Public and Occupational Health, Amsterdam Public Health Research Institute, Amsterdam UMC, University of Amsterdam, Amsterdam, the Netherland}}
+\affil[3]{\textit{Institute for Advanced Study, University of Amsterdam, Oude Turfmarkt 147, Amsterdam, 1012GC, the Netherland}}
+
+
+\date{2025-06-24}
+\begin{document}
+\maketitle
+\begin{abstract}
+\noindent This study investigates the dynamic relationship between
+precarious life conditions and depression by combining constraint-based
+causal discovery with computational modeling. Using cross-sectional data
+from the HELIUS study, we applied cycle-capable causal discovery
+algorithms to uncover directional relationships between domain-specific
+precariousness indicators, and depressive symptoms. Our multi-resolution
+analysis---spanning both aggregate and symptom-level
+constructs---identified financial stress as a robust driver of
+depression, and highlighted key symptoms, such as sleep disturbance and
+depressed mood, as likely initiators or reinforcers of downstream
+precariousness. To explore how these structural insights shape
+intervention effectiveness, we developed a simplified nonlinear
+dynamical model simulating the co-evolution of depression and social
+precariousness under varying levels of financial stress reduction.
+Simulation results revealed that the system's responsiveness depends not
+only on the intensity of external intervention but also on internal
+structural features such as feedback strength and noise. In particular,
+some configurations exhibited bistability, requiring interventions to
+surpass a critical threshold to trigger lasting improvement, while
+others responded more proportionally. Together, these findings emphasize
+that internal feedback dynamics---not just external adversity---can
+shape the impact of mental health interventions. More broadly, our study
+offers a scalable framework for integrating causal discovery and
+dynamical simulation to better understand and inform policy responses to
+complex psychosocial phenomena.
+\end{abstract}
+
+\renewcommand*\contentsname{Table of contents}
+{
+\hypersetup{linkcolor=}
+\setcounter{tocdepth}{3}
+\tableofcontents
+}
+
+\section{Introduction}\label{introduction}
+
+Mental health disorders represent a growing global health concern,
+especially in urbanized regions (Gruebner et al., 2017; World Health
+Organization, 2022). In 2019, one in eight people worldwide were living
+with a mental health condition, with the highest disability-adjusted
+life years (DALYs) due to mental and addictive disorders concentrated in
+high-income countries such as those in Northern Europe, North America,
+and Australia (Rehm \& Shield, 2019; World Health Organization, 2022).
+Despite growing awareness, governments have struggled to design
+effective responses. Mental health outcomes arise from complex,
+multi-level dynamics---intertwined with the social, economic, and
+spatial structures of urban environments---making both diagnosis and
+intervention design deeply challenging (Van Der Wal et al., 2021).
+
+Recent work has shifted focus from individual-level vulnerability to
+broader social and structural determinants. While high-income nations
+show elevated overall DALYs, within-country disparities reveal that
+income inequality is a significant predictor of mental health burden
+(Rehm \& Shield, 2019). Moreover, precarious working conditions, housing
+instability, and neighborhood disadvantage have all been linked to
+increased risk of depression and anxiety (Fone et al., 2014; Pevalin et
+al., 2017; Rönnblad et al., 2019; Rugulies et al., 2023). This growing
+literature highlights that poor mental health is not merely a personal
+issue, but one rooted in sustained socioeconomic stress and structural
+uncertainty.
+
+Building on this, recent studies have introduced the concept of
+precariousness as a multidimensional condition characterized by
+instability and lack of control across several life domains---including
+employment, finances, housing, social relations, and cultural belonging
+(Elsenburg et al., 2025; McKee et al., 2017). This broader view reveals
+how different forms of insecurity can co-occur and compound, forming an
+ecosystem of risk. However, despite growing evidence of association
+between precariousness and mental health, a fundamental question remains
+unresolved: \emph{How do these factors causally influence one another?}
+Most existing studies rely on cross-sectional correlations, leaving open
+questions about directionality and feedback. Without stronger causal
+insight, it remains difficult to identify priority targets for
+intervention or to anticipate unintended effects.
+
+This study aims to investigate the causal mechanisms linking
+precariousness and depression---and how those mechanisms shape system
+responses to external intervention. Specifically, we ask: \emph{How does
+the internal configuration of the precariousness--depression
+relationship affect the outcomes of stress-reducing interventions?} To
+answer this, we combine two approaches. First, we use cycle-capable
+causal discovery algorithms to infer directional relationships among
+domain-specific precariousness factors, and depressive symptoms. By
+examining both aggregated measures (depression sum score and a composite
+precariousness index) and disaggregated variables (individual depressive
+symptoms and specific life-domain indicators), we capture broad patterns
+of relationship as well as fine-grained causal pathways. Second, we
+translate these insights into a computational dynamical model that
+simulates how depression and precariousness co-evolve under varying
+levels of external stress. This model enables us to probe how system
+properties---such as feedback strength and stochastic noise---govern
+responsiveness to intervention. In some configurations, the system
+exhibits bistability, remaining stuck in a high-risk state unless
+external support exceeds a critical threshold. In others, it shows
+unistable behavior, responding more gradually to incremental changes. By
+integrating causal discovery with dynamic simulation, we aim to
+demonstrate how the internal structure of the depression--precariousness
+system shapes its susceptibility to change---and, by extension, how
+intervention strategies might be tailored to the architecture of
+underlying vulnerability.
+
+\section{Methods}\label{methods}
+
+\subsection{Data}\label{data}
+
+We use data from the HELIUS (HEalthy LIfe in an Urban Setting) study,
+which has been described in detail elsewhere (Snijder et al., 2017;
+Stronks et al., 2013). It captures the diverse population of the city of
+Amsterdam by including the six main ethnic groups and provides
+comprehensive health and lifestyle data, including depressive symptoms
+as measured by the PHQ-9 (Galenkamp et al., 2017). To operationalize
+indicators of precariousness, we draw on the framework outlined in
+previous research (Elsenburg et al., 2025) and select a set of relevant
+variables. To ensure a robust representation of precariousness in our
+causal discovery models, we conducted exploratory analyses to identify
+consistent and meaningful data-driven factor structures. These analyses
+led to the identification of five distinct precariousness
+factors---three domain-based and two reflecting recent stressors---each
+composed of multiple observed variables, as outlined below. Additional
+details on the HELIUS study and the factor extraction process are
+provided in the \hyperref[sec-appendix]{Appendix}.
+
+\begin{itemize}
+\tightlist
+\item
+  Employment precariousness: \texttt{emp\_stat} (current employment
+  status), \texttt{work\_sit} (nature of work situation).
+\item
+  Social precariousness: \texttt{soc\_freq} (frequency of social
+  contact), \texttt{soc\_adq} (perceived adequacy of social support).
+\item
+  Housing precariousness: \texttt{nb\_safe} (neighborhood safety),
+  \texttt{nb\_res} (access to neighborhood resources), \texttt{nb\_rent}
+  ( proportion of rental housing), \texttt{cul\_rec} (availability of
+  cultural resources).
+\item
+  Recent relational stressors: \texttt{frd\_brk12} (experience of a
+  friendship breakup), \texttt{conf12} (recent interpersonal or
+  relational conflict).
+\item
+  Recent financial stressors: \texttt{fincri12} (experience of a
+  financial crisis), \texttt{inc\_diff} ( difficulty managing household
+  income).
+\end{itemize}
+
+After preprocessing, the HELIUS dataset includes 21,628 individuals. In
+addition to the five identified precariousness factors, we computed an
+overall precariousness score by by summing these five factor scores,
+thereby capturing a composite measure of accumulated precariousness
+across domains. Depression is represented using the PHQ-9 (Kroenke et
+al., 2001), both as a total sum score and as individual symptom scores.
+In the subsequent causal discovery analysis, we explore the relationship
+between depression and precariousness using both aggregated scores and
+their disaggregated components. See Figure~\ref{fig-dist} for the
+overall distributions of the variables used in the analysis.
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.9\textwidth,height=\textheight]{draft_v2_files/figure-pdf/fig-dist-1.pdf}
+
+}
+
+\caption{\label{fig-dist}Distributions of variables with density
+overlay. \emph{This shows the distributions of the variables used in the
+causal analysis, plotted as histograms with overlaid density estimates.
+The x-axis represents the value of each variable after preprocessing.
+The y-axis shows the corresponding estimated probability density.}
+\textbf{\emph{P.emp}} = \emph{employment precariousness};
+\textbf{\emph{P.hou}} = \emph{housing precariousness};
+\textbf{\emph{P.soc}} = \emph{social precariousness};
+\textbf{\emph{S.fin}} = \emph{recent financial stressors};
+\textbf{\emph{S.rel}} = \emph{recent relational stressors};
+\textbf{\emph{precariousness}} = \emph{overall precariousness};
+\textbf{\emph{PHQsum}} = \emph{PHQ-9 sum score}; \textbf{\emph{anh}} =
+\emph{anhedonia}; \textbf{\emph{app}} = \emph{appetite};
+\textbf{\emph{con}} = \emph{concentration}; \textbf{\emph{dep}} =
+\emph{depressed mood}; \textbf{\emph{ene}} = \emph{energy};
+\textbf{\emph{glt}} = \emph{guilty}; \textbf{\emph{mot}} = \emph{motor};
+\textbf{\emph{slp}} = \emph{sleep}; \textbf{\emph{sui}} =
+\emph{suicidal}.}
+
+\end{figure}%
+
+\subsection{Causal Discovery}\label{sec-analysis}
+
+To uncover directional relationships between precariousness and
+depression, we use constraint-based causal discovery algorithms that
+allow for feedback loops and latent confounding. Specifically, we apply
+the \emph{Fast Causal Inference} (FCI) and \emph{Cyclic Causal
+Inference} (CCI) algorithms, both of which can detect cycles and
+non-acyclic structures (Mooij \& Claassen, 2020; Strobl, 2019). For
+reference, we also include the \emph{PC} algorithm, one of the most
+widely used methods for acyclic causal discovery (Spirtes et al., 2001).
+While our full analysis includes results from three causal discovery
+algorithms---FCI, CCI, and PC---we focus on FCI in the main text, as it
+offers a strong balance between flexibility and theoretical soundness.
+FCI accommodates latent confounding and potential feedback, making it
+well-suited for the complexity of our data (Mooij \& Claassen, 2020).
+The PC algorithm is included for reference but relies on more
+restrictive assumptions, such as acyclicity and no unmeasured
+confounding. CCI, while capable of modeling cycles explicitly, comes
+with certain theoretical limitations. Results from both PC and CCI are
+provided in the \hyperref[sec-appendix]{Appendix}
+(Section~\ref{sec-cci}, Section~\ref{sec-pc}) for completeness and
+comparison. For readers interested in detailed explanations of the
+algorithms, edge interpretations, and graph types (e.g., PAG, MAAG,
+CPDAG), as well as algorithmic assumptions and limitations, please refer
+to the \hyperref[sec-appendix]{Appendix}
+(Section~\ref{sec-causalprimer}).
+
+A key challenge in applying these algorithms to the HELIUS dataset is
+that many variables are non-Gaussian and likely exhibit nonlinear
+relationships. While kernel-based conditional independence tests (such
+as KCIT) are well-suited for capturing such complex dependencies, they
+are computationally intensive---scaling quadratically with sample size
+due to the need to invert large kernel matrices---making them
+impractical for large datasets like HELIUS (Rahimi \& Recht, 2007). To
+address this, we use the Randomized Conditional Correlation Test (RCoT),
+a nonparametric alternative that approximates kernel methods using
+random Fourier features. This reduces computational complexity from
+quadratic to linear in sample size, substantially lowering runtime while
+preserving sensitivity to nonlinear relationships (Strobl et al., 2019;
+Zhang et al., 2012). For further details, see Section~\ref{sec-rcot}.
+
+We examine the causal structure using three complementary approaches:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Aggregate-level analysis: relationships between five domain-specific
+  precariousness factors and the PHQ-9 sum score.
+\item
+  Fully disaggregated analysis: relationships between individual
+  precariousness items and individual depressive symptoms.
+\item
+  Mixed analysis: relationships between individual symptoms and a
+  composite index of overall precariousness.
+\end{enumerate}
+
+The aggregate analysis reduces dimensionality and yields interpretable
+summaries of how domains of precariousness relate to overall depression
+severity. However, it may obscure finer-grained effects. The
+disaggregated analysis allows for precise mapping of which symptoms are
+influenced by (or influence) specific precariousness conditions, but it
+introduces complexity due to the high dimensionality and distributional
+properties of the data. The mixed approach, in turn, integrates these
+perspectives by examining how individual symptoms respond to cumulative
+precariousness across domains.
+
+To robustly estimate the causal structure between depression and
+precariousness variables, we implement a comprehensive bootstrapped
+causal discovery procedure. This procedure systematically varies key
+analysis parameters across a grid of configurations, enabling us to
+assess the stability of inferred relationships under different settings.
+Specifically, we vary four main components:
+
+\begin{itemize}
+\tightlist
+\item
+  Significance levels for conditional independence tests: \(\alpha\) =
+  0.01 and 0.05.
+\item
+  Stability thresholds: 0.5, 0.6, 0.7, and 0.8, which determine how
+  frequently an edge must appear across bootstraps to be retained.
+\item
+  Conditional independence (CI) tests: Gaussian CI test (partial
+  correlation) and RCoT (a nonparametric test).
+\item
+  Causal discovery algorithms: FCI, CCI, and PC.
+\end{itemize}
+
+For each unique parameter combination (2 significance levels × 4
+thresholds × 2 CI tests = 16 settings), we run 100 bootstrap samples per
+algorithm for the aggregated analyses (see Step 1 in
+Figure~\ref{fig-workflow}). For symptom-level analyses, which are more
+computationally intensive, we use 30 bootstrap samples per
+setting.\footnote{For symptom-level analyses, we further improve
+  computational efficiency by fixing the skeleton structure---the
+  undirected network of potential connections---using a consensus graph
+  derived from all three algorithms (with \(\alpha = 0.01\) and the RCoT
+  test). This allows subsequent analyses to focus exclusively on
+  estimating edge directions, avoiding the repeated and costly
+  computation of skeletons, and thus substantially reducing runtime.}
+
+To summarize these results, we apply a two-level aggregation strategy:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Within each condition} (e.g., fixed \(\alpha\), threshold, CI
+  test, and algorithm), we identify the most frequently occurring edge
+  type (e.g., arrowhead, circle, none) across bootstraps for each pair
+  of variables (Step 2 in Figure~\ref{fig-workflow}).
+\item
+  \textbf{Across conditions}, we then determine the most dominant edge
+  type based on majority voting. In cases where no edge type is clearly
+  dominant (i.e., a tie), we mark the edge as uncertain, represented
+  with a dashed line in the final graph (Step 3 in
+  Figure~\ref{fig-workflow}).
+\end{enumerate}
+
+This summarization process is repeated separately for each causal
+discovery algorithm (FCI, CCI, PC), yielding a single robust graph per
+algorithm. These final graphs represent only the most stable and
+consistent relationships across a wide range of plausible
+parameterizations, enhancing both reliability and interpretability. To
+support transparency, each final graph is accompanied by a matrix
+summarizing the relative frequency of each edge type for every variable
+pair---enabling readers to assess the degree of uncertainty or agreement
+underlying each connection.
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.9\textwidth,height=\textheight]{img/simsetup.pdf}
+
+}
+
+\caption{\label{fig-workflow}Causal discovery workflow applied across
+all three algorithms (FCI, CCI, and PC). \emph{The process involves
+three main steps: (1) bootstrapping the dataset to create multiple
+resampled datasets; (2) estimating causal graphs under varying parameter
+configurations; and (3) summarizing results by identifying the most
+frequent edge type across bootstraps and settings to construct a final
+stable graph.}}
+
+\end{figure}%
+
+\subsection{Modeling Dynamics between precariousness and
+Depression}\label{modeling-dynamics-between-precariousness-and-depression}
+
+To explore how internal system structure shapes responses to external
+support, we implement a high-level computational model that formalizes
+key mechanisms suggested by the causal discovery analysis. Rather than
+attempting to replicate the full estimated causal graph, this model
+abstracts the essential structure into a compact, tractable system
+focused on dynamic interactions between depression and social
+precariousness, both influenced by financial stress.
+
+As illustrated in Figure~\ref{fig-concept}, the model includes three
+components: depression (\(D\)), represented by the PHQ-9 sum score,
+social precariousness (\(P\)), and external financial stress (\(S\)).
+Depression and precariousness are modeled as coupled state variables
+that influence each other over time, with \(S\) acting as a shared
+input. These dynamics are formalized as a pair of nonlinear stochastic
+differential equations (SDEs):
+
+\[
+\begin{aligned}
+dP &= \lambda_P \left( \tanh(\alpha_1 S + \alpha_2 D) - P \right) dt + \sigma_1 dW_1 \\
+dD &= \lambda_D \left( \tanh(\beta_1 S + \beta_2 P) - D \right) dt + \sigma_2 dW_2 
+\end{aligned}
+\]
+
+Here, \(D\) denotes depression, \(P\) denotes social precariousness, and
+\(S\) is the external stressor associated with financial stress. The
+parameters \(\lambda_D\) and \(\lambda_P\) control the timescales over
+which variable adjusts toward its input-driven target state. The
+coefficients \(\alpha_1, \alpha_2\) and \(\beta_1, \beta_2\) represent
+the strengths of the causal influences between variables. Stochastic
+fluctuations are introduced through the terms \(\sigma_1 dW_1\) and
+\(\sigma_2 dW_2\), where \(dW_1\) and \(dW_2\) are independent Wiener
+processes. The system uses the hyperbolic tangent function (\(tanh\)) to
+bound the influence of inputs, ensuring smooth, saturating dynamics and
+preventing runaway feedback loops. Importantly, the nonlinearity
+introduced by the \(tanh\) function also allows the system to exhibit
+bistability, supporting the existence of two stable states: one
+corresponding to low depression and precariousness, and the other to
+high depression and precariousness.
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.4\textwidth,height=\textheight]{img/conceptmodel.png}
+
+}
+
+\caption{\label{fig-concept}High-level conceptual model of causal
+structure linking social precariousness (P.soc) and depression (PHQsum),
+influenced by external financial stress (S.fin).}
+
+\end{figure}%
+
+\subsubsection{Model Calibration}\label{model-calibration}
+
+To identify realistic parameter settings for the simulation model, we
+calibrate six free parameters---\(\alpha_1\), \(\alpha_2\), \(\beta_1\),
+\(\beta_2\), and noise amplitudes \(\sigma_1\), \(\sigma_2\)---using the
+\emph{Non-dominated Sorting Genetic Algorithm II} (NSGA-II) (Deb et al.,
+2002), a multi-objective evolutionary optimization method well-suited
+for noisy and high-dimensional search spaces. The goal is to match
+simulated system behavior to empirical summary statistics derived from
+the HELIUS dataset. Specifically, we aim to match the observed means and
+variances of depression (\(D\)) and social precariousness (\(P\)), along
+with all three partial correlations among \(D\), \(P\), and financial
+stress (\(S\)): \(\rho_{DP.S}\), \(\rho_{DS.P}\), and \(\rho_{PS.D}\).
+
+Given the stochastic nature of the model, each candidate parameter set
+is evaluated by simulating 1,000 virtual individuals, each assigned a
+fixed \(S\) value sampled from the empirical distribution. From these
+simulations, we compute population-level summary statistics based on the
+final states. The fitness of each parameter set is measured by how
+closely its summary statistics matched the empirical data, using the
+total absolute deviation across all objectives.
+
+To explore optimal parameter configurations, we used the NSGA-II
+algorithm as implemented in the \texttt{nsga2R} package (Franz \&
+Nakamura, 2015). This algorithm is inspired by natural selection and
+evolves a population of candidate solutions over multiple generations to
+balance competing objectives. We began with a population of 500 randomly
+generated parameter sets and allowed them to evolve over 300
+generations. During this process, solutions were selected, combined, and
+mutated using standard settings: a crossover probability of 0.9 (which
+controls how often solutions are combined), a mutation probability of
+0.25 (introducing random variation), and a tournament size of 2 (used to
+pick the best candidates for reproduction). The result is a Pareto
+front---a set of solutions that are considered optimal in the sense that
+no single objective can be improved without worsening another. From this
+diverse set of trade-off solutions (see Figure~\ref{fig-pareto}), we
+selected the 30 parameter sets with the lowest overall error across
+objectives. These top-performing configurations were then used in the
+simulation phase to evaluate the potential effects of different
+interventions.
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.8\textwidth,height=\textheight]{img/paretoplot.png}
+
+}
+
+\caption{\label{fig-pareto}Pareto front of simulated parameter sets.
+\emph{Each point represents a solution evaluated by its total variance
+error (x-axis) and total partial correlation error (y-axis), with color
+indicating total mean error. Red crosses highlight the top 30 solutions
+used for simulation.}}
+
+\end{figure}%
+
+\subsubsection{Intervention Simulation}\label{intervention-simulation}
+
+To evaluate the effects of hypothetical support, we simulate scenarios
+in which each individual's financial stress level (\(S\)) is
+proportionally reduced toward the minimum observed value. This models a
+population-wide intervention applied at varying strengths --- from no
+reduction in stress (0\%) to complete alignment with the minimum
+observed stress level (100\%).
+
+For each of the top 30 parameter sets identified through calibration, we
+run simulations on 300 virtual individuals across this full range of
+intervention levels. In each simulation, we observe how depression
+(\(D\)) and precariousness (\(P\)) evolve over time, capturing their
+final values after the system stabilizes. This setup allows us to
+evaluate how different internal model dynamics (e.g., feedback strength)
+influence the system's response to external change.
+
+\section{Results}\label{results}
+
+\subsection{Causal Structure Linking Precariousness and
+Depression}\label{causal-structure-linking-precariousness-and-depression}
+
+\subsubsection{Depression as sum score}\label{depression-as-sum-score}
+
+The sum score graphs provide a high-level summary of how precariousness
+factors collectively influence overall depression severity, focusing on
+aggregated relationships. Figure~\ref{fig-sum} illustrates the causal
+relationships between precariousness factors (\emph{P.hou},
+\emph{P.emp}, \emph{P.soc}, \emph{S.rel}, \emph{S.fin}) and the
+depression sum score (\emph{PHQsum}), as identified by the FCI
+algorithm. As described in Section~\ref{sec-analysis}, dashed edges
+indicate ties, and the edge endpoint at which the tie occurs is marked
+by a bold horizontal bar.
+
+The causal graph in panel (a) highlights key pathways in the
+relationships between precariousness factors and depression
+(\emph{PHQsum}). Employment precariousness (\emph{P.emp}) and social
+precariousness (\emph{P.soc}) are not identified as causes of
+depression, whereas financial stress (\emph{S.fin}) appears to play a
+causal role. While \emph{P.emp} and \emph{P.soc} are generally not
+recognized as causes of other precariousness factors, \emph{S.fin}
+emerges as a potential cause, as indicated by its circle edge endpoint.
+Supporting this, the proportion matrix plot in panel (b) shows that
+\emph{S.fin} has some probability of causally influencing either
+\emph{P.emp} or \emph{P.soc.}
+
+The matrix plot can be interpreted such that the symbol in
+matrix{[}\(i\), \(j\){]} represents the relationship
+\(i -~[symbol] \  j\). For example, if matrix{[}\(i\), \(j\){]} is
+\textgreater{} and matrix{[}j, i{]} is \(\circ\), then the inferred
+relationship is \(i \circarrow j\). In the table, different edge types
+are represented by distinct colors: light gray for the absence of an
+edge, blue for circles, green for arrowheads, and coral for arrowtails.
+The colors are blended based on the proportion of each edge type, with
+higher proportions increasing the opacity of the corresponding color,
+making dominant symbols more visually prominent.
+
+Relational stress (\emph{S.rel}) plays a more nuanced role, interacting
+with depression and \emph{S.fin} through a latent confounder. Its
+connection to \emph{P.soc} is less definitive---the proportion matrix in
+Figure~\ref{fig-sum-2} indicates a considerable probability that this
+relationship is either absent, ambiguous, or potentially bidirectional.
+Meanwhile, housing precariousness (\emph{P.hou}) is not directly
+causally related to depression but is linked to \emph{P.emp} and
+\emph{S.fin}. While \emph{P.emp} and \emph{S.fin} are identified as
+non-causes of \emph{P.hou}, it remains unclear whether \emph{P.hou}
+causally influences \emph{P.emp} or if their relationship is mediated by
+an unobserved confounder.
+
+The findings from the CCI algorithm (see Figure~\ref{fig-sum-cci}) are
+largely consistent with those from the FCI algorithm, with one
+exception: CCI does not identify \emph{S.fin} as a cause of depression.
+Additionally, CCI introduces greater uncertainty in edge directions,
+with more ties mainly between circle and arrowhead endpoints, and tends
+to favor arrowheads more frequently than FCI. Despite these differences,
+the skeleton structure and overall causal directions derived from CCI
+align well with the results of the FCI algorithm, supporting the key
+pathways.
+
+\begin{figure}
+
+\begin{minipage}{0.50\linewidth}
+
+\centering{
+
+\includegraphics[width=1\textwidth,height=\textheight]{img/FCI_depsum.png}
+
+}
+
+\subcaption{\label{fig-sum-1}FCI PAG}
+
+\end{minipage}%
+%
+\begin{minipage}{0.50\linewidth}
+
+\centering{
+
+\includegraphics[width=1\textwidth,height=\textheight]{img/depsum_mat_fci.pdf}
+
+}
+
+\subcaption{\label{fig-sum-2}Proportion matrix}
+
+\end{minipage}%
+
+\caption{\label{fig-sum}Resulting graph of precariousness factors and
+depression sum score using FCI and proportion of edge endpoint types.}
+
+\end{figure}%
+
+\subsubsection{Individual depression
+symptom}\label{individual-depression-symptom}
+
+Moving from the sum score representation to the disaggregated
+symptom-level graph provides a more granular perspective on the causal
+relationships between precariousness factors and depression symptoms.
+Unlike the sum score graph, which aggregates all symptoms into a single
+measure---potentially obscuring nuanced relationships---the
+symptom-level graph reveals the heterogeneity in how specific symptoms
+(\emph{con} (concentration), \emph{slp} (sleep), \emph{ene} (energy),
+\emph{app} (appetite), \emph{mot} (motor), \emph{sui} (suicidal),
+\emph{anh} (anhedonia), \emph{glt} (guilt), and \emph{dep} (depressed
+mood)) are influenced by, and in turn influence, different forms of
+precariousness.
+
+The symptom-level graph in Figure~\ref{fig-sym-1} reveals a more complex
+and interconnected structure than the sum score graph, reflecting the
+strong interdependence among symptoms and suggesting much presence of
+latent confounders, as indicated by numerous bidirectional edges. As
+before, dashed edges denote ties, with specific ties marked by bold
+horizontal bars. In Figure~\ref{fig-sym-2}, the proportion matrix
+provides more insight into these directionalities. Here, opaque green
+dominates most symptom-to-symptom connections, indicating that
+arrowheads are the most frequently inferred edge type. However, blue
+regions, which correspond to circle endpoints, are particularly common
+for \emph{anh}, \emph{slp}, \emph{ene}, and \emph{sui}, reflecting
+uncertainty in the causal direction among these symptoms. Notably, the
+only arrowtail connection appears between \emph{dep} and \emph{anh},
+suggesting that anhedonia is a potential cause of depressed mood.
+
+Looking at the symptom-precariousness connections, one of the key
+patterns is that ties are most frequently found in the relationships
+between individual symptoms and precariousness factors. This suggests
+that these causal links may be less stable across different conditions.
+Closer examination reveals that most ties arise due to discrepancies
+between the Gaussian CI test and the RCoT test---with Gaussian CI
+favoring arrowheads and RCoT more often predicting the absence of an
+edge.
+
+This discrepancy likely arises from a combination of factors. As the
+analysis moves from aggregated to disaggregated variables, the number of
+CI tests increases substantially, leading to a loss of statistical
+power. With more variables being conditioned on, the effective sample
+size per test diminishes, making it harder to detect subtle
+dependencies. Over-conditioning---controlling for too many
+variables---can also obscure real relationships, resulting in false
+negatives. Beyond these statistical power issues, the underlying
+assumptions of the two CI tests contribute to their divergence. RCoT is
+a nonparametric test that captures both linear and nonlinear
+dependencies without assuming a specific distributional form. However,
+it is more conservative and requires larger sample sizes, especially in
+high-dimensional settings. In contrast, the Gaussian CI test is based on
+partial correlations and assumes linear Gaussian relationships, making
+it more permissive and more likely to detect weak or spurious
+associations. As a result, it is common to see edges where Gaussian CI
+suggests a directional relationship, while RCoT indicates no edge. In
+the proportion matrix, this appears as a 50--50 tie between absence and
+arrowhead symbols. This systematic divergence illustrates the broader
+challenge of causal discovery in high-dimensional data: different
+statistical assumptions can lead to different conclusions about
+whether---and in which direction---variables are causally related.
+
+Despite these differences, some consistent patterns emerge across both
+CI tests, particularly in the case of \emph{S.fin}, which appears to be
+connected to nearly all other variables---though many of these
+connections are marked by ties, reflecting uncertainty in
+directionality. One exception is the stronger evidence suggesting that
+\emph{S.fin} may cause changes in \emph{app}, while its relationships
+with other symptoms, such as \emph{ene}, \emph{mot}, and \emph{dep},
+remain ambiguous. Similarly, \emph{P.soc} exhibits numerous connections
+with depressive symptoms, with most edges pointing toward \emph{P.soc}
+rather than outward from it. This suggests that depressive symptoms,
+particularly \emph{dep} and \emph{glt}, may contribute to worsening
+social precariousness rather than the other way around. Additionally,
+\emph{anh} also shows some probability of causally influencing
+\emph{P.soc}, reinforcing the idea that social precariousness is more
+often a consequence rather than a driver of depressive symptoms.
+
+Other precariousness factors exhibit more uncertain but still notable
+relationships. \emph{S.rel} shows weak but existing connections with
+\emph{slp}, \emph{glt}, and \emph{app}, though directionality remains
+unclear in many cases. \emph{P.emp} also connects to symptoms like
+\emph{slp}, \emph{mot}, and \emph{con}, but, like \emph{S.rel}, these
+relationships exhibit a 50/50 split in directionality, reflecting
+uncertainty in the inferred causal paths. In line with the aggregated
+graph in Figure~\ref{fig-sum}, \emph{P.hou} does not appear to have any
+direct relationship with depression symptoms but consistently shows
+associations with \emph{P.emp} and \emph{S.fin}. The causal
+relationships among precariousness factors remain largely unchanged from
+the aggregated analysis, with \emph{S.fin} exhibiting the strongest
+tendency to influence other precariousness factors.
+
+Among depressive symptoms, \emph{dep}, \emph{glt}, and \emph{slp} appear
+to be the most connected to precariousness factors, while \emph{P.soc}
+has the most connections with symptoms, predominantly as a recipient
+rather than a driver of influence. Within the symptom network,
+\emph{slp}, \emph{sui}, and \emph{anh} emerge as causally influential
+symptoms, as they exhibit more outgoing arrows compared to other
+symptoms. On the other hand, \emph{con}, \emph{mot}, \emph{dep}, and
+\emph{glt}, despite having high connectivity, predominantly receive
+incoming arrows, indicating they are more likely effects rather than
+causes. Considering both symptom-precariousness connections and
+symptom-level dynamics, \emph{slp} emerges as a central symptom, given
+its strong ties to precariousness factors and its influential role
+within the symptom network. This suggests that sleep issues could be an
+initiating symptom, particularly sensitive to relational stress and
+employment precariousness. On the other hand, \emph{P.soc} serves as a
+key bridge between the depression and precariousness subsystems, as
+depressive symptoms appear to feed back into social precariousness,
+reinforcing a self-sustaining dynamic between depression and precarious
+conditions.
+
+Finally, the results from CCI are largely consistent with those from
+FCI, but with some key differences. CCI tends to favor arrowheads more
+frequently, resulting in a greater number of bidirectional edges, which
+suggests a higher involvement of latent confounders. Additionally, CCI
+exhibits more tie situations, though, similar to FCI, most ties occur
+between absence and arrowhead edges, reflecting the discrepancy between
+the Gaussian CI test and RCoT---where the Gaussian test favors
+arrowheads, while RCoT more often suggests the absence of an edge. For a
+detailed visualization of the CCI-derived graph and proportion matrix,
+see Figure~\ref{fig-sym-cci}.
+
+\begin{figure}
+
+\begin{minipage}{\linewidth}
+
+\centering{
+
+\includegraphics[width=0.7\textwidth,height=\textheight]{img/symptom_graph_FCI.png}
+
+}
+
+\subcaption{\label{fig-sym-1}FCI PAG}
+
+\end{minipage}%
+\newline
+\begin{minipage}{\linewidth}
+
+\centering{
+
+\includegraphics[width=0.7\textwidth,height=\textheight]{img/symptom_mat_fci.pdf}
+
+}
+
+\subcaption{\label{fig-sym-2}Proportion matrix}
+
+\end{minipage}%
+
+\caption{\label{fig-sym}Resulting graph of precariousness factors and
+individual depression symptoms using FCI and proportion of edge endpoint
+types.}
+
+\end{figure}%
+
+\subsubsection{Precariousness as sum
+score}\label{precariousness-as-sum-score}
+
+Lastly, we examine the relationships between individual symptoms and
+overall precariousness, an aggregated measure represented by the sum of
+five precariousness factors. This analysis provides a complementary
+perspective, capturing broader patterns that may not be evident in the
+disaggregated symptom-precariousness analysis. By aggregating
+precariousness factors into a single score, this approach may capture
+distributed relationships across different precariousness factors that
+were previously overlooked in the disaggregated analysis.
+
+Unlike the disaggregated graph in Figure~\ref{fig-sym}, the aggregated
+symptom-precariousness graph (Figure~\ref{fig-presum-1}) shows more
+certainty in causal directions, with only a few edges resulting in ties,
+all of which involve the overall precariousness factor. This is even
+more evident in the proportion matrix (Figure~\ref{fig-presum-2}), where
+symptom-to-symptom interactions almost fully converge to a single edge
+type. Additionally, all symptom interactions are connected either
+through bidirectional edges or a combination of an arrowhead and a
+circle, suggesting a strong presence of latent confounders.
+
+Examining the symptom-precariousness connections, we observe a stronger
+overall trend of depressive symptoms influencing precariousness, rather
+than the other way around. Specifically, \emph{anh}, \emph{dep}, and
+\emph{slp} show a high probability of causing precariousness, whereas
+\emph{app}, \emph{glt}, and \emph{mot} exhibit more uncertainty in
+directionality, often resulting in circle endpoints. This pattern
+suggests that when precariousness factors are aggregated, the dominant
+causal flow is from depressive symptoms to precariousness, rather than
+precariousness driving depression. Particularly, \emph{dep} emerges as
+the strongest predictor of precariousness, exhibiting the highest
+proportion of arrowtails, consistent with findings from the
+disaggregated analysis.
+
+Comparing this with the CCI-derived graph (Figure~\ref{fig-presum-cci}),
+several key differences stand out. The CCI results reveal that most
+symptoms are interconnected through bidirectional edges, suggesting a
+strong presence of latent confounders. However, \emph{dep} appears to be
+a distinct exception, as it is predominantly caused by nearly all other
+symptoms, with one exception \emph{sui}, which does not contribute to
+\emph{dep}. Similarly, \emph{con} is influenced by multiple symptoms,
+albeit with weaker support compared to \emph{dep}. Most interestingly,
+the CCI results highlight a distinct feedback loop between \emph{dep}
+and overall precariousness, represented by a tail-tail edge
+(\textemdash ). This suggests a possible reinforcing cycle between
+depression and overall precariousness, where depression not only arises
+from precarious conditions but also contributes to their persistence,
+creating a self-sustaining dynamic.
+
+Overall, the aggregated precariousness graph supports the key findings
+from both the disaggregated analysis and the depression sum score
+analysis, providing greater certainty in several important patterns. The
+results highlight the significant role of latent confounders in
+symptom-to-symptom interactions. While certain stressor-related
+precariousness factors, particularly \emph{S.fin} and \emph{S.rel},
+appear to causally influence depressive symptoms, other precariousness
+factors are more likely driven by depression rather than acting as
+primary causes, suggesting that precariousness may function more as a
+consequence of depression than its source. Some symptoms, particularly
+\emph{glt}, \emph{slp}, and \emph{dep}, appear to influence precarious
+conditions while also occupying central roles within the symptom
+network. Among them, \emph{slp} and \emph{glt} emerge as influential
+symptoms within the depression network, whereas \emph{con} and
+\emph{dep}, despite their high connectivity, behave more as outcomes
+rather than primary drivers. Together, these findings suggest that
+depression---especially symptoms like sleep disturbances and guilt---may
+contribute to sustaining precarious conditions, possibly forming a
+reciprocal cycle between depression and precariousness.
+
+\begin{figure}
+
+\begin{minipage}{\linewidth}
+
+\centering{
+
+\includegraphics[width=0.6\textwidth,height=\textheight]{img/presum_graph_FCI.png}
+
+}
+
+\subcaption{\label{fig-presum-1}FCI PAG}
+
+\end{minipage}%
+\newline
+\begin{minipage}{\linewidth}
+
+\centering{
+
+\includegraphics[width=0.6\textwidth,height=\textheight]{img/presum_mat_fci.pdf}
+
+}
+
+\subcaption{\label{fig-presum-2}Proportion matrix}
+
+\end{minipage}%
+
+\caption{\label{fig-presum}Resulting graph of precariousness sum score
+and individual depression symptoms using FCI and proportion of edge
+endpoint types.}
+
+\end{figure}%
+
+\subsection{Simulating the Dynamics Between Precariousness and
+Depression Under
+Intervention}\label{simulating-the-dynamics-between-precariousness-and-depression-under-intervention}
+
+To evaluate how internal system structure influences the effect of
+external support, we simulated outcomes under a range of intervention
+strengths across the top 30 parameter sets from the calibrated model
+ensemble. The top panel of Figure~\ref{fig-intervention} shows mean
+levels of depression (\(D\)) and precariousness (\(P\)) after
+simulation, with each line representing one parameter set. Lines are
+color-coded by combined feedback and input strength, calculated as the
+product \(\alpha_1 \times \alpha_2 \times \beta_1 \times \beta_2\).
+
+Parameter sets with stronger interaction dynamics exhibited more
+pronounced reductions in both depression and precariousness following
+intervention. At full intervention---modeled as shifting the external
+stressor (\(S\)) to its observed minimum---the reduction in depression
+ranged from {[}0.68\emph{SD} -- 0.97\emph{SD}{]}, and for social
+precariousness from {[}0.77\emph{SD} -- 0.94\emph{SD}{]}, corresponding
+to the lowest to highest values of parameter strength.\footnote{Standard
+  deviations (\emph{SD}) are based on the original scale of each
+  variable: \(\textit{SD}_D = 1.0\) for depression (\(D\)) and
+  \(\textit{SD}_P = 0.9\) for precariousness (\(P\)). Parameter strength
+  is defined as the product
+  \(\alpha_1 \times \beta_1 \times \alpha_2 \times \beta_2\), reflecting
+  the combined influence of internal feedback and external input
+  sensitivity.} These results suggest that systems with stronger
+internal dynamics are more responsive to external change, enabling
+targeted interventions to more effectively shift the system toward a
+lower-risk equilibrium.
+
+To better understand these dynamics, we focused on two illustrative
+parameter sets: one with strong feedback/input coupling and low noise (a
+\emph{bistable} candidate), and one with weaker coupling and higher
+noise (a \emph{unistable} candidate). In nonlinear systems, bistability
+refers to the existence of two distinct stable equilibria---meaning the
+system's long-term outcome depends on its starting point or
+perturbations.
+
+In our model, bistability arises from the interaction between strong
+internal coupling---particularly the product
+\(\alpha_2 \times \beta_2\)---and the system's nonlinearity. The
+\(\tanh(\cdot)\) activation function saturates at high input values,
+meaning sufficient gain is required to push the system into nonlinear
+regimes where multiple stable points emerge. If the feedback gain is too
+low, or the system is overwhelmed by noise, it behaves more linearly and
+settles into a single equilibrium---yielding a unistable
+configuration.\footnote{This is similar to a well-known pattern in
+  dynamical systems called a \emph{pitchfork bifurcation}. In simple
+  terms, when the system's internal feedback becomes strong enough---for
+  example, when \(k\) in the equation \(x_{t+1} = \tanh(k x_t)\) passes
+  a certain threshold---the system changes from having one stable state
+  to having two possible stable states (and one unstable one in
+  between). In our model, this kind of shift happens when the feedback
+  loop between depression and precariousness---captured by the product
+  \(\alpha_2 \times \beta_2\)---becomes strong. It allows the system to
+  settle into different long-term states, depending on initial
+  conditions.}
+
+The bottom panel of Figure~\ref{fig-intervention} illustrates these
+contrasting behaviors. In the bistable model, a clear bifurcation
+emerges: small interventions have little effect, but once a threshold is
+crossed, the system abruptly transitions to a low-risk state. In the
+unistable model, the transition is gradual and continuous, with outcomes
+improving incrementally as stress is reduced.
+
+These findings underscore that the impact of intervention depends not
+only on its intensity, but on the system's internal configuration. In
+bistable regimes, small or moderate interventions may be insufficient
+unless they push the system past a tipping point. Unistable systems, by
+contrast, respond more linearly, offering greater predictability and
+flexibility in designing incremental interventions.
+
+This distinction is especially relevant for mental health interventions
+in populations exposed to persistent stressors like housing instability,
+financial strain, or job insecurity. In such contexts, external
+adversity may be reinforced through internal feedback loops between
+psychological distress and precarious conditions. Recognizing when a
+system is bistable may help identify when strong, early, or multifaceted
+interventions are needed to produce lasting change---while unistable
+dynamics may justify more gradual or targeted efforts.
+
+Tailoring intervention strategies to the system's underlying structure
+may enhance their effectiveness and sustainability, particularly in
+addressing the compounding effects of socioeconomic precariousness on
+mental health.
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=1\textwidth,height=\textheight]{img/intervention_plot2.pdf}
+
+}
+
+\caption{\label{fig-intervention}\textbf{Top}: Final Mean D and P Across
+Intervention Sizes. \emph{Mean trajectories of depression (\(D\)) and
+precariousness (\(P\)) across varying intervention strengths, simulated
+over the top 30 parameter sets. Each line represents one parameter set
+and is colored by its combined feedback and input strength.}
+\textbf{Bottom}: Smoothed Density Heatmap of Final \(D\) and \(P\) for
+Two Parameter Sets. \emph{One exhibits unistability (top two panels) and
+the other exhibits bistability (bottom two panels). Bistable dynamics
+reveal a sharp transition between distinct outcome regimes, while
+unistable dynamics show gradual, continuous change across the
+intervention gradient.}}
+
+\end{figure}%
+
+\section{Discussion}\label{discussion}
+
+This study combined constraint-based causal discovery and dynamical
+modeling to investigate how depression and socioeconomic precariousness
+interact---and how their internal structure modulates responsiveness to
+intervention. Using cross-sectional data from the HELIUS study, we
+applied cycle-capable discovery algorithms to estimate plausible
+directional relationships among multiple domains of precariousness
+factors, and depressive symptoms. By analyzing both aggregate constructs
+and individual variables, we aimed to capture patterns that may be
+masked in either extreme of abstraction (i.e., purely aggregate or
+disaggregated analyses).
+
+The causal analysis consistently identified financial stress as a key
+plausible driver of depression, appearing across both aggregated and
+disaggregated models. At the symptom level, we found that sleep
+disturbance, depressed mood, guilt, and anhedonia were especially
+sensitive to external stressors. Among these, the symptom depressed mood
+emerged as a central hub: not only was it heavily influenced by other
+symptoms, it also exerted directional influence on social
+precariousness, suggesting a feedback loop in which worsening mood
+contributes to social disconnection, which in turn may exacerbate
+depressive symptoms. The CCI algorithm even suggested a possible cyclic
+relationship between depressed mood and overall precariousness, hinting
+at a structurally self-reinforcing mechanism. Symptom sleep disturbance
+also played a key initiating role. It showed directed connections to
+both social and employment precariousness and exhibited many outgoing
+edges within the symptom network. This suggests the symptom sleep
+disturbance may function as an early warning signal or entry point into
+the depression--precariousness cycle, making it a promising target for
+preventive intervention. In contrast, Social precariousness more often
+appeared as an effect rather than a cause---receiving arrows from
+symptoms like depressed mood and guilt, but rarely sending them. This
+asymmetry implies that social precariousness may often reflect
+downstream consequences of worsening mental health rather than being its
+root cause. These patterns offer actionable insights for intervention.
+Addressing symptoms like sleep disturbance early may prevent escalation
+into broader depressive states or worsening precariousness. Intervening
+on depressed mood, as a central node with potential feedback effects,
+could also disrupt the self-reinforcing dynamics between mental health
+and social isolation.
+
+To examine how such structures shape responsiveness to support, we
+developed a simplified two-variable nonlinear dynamical model capturing
+the feedback between depression and precariousness, modulated by
+financial stress. Calibrated against empirical summary statistics from
+the HELIUS dataset, the model allowed us to simulate how these dynamics
+evolve under varying levels of stress reduction. The simulations
+revealed that intervention effectiveness depends not just on the
+magnitude of external stressors, but on the internal configuration of
+the system itself. In bistable regimes---characterized by strong
+feedback and low noise---the system could remain stuck in a high-risk
+state unless an intervention crosses a critical threshold, tipping it
+into a healthier equilibrium. By contrast, unistable systems---driven by
+weaker coupling or greater noise---responded more gradually and
+proportionally to increasing support. These dynamics carry practical
+policy implications. In bistable systems, even moderate interventions
+may have little effect unless they are forceful enough to tip the system
+toward a lower-risk state. This underscores the importance of early or
+intensive support when targeting self-reinforcing cycles of depression
+and precariousness. Unistable systems, by contrast, are more responsive
+to incremental support, suggesting that sustained, moderate
+interventions may be sufficient in such contexts.
+
+That said, our study has several limitations. While the FCI and CCI
+algorithms are designed to recover causal structure from cross-sectional
+data---including feedback and latent confounding---many edge directions
+in our results remain ambiguous, as indicated by the prevalence of
+circle endpoints and bidirectional arrows, especially in weakly
+connected regions of the graph. These uncertainties were most evident in
+the links between individual symptoms and precariousness factors, where
+edge estimates varied across algorithms and CI tests. This likely
+reflects limited statistical signal in high-dimensional settings, where
+large conditioning sets reduce power and small effect sizes are harder
+to detect. Although the CCI algorithm is explicitly designed to detect
+cycles, we found little clear evidence of feedback: most candidate loops
+appeared only as bidirectional edges, which may reflect latent
+confounding or statistical imprecision rather than true cyclic
+structure. This could point to either an absence of strong feedback at
+the symptom level or limitations in the sensitivity of full-graph
+discovery approaches applied to densely interconnected variables. More
+focused strategies, such as local structure tests or theory-guided
+subgraph modeling, may help resolve these ambiguities. In addition,
+while our analyses relied solely on observational data, some structural
+uncertainties---particularly those involving latent confounding or
+bidirectional influence---may ultimately require interventional or
+semi-interventional designs. Extensions such as LLC (Hyttinen et al.,
+2012), NODAGS-Flow (Sethuraman et al., 2023), or Bicycle (Rohbeck et
+al., 2024), which integrate observational and interventional data, may
+prove valuable where such data are available.
+
+Second, our findings showed sensitivity to the choice of CI test. The
+Gaussian CI test, which assumes linear relationships and Gaussian noise,
+often produced denser graphs---likely due to its tendency to
+overestimate weak or noisy linear associations. In contrast, RCoT, a
+nonparametric alternative, avoids these assumptions but relies on a
+Gaussian radial basis function (RBF) kernel to assess dependence. While
+flexible in capturing nonlinear relationships, this kernel is optimized
+for smooth, continuous variables and may underperform with discrete or
+ordinal data. Its similarity estimates can be unreliable when applied to
+variables with discontinuities, potentially leading to missed
+dependencies---particularly relevant in the HELIUS dataset, where some
+variables are ordinal or mixed-type (Howlett, 2001). To address this,
+future work should consider adapting kernel-based CI tests to better
+handle mixed data structures---for example, by employing hybrid kernels
+that explicitly combine continuous and discrete similarity measures.
+This could improve the reliability of nonparametric causal discovery in
+settings with heterogeneous variable types.
+
+Finally, the structure of the dynamical model introduces its own
+limitations. While the model was designed to reflect key features of the
+discovered causal structure, it represents a highly simplified system:
+only two variables---depression and social precariousness---modulated by
+external financial stress. This abstraction allowed for tractable
+analysis and visual intuition, particularly around nonlinear behaviors
+such as bistability, but omits other potentially influential constructs
+highlighted in the causal graphs, including relational stress,
+employment conditions and housing conditions. Moreover, the model's
+nonlinearity---introduced via the hyperbolic tangent function---was
+chosen for convenience rather than empirical justification. While this
+function supports saturation and the emergence of tipping points, the
+presence of bistability is a product of simulation, not empirical
+verification. It remains possible that simpler, linear dynamics could
+account for the observed data just as well. Future work should further
+investigate whether bistability is a necessary feature of
+depression--precariousness dynamics, and explore alternative functional
+forms---both linear and nonlinear---using richer data and stronger
+empirical constraints.
+
+Our results reveal that the effectiveness of interventions targeting
+depression and precariousness is shaped not only by the strength of
+external stressors but also by the internal structure of the system. The
+interplay between feedback strength and noise determines whether a
+system responds gradually or only after crossing a tipping
+point---highlighting the need for intervention strategies attuned to
+these underlying dynamics.
+
+These findings underscore the importance of considering internal
+feedback---not just external adversity---when designing interventions.
+Mental health systems are not always passively responsive to support;
+their structure can constrain how much impact any given policy has
+(Savigny \& Adam, 2009; Wagenaar \& Burris, 2013). By diagnosing these
+structural features---through tools like causal discovery and
+computational modeling---researchers and policymakers can better tailor
+interventions to the underlying mechanics of vulnerability.
+
+Beyond these specific findings, this study offers a generalizable
+framework for studying complex mental health phenomena. Causal discovery
+enables principled hypothesis generation from observational data, while
+dynamical modeling helps test how those structures behave under
+intervention. Together, these methods move us from descriptive patterns
+to mechanistic insight, with practical relevance for real-world mental
+health policy.
+
+Future work could build richer dynamical models grounded in
+higher-resolution empirical data---potentially incorporating time,
+interventions, or more granular psychosocial constructs. Such extensions
+would help validate whether mechanisms proposed here, such as
+bistability, manifest in real-world trajectories. Ultimately, we hope
+this study encourages further integration of causal structure learning
+and system-level modeling to improve mental health outcomes under
+conditions of socioeconomic precariousness.
+
+\section{References}\label{references}
+
+\phantomsection\label{refs}
+\begin{CSLReferences}{1}{0}
+\bibitem[\citeproctext]{ref-deb2002fast}
+Deb, K., Pratap, A., Agarwal, S., \& Meyarivan, T. (2002). A fast and
+elitist multiobjective genetic algorithm: NSGA-II. \emph{IEEE
+Transactions on Evolutionary Computation}, \emph{6}(2), 182--197.
+
+\bibitem[\citeproctext]{ref-dojer2016learning}
+Dojer, N. (2016). Learning bayesian networks from datasets joining
+continuous and discrete variables. \emph{International Journal of
+Approximate Reasoning}, \emph{78}, 116--124.
+
+\bibitem[\citeproctext]{ref-elsenburg2025clustering}
+Elsenburg, L. K., Nicolaou, M., Galenkamp, H., Lakerveld, J., \&
+Stronks, K. (2025). The clustering of disadvantage in different life
+dimensions across ethnic groups: A network analysis of indicators of
+precariousness in the HELIUS study. \emph{Social Science \& Medicine},
+117970.
+
+\bibitem[\citeproctext]{ref-entner2010causal}
+Entner, D., \& Hoyer, P. O. (2010). On causal discovery from time series
+data using FCI. \emph{Probabilistic Graphical Models}, \emph{16}.
+
+\bibitem[\citeproctext]{ref-fone2014effect}
+Fone, D., White, J., Farewell, D., Kelly, M., John, G., Lloyd, K.,
+Williams, G., \& Dunstan, F. (2014). Effect of neighbourhood deprivation
+and social cohesion on mental health inequality: A multilevel
+population-based longitudinal study. \emph{Psychological Medicine},
+\emph{44}(11), 2449--2460.
+
+\bibitem[\citeproctext]{ref-forre2018constraint}
+Forré, P., \& Mooij, J. M. (2018). Constraint-based causal discovery for
+non-linear structural causal models with cycles and latent confounders.
+\emph{arXiv Preprint arXiv:1807.03024}.
+
+\bibitem[\citeproctext]{ref-nsga2R}
+Franz, R., \& Nakamura, R. (2015). \emph{nsga2R: Elitist non-dominated
+sorting genetic algorithm for multi-objective optimization}.
+\url{https://CRAN.R-project.org/package=nsga2R}
+
+\bibitem[\citeproctext]{ref-galenkamp2017measurement}
+Galenkamp, H., Stronks, K., Snijder, M. B., \& Derks, E. M. (2017).
+Measurement invariance testing of the PHQ-9 in a multi-ethnic population
+in europe: The HELIUS study. \emph{BMC Psychiatry}, \emph{17}, 1--14.
+
+\bibitem[\citeproctext]{ref-gruebner2017cities}
+Gruebner, O., Rapp, M. A., Adli, M., Kluge, U., Galea, S., \& Heinz, A.
+(2017). Cities and mental health. \emph{Deutsches {Ä}rzteblatt
+International}, \emph{114}(8), 121.
+
+\bibitem[\citeproctext]{ref-howlett2001radial}
+Howlett, R. J. (2001). \emph{Radial basis function networks 1: Recent
+developments in theory and applications}.
+
+\bibitem[\citeproctext]{ref-hyttinen2012learning}
+Hyttinen, A., Eberhardt, F., \& Hoyer, P. O. (2012). Learning linear
+cyclic causal models with latent variables. \emph{The Journal of Machine
+Learning Research}, \emph{13}(1), 3387--3439.
+
+\bibitem[\citeproctext]{ref-kroenke2001phq}
+Kroenke, K., Spitzer, R. L., \& Williams, J. B. (2001). The PHQ-9:
+Validity of a brief depression severity measure. \emph{Journal of
+General Internal Medicine}, \emph{16}(9), 606--613.
+
+\bibitem[\citeproctext]{ref-lindsay2000moment}
+Lindsay, B. G., Pilla, R. S., \& Basak, P. (2000). Moment-based
+approximations of distributions using mixtures: Theory and applications.
+\emph{Annals of the Institute of Statistical Mathematics}, \emph{52},
+215--230.
+
+\bibitem[\citeproctext]{ref-mckee2017living}
+McKee, M., Reeves, A., Clair, A., \& Stuckler, D. (2017). Living on the
+edge: Precariousness and why it matters for health. \emph{Archives of
+Public Health}, \emph{75}, 1--10.
+
+\bibitem[\citeproctext]{ref-mooij2020constraint}
+Mooij, J. M., \& Claassen, T. (2020). Constraint-based causal discovery
+using partial ancestral graphs in the presence of cycles.
+\emph{Conference on Uncertainty in Artificial Intelligence}, 1159--1168.
+
+\bibitem[\citeproctext]{ref-neapolitan2004learning}
+Neapolitan, R. E. et al. (2004). \emph{Learning bayesian networks} (Vol.
+38). Pearson Prentice Hall Upper Saddle River.
+
+\bibitem[\citeproctext]{ref-park2024discovering}
+Park, K., Waldorp, L. J., \& Ryan, O. (2024). Discovering cyclic causal
+models in psychological research. \emph{Advances. In/Psychology},
+\emph{2}, e72425.
+
+\bibitem[\citeproctext]{ref-park2025individual}
+Park, K., Waldorp, L., \& Vasconcelos, V. V. (2025). \emph{The
+individual-and population-level mechanistic implications of statistical
+networks of symptoms}.
+
+\bibitem[\citeproctext]{ref-pevalin2017impact}
+Pevalin, D. J., Reeves, A., Baker, E., \& Bentley, R. (2017). The impact
+of persistent poor housing conditions on mental health: A longitudinal
+population-based study. \emph{Preventive Medicine}, \emph{105},
+304--310.
+
+\bibitem[\citeproctext]{ref-rahimi2007random}
+Rahimi, A., \& Recht, B. (2007). Random features for large-scale kernel
+machines. \emph{Advances in Neural Information Processing Systems},
+\emph{20}.
+
+\bibitem[\citeproctext]{ref-rehm2019global}
+Rehm, J., \& Shield, K. D. (2019). Global burden of disease and the
+impact of mental and addictive disorders. \emph{Current Psychiatry
+Reports}, \emph{21}, 1--7.
+
+\bibitem[\citeproctext]{ref-rohbeck2024}
+Rohbeck, M., Clarke, B., Mikulik, K., Pettet, A., Stegle, O., \&
+Ueltzhöffer, K. (2024). Bicycle: Intervention-based causal discovery
+with cycles. In F. Locatello \& V. Didelez (Eds.), \emph{Proceedings of
+the third conference on causal learning and reasoning} (Vol. 236, pp.
+209--242). PMLR.
+
+\bibitem[\citeproctext]{ref-ronnblad2019precarious}
+Rönnblad, T., Grönholm, E., Jonsson, J., Koranyi, I., Orellana, C.,
+Kreshpaj, B., Chen, L., Stockfelt, L., \& Bodin, T. (2019). Precarious
+employment and mental health. \emph{Scandinavian Journal of Work,
+Environment \& Health}, \emph{45}(5), 429--443.
+
+\bibitem[\citeproctext]{ref-rugulies2023work}
+Rugulies, R., Aust, B., Greiner, B. A., Arensman, E., Kawakami, N.,
+LaMontagne, A. D., \& Madsen, I. E. (2023). Work-related causes of
+mental health conditions and interventions for their improvement in
+workplaces. \emph{The Lancet}, \emph{402}(10410), 1368--1381.
+
+\bibitem[\citeproctext]{ref-runge2019detecting}
+Runge, J., Nowack, P., Kretschmer, M., Flaxman, S., \& Sejdinovic, D.
+(2019). Detecting and quantifying causal associations in large nonlinear
+time series datasets. \emph{Science Advances}, \emph{5}(11), eaau4996.
+
+\bibitem[\citeproctext]{ref-desavigny2009systems}
+Savigny, D. de, \& Adam, T. (Eds.). (2009). \emph{Systems thinking for
+health systems strengthening}. Alliance for Health Policy; Systems
+Research, World Health Organization.
+
+\bibitem[\citeproctext]{ref-sethuraman2023nodags}
+Sethuraman, M. G., Lopez, R., Mohan, R., Fekri, F., Biancalani, T., \&
+Hütter, J.-C. (2023). NODAGS-flow: Nonlinear cyclic causal structure
+learning. \emph{International Conference on Artificial Intelligence and
+Statistics}, 6371--6387.
+
+\bibitem[\citeproctext]{ref-snijder2017cohort}
+Snijder, M. B., Galenkamp, H., Prins, M., Derks, E. M., Peters, R. J.,
+Zwinderman, A. H., \& Stronks, K. (2017). Cohort profile: The healthy
+life in an urban setting (HELIUS) study in amsterdam, the netherlands.
+\emph{BMJ Open}, \emph{7}(12), e017873.
+
+\bibitem[\citeproctext]{ref-spirtes2001causation}
+Spirtes, P., Glymour, C., \& Scheines, R. (2001). \emph{Causation,
+prediction, and search}. MIT press.
+
+\bibitem[\citeproctext]{ref-spirtes_causal_1995}
+Spirtes, P., Meek, C., \& Richardson, T. (1995). Causal inference in the
+presence of latent variables and selection bias. \emph{Proceedings of
+the {Eleventh} Conference on {Uncertainty} in Artificial Intelligence},
+499--506.
+
+\bibitem[\citeproctext]{ref-storn1997differential}
+Storn, R., \& Price, K. (1997). Differential evolution--a simple and
+efficient heuristic for global optimization over continuous spaces.
+\emph{Journal of Global Optimization}, \emph{11}, 341--359.
+
+\bibitem[\citeproctext]{ref-strobl2019}
+Strobl, E. V. (2019). A constraint-based algorithm for causal discovery
+with cycles, latent variables and selection bias. \emph{International
+Journal of Data Science and Analytics}, \emph{8}(1), 33--56.
+\url{https://doi.org/10.1007/s41060-018-0158-2}
+
+\bibitem[\citeproctext]{ref-strobl2019approximate}
+Strobl, E. V., Zhang, K., \& Visweswaran, S. (2019). Approximate
+kernel-based conditional independence tests for fast non-parametric
+causal discovery. \emph{Journal of Causal Inference}, \emph{7}(1),
+20180017.
+
+\bibitem[\citeproctext]{ref-stronks2013unravelling}
+Stronks, K., Snijder, M. B., Peters, R. J., Prins, M., Schene, A. H., \&
+Zwinderman, A. H. (2013). Unravelling the impact of ethnicity on health
+in europe: The HELIUS study. \emph{BMC Public Health}, \emph{13}, 1--10.
+
+\bibitem[\citeproctext]{ref-van2021advancing}
+Van Der Wal, J. M., Van Borkulo, C. D., Deserno, M. K., Breedvelt, J.
+J., Lees, M., Lokman, J. C., Borsboom, D., Denys, D., Holst, R. J. van,
+Smidt, M. P., et al. (2021). Advancing urban mental health research:
+From complexity science to actionable targets for intervention.
+\emph{The Lancet Psychiatry}, \emph{8}(11), 991--1000.
+
+\bibitem[\citeproctext]{ref-wagenaar2013public}
+Wagenaar, A. C., \& Burris, S. (2013). \emph{Public health law research:
+Theory and methods}. John Wiley \& Sons.
+
+\bibitem[\citeproctext]{ref-WHO_2022}
+World Health Organization. (2022). \emph{Mental disorders}. World Health
+Organization.
+\url{https://www.who.int/news-room/fact-sheets/detail/mental-disorders}
+
+\bibitem[\citeproctext]{ref-zhang2012kernel}
+Zhang, K., Peters, J., Janzing, D., \& Schölkopf, B. (2012).
+Kernel-based conditional independence test and application in causal
+discovery. \emph{arXiv Preprint arXiv:1202.3775}.
+
+\end{CSLReferences}
+
+\section{Appendix}\label{sec-appendix}
+
+\subsection{HELIUS study}\label{sec-helius}
+
+The HELIUS (HEalthy LIfe in an Urban Setting) study is a large-scale,
+multiethnic cohort study conducted in Amsterdam. Participants were
+randomly selected from the municipality register and stratified by
+ethnic origin to ensure balanced representation across six major groups.
+Invitation letters were sent by mail, followed by a reminder after two
+weeks. Non-respondents were contacted via home visits where applicable.
+
+Of those invited, approximately 55\% responded (Dutch: 55\%, Surinamese:
+62\%, Ghanaian: 57\%, Turkish: 46\%, Moroccan: 48\%). Among those
+contacted, 50\% agreed to participate (Dutch: 60\%, Surinamese: 51\%,
+Ghanaian: 61\%, Turkish: 41\%, Moroccan: 43\%), resulting in an overall
+participation rate of 28\%.
+
+Participants completed either a digital or paper version of the
+questionnaire, with assistance offered when needed, and received a
+confirmation letter for a physical examination appointment.
+
+At baseline (2011--2015), 24,780 individuals were enrolled. Of these,
+23,936 participants completed the questionnaire that included items
+relevant to precariousness. After excluding individuals with missing
+data on key variables, the final analytical sample consisted of 21,628
+participants.
+
+The HELIUS study received approval from the Medical Ethics Committee of
+the Academic Medical Center (AMC), and written informed consent was
+obtained from all participants prior to enrollment.
+
+\subsection{Causal Discovery Primer}\label{sec-causalprimer}
+
+As shown in Table 1, the resulting graphs from FCI and CCI differ
+slightly (\emph{PAG}: partial ancestral graph; \emph{MAAG}: maximal
+almost ancestral graph) due to their reliance on different underlying
+assumptions. Despite these differences, both graphs belong to the class
+of \emph{ancestral graphs}, which are designed to encode causal
+relationships between variables, where the presence of an edge indicates
+causal \emph{ancestry.} In these graphs, directed edges,
+\(A \stararrow B\), indicate that \(B\) is not an ancestor of \(A\) in
+every graph within the Markov equivalence class, \(Equiv(G)\). The
+Markov equivalence class represents a set of graphs that encode the same
+conditional independence relationships, ensuring that the same
+\emph{d-separation} conditions hold across all graphs in the class
+(Spirtes et al., 2001). Conversely, an edge marked as \(A \startail B\)
+indicates that \(B\) is an ancestor of \(A\) across all graphs in
+\(Equiv(G)\). Circle endpoints, \(A \starcirc B\), represent ambiguity
+in the ancestral relationship, meaning \(B\)'s ancestral status relative
+to \(A\) varies across graphs in \(Equiv(G)\).\footnote{\(*\) serves as
+  a \textit{meta-symbol}, representing one of the three possible
+  edge-endpoints. For instance, \(A \tailstar B\) can indicate any of
+  the following edges: \(A\) \textemdash~\(B\), \(A\tailarrow B\), or
+  \(A \tailcirc B\) (Park et al., 2024).} Finally, when an edge is
+represented as \(A \arrowarrow B\), it implies that neither \(A\) nor
+\(B\) is an ancestor of the other, suggesting the presence of a latent
+confounder influencing both variables.
+
+\begin{table}[ht]
+\centering
+\small % Make the font size smaller
+\caption{Assumptions of causal discovery algorithms}
+\begin{tabular}{lccccc}
+\toprule
+Algorithm & Acyclicity & \makecell{Causal \\ sufficiency} & 
+\makecell{Absence of \\ selection bias} & Linearity & Output \\ 
+\midrule
+PC  & $\checkmark$ & $\checkmark$ & $\checkmark$ & $\checkmark$ & CPDAG \\ 
+FCI & $-^{a}$ & $\checkmark$ & $-^{a}$ & $-^{a}$ & PAG \\ 
+CCI & x & x & x & $\checkmark$ & \makecell{\footnotesize(partially oriented) \\ MAAG} \\ 
+\bottomrule
+\end{tabular}
+\caption*{\footnotesize{\textit{Note}. $^{a}$The FCI algorithm, introduced by Spirtes (1995), is a constraint-based causal discovery method for DAGs that accounts for latent confounding and selection bias. Mooij \& Claassen (2020) later showed its applicability to cyclic causal discovery with latent confounding under general faithfulness and Markov conditions, assuming non-linear causal relationships.}}
+\end{table}
+
+The algorithms also differ in how they detect cycles and represent
+cyclic relationships in their resulting graphs. In CCI's MAAG, \(A\)
+\textemdash~\(B\) indicates that \(A\) is an ancestor of \(B\), and
+simultaneously \(B\) is an ancestor of \(A\), referring to a cyclic
+relationship between \(A \stackedarrows B\). FCI, on the other hand,
+identifies potential cycles more subtly. In its PAG, fully-connected
+nodes with circle endpoints (\(\circirc\)) may suggest the presence of
+cyclic structures. FCI, therefore, provides a sufficient condition to
+distinguish variables that are not part of a cycle, offering a more
+nuanced approach to handling cyclic relationships (Mooij \& Claassen,
+2020).
+
+Table 1 highlights further differences in the assumptions underlying
+these algorithms. CCI operates under the assumption of a linear system,
+whereas FCI, particularly when used to infer cyclic relationships,
+assumes a non-linear system without selection bias and adheres to more
+general faithfulness and Markov conditions (i.e.,
+\emph{\(\sigma\)-separation} and \emph{\(\sigma\)-faithfulness} setting)
+(Forré \& Mooij, 2018). When the respective assumptions of each
+algorithm are met, their inferred cyclic relationships align with those
+illustrated in Figure~\ref{fig-examplegraphs}.
+
+While CCI's MAAG provides an explicit representation of cyclic
+relationships, it has certain theoretical limitations, as the MAAG may
+not always fully preserve d-separation relations from the original
+graph, \(\mathcal{G}\) (Strobl, 2019). Given these considerations, we
+examine and compare results from both algorithms, placing more weight on
+the FCI results, which are presented in the main results section, while
+discussing CCI results where relevant, with detailed findings provided
+in Section~\ref{sec-cci}. A full discussion of causal discovery concepts
+and algorithmic details is beyond the scope of this paper; however,
+readers seeking a more in-depth understanding can refer to Park et al.
+(2024) for a comprehensive exploration of these methods and their
+applications.
+
+\begin{figure}
+
+\begin{minipage}{0.33\linewidth}
+
+\centering{
+
+\includegraphics[width=0.6\textwidth,height=\textheight]{img/original_DCG.png}
+
+}
+
+\subcaption{\label{fig-examplegraphs-1}Example graph \(\mathcal{G}\)}
+
+\end{minipage}%
+%
+\begin{minipage}{0.33\linewidth}
+
+\centering{
+
+\includegraphics[width=0.6\textwidth,height=\textheight]{img/FCI_graph.png}
+
+}
+
+\subcaption{\label{fig-examplegraphs-2}Corresponding MAAG}
+
+\end{minipage}%
+%
+\begin{minipage}{0.33\linewidth}
+
+\centering{
+
+\includegraphics[width=0.6\textwidth,height=\textheight]{img/CCI_graph.png}
+
+}
+
+\subcaption{\label{fig-examplegraphs-3}Corrsponding PAG}
+
+\end{minipage}%
+
+\caption{\label{fig-examplegraphs}Example graph \(\mathcal{G}\)
+featuring a cycle and the corresponding MAAG from CCI and PAG from FCI.}
+
+\end{figure}%
+
+The graph produced by the PC algorithm is a \emph{CPDAG} (completed
+partially directed acyclic graph), where directed edges (\(A\) → \(B\))
+indicate that \(A\) is a direct cause (parent) of \(B\). Unlike FCI and
+CCI, the CPDAG does not include circle symbols. Instead, when the PC
+algorithm cannot determine the direction of causality, it represents
+this uncertainty with bidirectional arrows. While the PC algorithm
+serves as a useful reference, its strict assumptions --- acyclicity and
+the absence of latent confounders---limit its applicability in more
+complex scenarios. For this reason, our primary focus remains on the
+results obtained from FCI and CCI, with all PC algorithm results
+provided in Section~\ref{sec-pc} for completeness.
+
+\subsection{Precariousness Domains Based on Elsenburg et
+al.~(2025)}\label{precariousness-domains-based-on-elsenburg-et-al.-2025}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  EMPLOYMENT PRECARIOUSNESS
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{H1\_Arbeidsparticipatie}: Working status
+\item
+  \texttt{H1\_WerkSit}: Which work situation most applies to you?
+\item
+  \texttt{H1\_RecentErv8}: Experiences past 12 months: h. You were
+  sacked from your job or became unemployed (\emph{reverse})
+\end{itemize}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  FINANCIAL PRECARIOUSNESS
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{H1\_InkHhMoeite}: During the past year, did you have problems
+  managing your household income?
+\item
+  \texttt{H1\_RecentErv9}: Experiences past 12 months: i. You had a
+  major financial crisis (\emph{reverse})
+\end{itemize}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{2}
+\tightlist
+\item
+  HOUSING PRECARIOUSNESS
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{veilig\_2012}: Score safety (veiligheid) in 2012
+  (\emph{reverse})
+\item
+  \texttt{vrz\_2012}: Score level of resources (niveau voorzieningen) in
+  2012 (\emph{reverse})
+\item
+  \texttt{P\_HUURWON}: Percentage Huurwoningen
+\end{itemize}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{3}
+\tightlist
+\item
+  CULTURAL PRECARIOUSNESS
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{H1\_Discr\_sumscore}: Perceived discrimination: sum score of 9
+  items (range 9-45)
+\item
+  \texttt{H1\_SBSQ\_meanscore}: Health literacy: SBSQ meanscore (range
+  1-5) (\emph{reverse})
+\item
+  \texttt{A\_BED\_RU}: Aantal bedrijfsvestigingen; cultuur, recreatie,
+  overige diensten (\emph{reverse})
+\end{itemize}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{4}
+\tightlist
+\item
+  SOCIAL PRECARIOUSNESS
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{H1\_RecentErv5}: Experiences past 12 months: e. Your steady
+  relationship ended (\emph{reverse})
+\item
+  \texttt{H1\_RecentErv6}: Experiences past 12 months: f.~A long-term
+  friendship with a good friend or family member was broken off
+  (\emph{reverse})
+\item
+  \texttt{H1\_RecentErv7}: Experiences past 12 months: g. You had a
+  serious problem with a good friend or family member, or neighbour
+  (\emph{reverse})
+\item
+  \texttt{H1\_SSQT}: SSQT (frequency of social contact): sum score of 5
+  items (range 5-20) (\emph{reverse})
+\item
+  \texttt{H1\_SSQSa}: SSQS (adequacy of social contact): sum score of 5
+  items, category 3 and 4 not combined (range 5-20) (\emph{reverse})
+\end{itemize}
+
+\begin{center}
+\includegraphics{draft_v2_files/figure-pdf/unnamed-chunk-12-1.pdf}
+\end{center}
+
+\begin{itemize}
+\item
+  \textbf{High} Correlations: \texttt{emp\_stat} (employment status) and
+  \texttt{work\_sit} (work situation) have a strong positive correlation
+  of 0.82. This suggests that individuals with higher employment status
+  tend to have more secure or favorable work situations.
+  \texttt{soc\_freq} (social contact frequency) shows a strong positive
+  correlation with \texttt{soc\_adq} (social adequacy) at 0.61. This
+  indicates that individuals with more frequent social contact also tend
+  to have higher perceived adequacy of social interactions.
+\item
+  \textbf{Moderate} Correlations: \texttt{nb\_safe} (neighborhood
+  safety) and \texttt{nb\_res} (resources) have a moderate positive
+  correlation of 0.39, suggesting that areas with higher safety also
+  have better resources. \texttt{hea\_lit} (health literacy) has
+  moderate correlations with \texttt{emp\_stat} (0.26) and
+  \texttt{work\_sit} (0.25), which could mean that higher health
+  literacy is associated with better employment situations.
+  \texttt{frd\_brk12} (friendship breakups) and \texttt{conf12}
+  (conflicts) have a notable correlation of 0.43, indicating a
+  relationship between having conflicts and friendship losses.
+\item
+  \textbf{Low to Moderate} Correlations in Financial Precariousness:
+  \texttt{inc\_dif} (income difficulties) has a moderate correlation
+  with \texttt{fincri12} (financial crisis) at 0.49. This aligns with
+  the expected relationship, where individuals who experience general
+  income difficulties are more likely to report financial crises.
+\item
+  \textbf{Low} Correlations (0.1 - 0.2): Many variables, such as
+  \texttt{discrim} (discrimination), \texttt{unemp12} (unemployment
+  experience), and \texttt{rel\_end12} (relationship end), have low
+  correlations with other variables, suggesting relatively independent
+  relationships in the context of this dataset.
+\end{itemize}
+
+\subsubsection{Exploratory Factor Analysis
+(EFA)}\label{exploratory-factor-analysis-efa}
+
+\begin{center}
+\includegraphics[width=0.55\textwidth,height=\textheight]{draft_v2_files/figure-pdf/unnamed-chunk-13-1.pdf}
+\end{center}
+
+\begin{center}
+\includegraphics[width=0.7\textwidth,height=\textheight]{draft_v2_files/figure-pdf/unnamed-chunk-14-1.pdf}
+\end{center}
+
+\paragraph{Factor Loadings (Pattern
+Matrix)}\label{factor-loadings-pattern-matrix}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{MR1}: High loadings on \texttt{emp\_stat} and
+  \texttt{work\_sit} suggest this factor captures \emph{employment}
+  precariousness.
+\item
+  \textbf{MR2}: Strong loadings on \texttt{soc\_freq} and
+  \texttt{soc\_adq} indicate \emph{social} precariousness.
+\item
+  \textbf{MR3}: Key items like \texttt{frd\_brk12}, \texttt{conf12}, and
+  \texttt{fincri12}, suggest recent \emph{stressful events}.
+\item
+  \textbf{MR4}: High loadings on \texttt{nb\_res} and \texttt{cul\_rec}
+  may reflect \emph{community resources} precariousness.
+\item
+  \textbf{MR5}: Variables \texttt{nb\_safe} and \texttt{nb\_rent} with
+  high loadings indicate \emph{housing} precariousness.
+\end{itemize}
+
+\paragraph{Variance Explained}\label{variance-explained}
+
+The factors cumulatively explain \textbf{38\%} of the variance, with MR1
+being the most influential factor. Each factor contributes a smaller
+proportion to the total variance (MR1 at 12\%, MR2 at 9\%, etc.).
+
+\paragraph{Factor Intercorrelations}\label{factor-intercorrelations}
+
+Factors are moderately correlated, especially between \emph{MR1 and
+MR5}, and \emph{MR2 and MR3}. This indicates that while distinct, these
+factors are related---reasonable in a complex socio-economic context.
+
+\paragraph{Model Fit Statistics}\label{model-fit-statistics}
+
+RMSEA (0.071) suggest an acceptable fit. Tucker Lewis Index (0.802)
+suggests moderate reliability for the model.
+
+\paragraph{Summary}\label{summary}
+
+The 5-factor model appears interpretable and captures distinct
+dimensions of precariousness: \emph{employment, social, stressors,
+community resources, and housing precariousness}. Although the overall
+fit and explained variance could be stronger, these factors offer
+insights into the underlying structure of the data, highlighting key
+areas of precariousness.
+
+\subsubsection{PCA}\label{pca}
+
+\begin{center}
+\includegraphics[width=0.7\textwidth,height=\textheight]{draft_v2_files/figure-pdf/unnamed-chunk-15-1.pdf}
+\end{center}
+
+\begin{itemize}
+\tightlist
+\item
+  Component Retention: The scree plot shows a clear ``elbow'' after the
+  first component. This steep drop suggests that most variance is
+  explained by the first component. After Dimension 5, the percentage of
+  explained variance decreases slightly more gradually, indicating
+  diminishing returns for adding more components. If we need to choose
+  multiple components, retaining the first 5 components seems
+  reasonable, as they capture most of the variance (cumulatively
+  explaining about 54.7\% of the total variance).
+\end{itemize}
+
+\begin{center}
+\includegraphics{draft_v2_files/figure-pdf/unnamed-chunk-16-1.pdf}
+\end{center}
+
+\paragraph{Explained variance (contributions) of
+variables}\label{explained-variance-contributions-of-variables}
+
+It shows the importance of variables within each component.
+
+\begin{itemize}
+\item
+  \textbf{Dim1}: High contributions are observed from
+  \texttt{emp\_stat}, \texttt{work\_sit}, \texttt{inc\_dif}, and
+  \texttt{fincri12}, suggesting that this dimension captures aspects of
+  \emph{employment and financial} security.
+\item
+  \textbf{Dim2}: While \texttt{emp\_stat} and \texttt{work\_sit} overlap
+  with Dim1, the strong contributions from \texttt{frd\_brk12} and
+  \texttt{rel\_end12} indicate that this dimension captures a focus on
+  \emph{recent relationship stressors}.
+\item
+  \textbf{Dim3}: \texttt{cul\_rec}, \texttt{nb\_res} have the highest
+  contributions, indicating this dimension likely represents
+  \emph{community and cultural} factors.
+\item
+  \textbf{Dim4}: \texttt{soc\_freq} and \texttt{soc\_adq} stand out in
+  this dimension, suggesting an emphasis on \emph{social}
+  precariousness.
+\item
+  \textbf{Dim5}: \texttt{nb\_safe} and \texttt{nb\_rent} are the top
+  contributors, pointing to \emph{housing} security as key themes in
+  this component.
+\end{itemize}
+
+\paragraph{Cos² Values}\label{cosuxb2-values}
+
+Cos² (squared cosine) values, or the quality of representation, show how
+well each variable is represented by each dimension. where higher cos²
+values (closer to 1) indicate better representation of a variable by a
+component.
+
+\begin{center}
+\includegraphics[width=0.7\textwidth,height=\textheight]{draft_v2_files/figure-pdf/unnamed-chunk-17-1.pdf}
+\end{center}
+
+\begin{itemize}
+\item
+  \textbf{Dim.1}: Variables \texttt{emp\_stat}, \texttt{work\_sit},
+  \texttt{inc\_dif}, and \texttt{fincri12} show high cos² values,
+  meaning that PC1 primarily captures variations in employment and
+  financial difficulties. This component could represent
+  \emph{employment \& finance} precariousness.
+\item
+  \textbf{Dim.2}: Variables \texttt{work\_sit}, \texttt{emp\_stat},
+  \texttt{frd\_brk12}, and \texttt{conf12} are well-represented in this
+  component, suggesting PC2 captures aspects of \emph{recent
+  relationship stressors}.
+\item
+  \textbf{Dim.3}: Variables \texttt{nb\_res} and \texttt{cul\_rec} load
+  strongly on PC3. This may represent community or cultural resources,
+  indicating that this component is associated with \emph{neighborhood
+  resources}.
+\item
+  \textbf{Dim.4}: This component has high cos² values for
+  \texttt{nb\_res}, \texttt{cul\_rec}, \texttt{soc\_freq}, and
+  \texttt{soc\_adq.} While \texttt{nb\_res} and \texttt{cul\_rec} are
+  also prominent in PC3, PC4 uniquely captures nuanced differentiation
+  in \emph{social} precariousness.
+\item
+  \textbf{Dim.5}: \texttt{nb\_safe} and \texttt{nb\_rent} are
+  well-represented by PC5. This component might capture \emph{housing}
+  precariousness.
+\end{itemize}
+
+\subsubsection{ICA}\label{ica}
+
+\begin{center}
+\includegraphics[width=0.7\textwidth,height=\textheight]{draft_v2_files/figure-pdf/unnamed-chunk-18-1.pdf}
+\end{center}
+
+\paragraph{Dominant Variables per
+Component:}\label{dominant-variables-per-component}
+
+For each Independent Component (IC), we can identify variables with
+\emph{high absolute} values in each column. These values indicate that
+the IC captures a strong, independent signal associated with these
+variables.
+
+\begin{itemize}
+\item
+  \textbf{IC1}: \texttt{soc\_freq} and \texttt{soc\_adq} have strong
+  negative loadings on this component, indicating that this component
+  might represent \emph{social} precariousness.
+\item
+  \textbf{IC2}: \texttt{frd\_brk12}, \texttt{conf12},
+  \texttt{rel\_end12}, \texttt{fincri12} and \texttt{unemp12} have the
+  most substantial loadings on this component, all with negative signs.
+  This might point to a \emph{recent relational or social stressor}
+  component.
+\item
+  \textbf{IC3}: \texttt{nb\_res} and \texttt{cul\_rec} show notable
+  negative loadings, pointing to a focus on \emph{community resource}
+  precariousness.
+\item
+  \textbf{IC4}: High loadings for \texttt{nb\_safe}, \texttt{nb\_rent},
+  \texttt{nb\_res}, \texttt{cul\_rec}, and \texttt{discrim} suggest a
+  theme of \emph{housing and community-based} precariousness, reflecting
+  both safety and social challenges within the neighborhood context.
+\item
+  \textbf{IC5}: \texttt{emp\_stat} and \texttt{work\_sit} both have
+  strong negative loadings on this component, suggesting it captures
+  \emph{employment} precariousness.
+\end{itemize}
+
+\subsubsection{Hierarchical clustering}\label{hierarchical-clustering}
+
+\paragraph{Using Euclidean distance}\label{using-euclidean-distance}
+
+\begin{itemize}
+\tightlist
+\item
+  Ward.D's method: Minimizes the variance within clusters, producing
+  more compact and spherical clusters.
+\item
+  Single linkage: Groups clusters based on the minimum distance between
+  points.
+\item
+  Complete linkage: Groups clusters based on the maximum distance
+  between points.
+\item
+  Average linkage: Uses the average distance between all pairs of points
+  in the two clusters.
+\end{itemize}
+
+\begin{figure}
+
+\begin{minipage}{0.50\linewidth}
+\begin{center}
+\includegraphics{draft_v2_files/figure-pdf/unnamed-chunk-19-1.pdf}
+\end{center}
+\end{minipage}%
+%
+\begin{minipage}{0.50\linewidth}
+\begin{center}
+\includegraphics{draft_v2_files/figure-pdf/unnamed-chunk-19-2.pdf}
+\end{center}
+\end{minipage}%
+\newline
+\begin{minipage}{0.50\linewidth}
+\begin{center}
+\includegraphics{draft_v2_files/figure-pdf/unnamed-chunk-19-3.pdf}
+\end{center}
+\end{minipage}%
+%
+\begin{minipage}{0.50\linewidth}
+\begin{center}
+\includegraphics{draft_v2_files/figure-pdf/unnamed-chunk-19-4.pdf}
+\end{center}
+\end{minipage}%
+
+\end{figure}%
+
+\subparagraph{Consistent Groupings (Across All or Most
+Methods)}\label{consistent-groupings-across-all-or-most-methods}
+
+\begin{itemize}
+\item
+  \texttt{emp\_stat} and \texttt{work\_sit}: This pair consistently
+  clusters together across all linkage methods, suggesting that they are
+  closely related variables, likely capturing a similar aspect of the
+  data (possibly employment status or employment-related information).
+\item
+  \texttt{nb\_safe}, \texttt{nb\_res}, and \texttt{nb\_rent}: These
+  variables are often grouped closely in several methods (especially
+  Ward.D, average, and complete linkage). This suggests a similarity or
+  common theme among them, potentially related to neighborhood or
+  housing precariousness.
+\item
+  \texttt{soc\_freq} and \texttt{soc\_adq}: These two variables
+  frequently cluster together, indicating they likely measure aspects of
+  social frequency and adequacy in similar ways. They appear together in
+  Ward.D, average, and complete linkage.
+\item
+  \texttt{frd\_brk12} and \texttt{conf12}: These variables are often
+  clustered closely (though they sometimes join with other variables
+  like rel\_end12), suggesting they may capture aspects of relationship
+  or social conflict. This pair appears in close proximity, especially
+  in average and Ward.D.
+\end{itemize}
+
+\subparagraph{Inconsistent Groupings (Variability Across
+Methods)}\label{inconsistent-groupings-variability-across-methods}
+
+\begin{itemize}
+\item
+  \texttt{hea\_lit}: This variable shows inconsistent clustering across
+  methods. In Ward.D, it joins with \texttt{fincri12}, while in other
+  methods, it's often more isolated or grouped with variables that do
+  not appear similar. This may suggest that \texttt{hea\_lit} does not
+  strongly correlate with other variables, or it has multidimensional
+  aspects affecting its grouping across methods.
+\item
+  \texttt{discrim}: This variable also shows variable groupings. In
+  Ward.D, it is grouped with \texttt{hea\_lit}, while in other methods
+  (e.g., complete and single linkage), it clusters differently,
+  sometimes on its own. This variability may indicate that
+  \texttt{discrim} has weaker associations with the main clusters in the
+  data or overlaps partially with multiple clusters.
+\item
+  Social and Financial Variables (\texttt{inc\_dif}, \texttt{fincri12},
+  \texttt{unemp12}): These variables appear together in some methods
+  (e.g., Ward.D clusters \texttt{fincri12} and \texttt{inc\_dif}), but
+  in others, they are spread out. This inconsistency suggests that
+  social and financial variables may not have strong or consistent ties
+  across different methods, perhaps due to capturing different aspects
+  of precariousness.
+\end{itemize}
+
+\subparagraph{Summary}\label{summary-1}
+
+The consistent clusters are likely capturing distinct thematic
+dimensions of the data (e.g., employment, housing, social contact),
+while the inconsistent variables may reflect multifaceted or weakly
+correlated attributes that do not fit neatly into one cluster.
+
+\paragraph{Using Mutual Information}\label{using-mutual-information}
+
+Using mutual information (MI) as a basis for hierarchical clustering
+differs from using traditional distance measures (like Euclidean
+distance) in a few key ways.
+
+\begin{center}
+\includegraphics[width=0.6\textwidth,height=\textheight]{draft_v2_files/figure-pdf/unnamed-chunk-20-1.pdf}
+\end{center}
+
+\subparagraph{Comparison to Euclidean Distance
+Clustering}\label{comparison-to-euclidean-distance-clustering}
+
+\begin{itemize}
+\item
+  \textbf{Housing and Community} Cluster: The variables
+  \texttt{nb\_safe}, \texttt{nb\_res}, \texttt{nb\_rent}, and
+  \texttt{cul\_rec} cluster together, indicating a strong association
+  among housing-related and community-based factors. This suggests a
+  shared theme of housing or community precariousness. This grouping is
+  also observed in the Euclidean-based clustering, but it appears more
+  tightly connected here, potentially due to the non-linear
+  relationships highlighted by mutual information.
+\item
+  \textbf{Employment and Social Support} Cluster: \texttt{emp\_stat} and
+  \texttt{work\_sit} form a cluster, linking employment status and work
+  situation together as they did in Euclidean-based clustering. These
+  remain closely associated regardless of the distance metric used.
+  \texttt{soc\_freq} and \texttt{soc\_adq}, related to social contact
+  frequency and adequacy, cluster nearby, indicating they have a
+  stronger non-linear relationship with employment variables. This is a
+  subtle difference as Euclidean distance might not capture this
+  association as effectively.
+\item
+  \textbf{Financial Stressor} Cluster: \texttt{inc\_dif} and
+  \texttt{fincri12}, representing income difficulties and recent
+  financial crises, consistently cluster together in both approaches,
+  showing a strong association, likely linear. However, mutual
+  information-based clustering links these financial stressors with
+  social support variables, suggesting that financial challenges may
+  have complex dependencies with social support in this dataset.
+\item
+  \textbf{Relational Stressor} Cluster: \texttt{frd\_brk12},
+  \texttt{conf12}, \texttt{discrim}, \texttt{hea\_lit},
+  \texttt{unemp12}, and \texttt{rel\_end12} form a \emph{looser} cluster
+  focused on social and relational stressors (e.g., friendship breakup,
+  conflicts, and discrimination). Compared to Euclidean clustering,
+  \texttt{discrim} and \texttt{hea\_lit} (health literacy) appear closer
+  to relational stressors here, indicating that non-linear relationships
+  might play a larger role in linking these variables.
+\end{itemize}
+
+\subparagraph{Summary}\label{summary-2}
+
+In conclusion, mutual information-based clustering provides an
+alternative perspective that can reveal more intricate associations
+between variables, especially for those with non-linear relationships.
+Compared to Euclidean clustering, it shows a similar high-level
+structure but emphasizes nuanced connections between variables,
+particularly around social support, employment, and financial stress.
+
+\subsubsection{Conclusions on Precariousness
+factors}\label{conclusions-on-precariousness-factors}
+
+Based on the consistent findings across multiple analyses, we decided to
+exclude the variables \texttt{discrim}, \texttt{hea\_lit},
+\texttt{umemp12}, and \texttt{rel\_end12}, as they do not clearly belong
+to any specific precariousness factor nor exhibit strong associations
+with depression (see the correlation table above). Therefore, we propose
+retaining the following key precariousness factors:
+
+\begin{itemize}
+\tightlist
+\item
+  Employment Precariousness: \texttt{emp\_stat}, \texttt{work\_sit}
+\item
+  Social Precariousness: \texttt{soc\_freq}, \texttt{soc\_adq}
+\item
+  Housing Precariousness: \texttt{nb\_safe}, \texttt{nb\_res},
+  \texttt{nb\_rent}, \texttt{cul\_rec}
+\item
+  Recent Relational Stressors: \texttt{frd\_brk12}, \texttt{conf12}
+\item
+  Recent Financial Stressors: \texttt{fincri12}, \texttt{inc\_diff}
+\end{itemize}
+
+We construct each precariousness factor by calculating the mean value of
+the combined variables. Below, we present the updated correlation table
+for the newly composed factors, along with the corresponding
+distributions of all variables to be used in the causal discovery
+analysis.
+
+\begin{center}
+\includegraphics{draft_v2_files/figure-pdf/unnamed-chunk-21-1.pdf}
+\end{center}
+
+\begin{center}
+\includegraphics{draft_v2_files/figure-pdf/unnamed-chunk-22-1.pdf}
+\end{center}
+
+\subsection{Results from CCI algorithm}\label{sec-cci}
+
+\begin{figure}
+
+\begin{minipage}{0.50\linewidth}
+
+\centering{
+
+\includegraphics[width=1\textwidth,height=\textheight]{img/CCI_depsum.png}
+
+}
+
+\subcaption{\label{fig-sum-cci-1}CCI MAAG}
+
+\end{minipage}%
+%
+\begin{minipage}{0.50\linewidth}
+
+\centering{
+
+\includegraphics[width=1\textwidth,height=\textheight]{img/depsum_mat_cci.pdf}
+
+}
+
+\subcaption{\label{fig-sum-cci-2}Proportion matrix}
+
+\end{minipage}%
+
+\caption{\label{fig-sum-cci}Resulting graph of precariousness factors
+and depression sum score using CCI and proportion of edge endpoint
+types.}
+
+\end{figure}%
+
+\begin{figure}
+
+\begin{minipage}{\linewidth}
+
+\centering{
+
+\includegraphics[width=0.6\textwidth,height=\textheight]{img/symptom_graph_CCI.png}
+
+}
+
+\subcaption{\label{fig-sym-cci-1}CCI MAAG}
+
+\end{minipage}%
+\newline
+\begin{minipage}{\linewidth}
+
+\centering{
+
+\includegraphics[width=0.6\textwidth,height=\textheight]{img/symptom_mat_cci.pdf}
+
+}
+
+\subcaption{\label{fig-sym-cci-2}Proportion matrix}
+
+\end{minipage}%
+
+\caption{\label{fig-sym-cci}Resulting graph of precariousness factors
+and individual depression symptoms using CCI and proportion of edge
+endpoint types.}
+
+\end{figure}%
+
+\begin{figure}
+
+\begin{minipage}{\linewidth}
+
+\centering{
+
+\includegraphics[width=0.6\textwidth,height=\textheight]{img/presum_graph_CCI.png}
+
+}
+
+\subcaption{\label{fig-presum-cci-1}CCI MAAG}
+
+\end{minipage}%
+\newline
+\begin{minipage}{\linewidth}
+
+\centering{
+
+\includegraphics[width=0.6\textwidth,height=\textheight]{img/presum_mat_cci.pdf}
+
+}
+
+\subcaption{\label{fig-presum-cci-2}Proportion matrix}
+
+\end{minipage}%
+
+\caption{\label{fig-presum-cci}Resulting graph of precariousness sum
+score and individual depression symptoms using CCI and proportion of
+edge endpoint types.}
+
+\end{figure}%
+
+\clearpage
+
+\subsection{Results from PC algorithm}\label{sec-pc}
+
+\begin{figure}
+
+\begin{minipage}{0.50\linewidth}
+
+\centering{
+
+\includegraphics[width=1\textwidth,height=\textheight]{img/sum_PC_all.png}
+
+}
+
+\subcaption{\label{fig-pc_sum-1}Using both GaussianCI and RCoT}
+
+\end{minipage}%
+%
+\begin{minipage}{0.50\linewidth}
+
+\centering{
+
+\includegraphics[width=1\textwidth,height=\textheight]{img/sum_PC_RCoTonly.png}
+
+}
+
+\subcaption{\label{fig-pc_sum-2}Using only RCoT}
+
+\end{minipage}%
+
+\caption{\label{fig-pc_sum}Resulting graphs of precariousness factors
+and depression sum score using PC.}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.6\textwidth,height=\textheight]{img/PC_symptom.png}
+
+}
+
+\caption{\label{fig-pc_sym}Resulting graphs of precariousness factors
+and individual depression symptoms using PC.}
+
+\end{figure}%
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.6\textwidth,height=\textheight]{img/PC_presum.png}
+
+}
+
+\caption{\label{fig-pc_presum}Resulting graphs of precariousness sum
+score and individual depression symptoms using PC.}
+
+\end{figure}%
+
+\clearpage
+
+\subsection{Randomized Conditional Independence / Correlation Test (RCIT
+\& RCoT)}\label{sec-rcot}
+
+RCIT (Randomized Conditional Independence Test) and RCoT (Randomized
+conditional Correlation Test) are advanced methods for scalable
+conditional independence (CI) testing, offering computational efficiency
+while maintaining the accuracy of kernel-based approaches. These methods
+evaluate conditional independence between two variables \(X\) and \(Y\)
+given a third variable \(Z\) while addressing computational challenges
+inherent in kernel-based CI tests. In this section, we provide a
+high-level overview of RCIT and RCoT based on (Strobl et al., 2019).
+
+\subsubsection{Kernel-Based Conditional Independence
+Testing}\label{kernel-based-conditional-independence-testing}
+
+Traditional kernel-based CI tests, such as the Kernel Conditional
+Independence Test (KCIT), compute dependencies using the Hilbert-Schmidt
+Independence Criterion (HSIC) in reproducing kernel Hilbert spaces
+(RKHS) (Zhang et al., 2012). KCIT uses the following hypothesis
+framework: \[
+H_0: X \perp\!\!\!\perp Y \,|\, Z, \quad H_1: X \not\!\perp\!\!\!\perp Y \,|\, Z.
+\] The core quantity in KCIT is the partial cross-covariance operator:
+\[
+\Sigma_{XY \cdot Z} = \Sigma_{XY} - \Sigma_{XZ} \Sigma_{ZZ}^{-1} \Sigma_{ZY},
+\] where \(\Sigma_{XY}\) represents the cross-covariance operator
+between \(X\) and \(Y\), and
+\(\Sigma_{XZ} \Sigma_{ZZ}^{-1} \Sigma_{ZY}\) removes the dependence
+mediated by \(Z\).
+
+The squared Hilbert-Schmidt (HS) norm of \(\Sigma_{XY \cdot Z}\) serves
+as the test statistic: \[
+\|\Sigma_{XY \cdot Z}\|^2_{HS} = 0 \quad \text{if and only if} \quad X \perp\!\!\!\perp Y \,|\, Z.
+\]
+
+KCIT estimates residual dependencies using kernel ridge regression: \[
+f^*(z) = K_Z (K_Z + \lambda I)^{-1} f(x),
+\] where \(K_Z\) is the kernel matrix for \(Z\), \(f(x)\) is the kernel
+feature map for \(X\), and \(\lambda\) is the ridge regularization
+parameter. The residual function for \(X\) is: \[
+f_\text{res}(x) = f(x) - f^*(z) = R_Z f(x),
+\] with: \[
+R_Z = I - K_Z (K_Z + \lambda I)^{-1}.
+\] The kernel matrix for residualized \(X\) is: \[
+K_{X \cdot Z} = R_Z K_X R_Z,
+\] and similarly for \(Y\), \(K_{Y \cdot Z} = R_Z K_Y R_Z\).
+
+The test statistic is computed as: \[
+T_{XY \cdot Z} = \frac{1}{n^2} \text{tr}(K_{X \cdot Z} K_{Y \cdot Z}),
+\] which estimates the Hilbert-Schmidt (HS) norm of the partial
+cross-covariance operator. To ensure convergence, KCIT scales the
+statistic by \(n\): \[
+S_K = n T_{XY \cdot Z}.
+\] The null hypothesis \(H_0\) is rejected if \(S_K\) exceeds a
+threshold determined by permutation or moment-matching-based null
+distribution (Lindsay et al., 2000).
+
+\subsubsection{Random Fourier Features
+(RFFs)}\label{random-fourier-features-rffs}
+
+Kernel-based methods like KCIT face scalability issues, as they involve
+operations on \(n \times n\) kernel matrices, which scale quadratically
+with the sample size \(n\). RCIT and RCoT overcome this bottleneck using
+\emph{Random Fourier Features (RFFs)} to approximate kernel operations
+efficiently.
+
+\paragraph{Bochner's Theorem}\label{bochners-theorem}
+
+Bochner's theorem provides the foundation for RFFs, stating that any
+continuous shift-invariant kernel \(k(x, y)\) can be expressed as: \[
+k(x, y) = \int_{\mathbb{R}^p} e^{i \omega^\top (x - y)} \, dP_\omega,
+\] where \(P_\omega\) is the spectral distribution of the kernel. For
+the widely used RBF kernel: \[
+k(x, y) = \exp\left(-\frac{\|x - y\|^2}{2\sigma^2}\right),
+\] \(P_\omega\) follows a Gaussian distribution:
+\(\omega \sim \mathcal{N}(0, \sigma^2 I)\).
+
+\paragraph{RFF Approximation}\label{rff-approximation}
+
+Using Monte Carlo sampling, the kernel function is approximated as: \[
+k(x, y) \approx \phi(x)^\top \phi(y),
+\] where \(\phi(x)\) is the random Fourier feature mapping: \[
+\phi(x) = \sqrt{\frac{2}{D}} \cos(W^\top x + b),
+\] with \(W \sim \mathcal{N}(0, \sigma^2 I)\) and
+\(b \sim \text{Uniform}(0, 2\pi)\). Here, \(D\) is the number of Fourier
+features, which balances computational efficiency and approximation
+accuracy.
+
+\subsubsection{Differences Between RCIT and
+RCoT}\label{differences-between-rcit-and-rcot}
+
+RCIT and RCoT differ in their test statistics, computational efficiency,
+and practical performance, which makes them suited for different
+scenarios in causal discovery. RCIT evaluates the Hilbert-Schmidt norm
+of the full partial cross-covariance operator, providing a general test
+for conditional independence but at a higher computational cost. RCoT
+simplifies the process by using the Frobenius norm of a
+finite-dimensional residualized cross-covariance matrix, significantly
+reducing complexity and improving scalability.
+
+These distinctions are particularly important for large-scale datasets,
+where RCoT's computational efficiency makes it a practical choice for
+high-dimensional causal discovery tasks.
+
+\paragraph{RCIT: Randomized Conditional Independence
+Test}\label{rcit-randomized-conditional-independence-test}
+
+RCIT tests full conditional independence by examining the squared
+Hilbert-Schmidt (HS) norm of the partial cross-covariance operator
+\(\Sigma_{XY \cdot Z}\): \[
+S_K = n T_{XY \cdot Z} = \frac{1}{n} \text{tr}(K_{X \cdot Z} K_{Y \cdot Z}),
+\] where \(T_{XY \cdot Z}\) is an empirical estimate of
+\(\|\Sigma_{XY \cdot Z}\|^2_{HS}\). The null and alternative hypotheses
+are: \[
+H_0: \|\Sigma_{XY \cdot Z}\|^2_{HS} = 0, \quad H_1: \|\Sigma_{XY \cdot Z}\|^2_{HS} > 0.
+\]
+
+RCIT is a general test for conditional independence but becomes
+computationally demanding as the size of \(Z\) increases, due to the
+high-dimensional kernel operations required.
+
+\paragraph{RCoT: Randomized Conditional Correlation
+Test}\label{rcot-randomized-conditional-correlation-test}
+
+RCoT simplifies the testing process by using a finite-dimensional
+partial cross-covariance matrix, avoiding full HS norm calculations.
+Instead, it uses the Frobenius norm of the residualized cross-covariance
+matrix: \[
+S' = n \|C_{AB \cdot C}\|_F^2,
+\] where \(C_{AB \cdot C}\) represents the residualized cross-covariance
+matrix. The hypotheses are: \[
+H_0: \|C_{AB \cdot C}\|_F^2 = 0, \quad H_1: \|C_{AB \cdot C}\|_F^2 > 0.
+\]
+
+RCoT is computationally efficient and well-suited for large conditioning
+sets (\(|Z| \geq 4\)). Its simplicity enables robust calibration of the
+null distribution and improved scalability for high-dimensional data.
+
+\section*{Acknowledgements}\label{acknowledgements}
+\addcontentsline{toc}{section}{Acknowledgements}
+
+The HELIUS study is conducted by the Amsterdam University Medical
+Centers, location AMC and the Public Health Service of Amsterdam. Both
+organisations provided core support for HELIUS. The HELIUS study is also
+funded by the Dutch Heart Foundation, the Netherlands Organization for
+Health Research and Development (ZonMw), the European Union (FP-7), and
+the European Fund for the Integration of non-EU immigrants (EIF). We are
+most grateful to the participants of the HELIUS study and the management
+team, research nurses, interviewers, research assistants and other staff
+who have taken part in gathering the data of this study.
+
+
+
+
+\end{document}
