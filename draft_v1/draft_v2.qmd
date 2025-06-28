@@ -1558,7 +1558,7 @@ where:
 * $S$ is a fixed or exogenous input (external financial stress),
 * $\alpha_{DP}$ represents the feedback from precariousness to depression,
 * $\alpha_{PD}$ represents the feedback from depression to precariousness,
-* $\alpha_{DS}$ and $alpha_{PS}$ capture the direct effects of $S$,
+* $\alpha_{DS}$ and $\alpha_{PS}$ capture the direct effects of $S$,
 * $\sigma_D, \sigma_P$ are stochastic noise amplitudes,
 * $\eta_D(t), \eta_P(t)$ are independent standard Wiener processes.
 
