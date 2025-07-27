@@ -77,7 +77,7 @@ library(umap)
 
 ```{r, include=FALSE, cache=TRUE}
 # Load the dataset 
-dat <- read_sav("../../data/HELIUS_LEONIE.sav") 
+dat <- read_sav("../data/helius_dat/HELIUS_LEONIE.sav") 
 
 # Preprocess and scale the precariousness data
 scaled_data <- dat %>%
