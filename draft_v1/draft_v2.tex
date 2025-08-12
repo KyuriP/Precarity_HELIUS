@@ -303,7 +303,7 @@ Precariousness and Depression in the HELIUS Study}
 \affil[3]{\textit{Institute for Advanced Study, University of Amsterdam, Oude Turfmarkt 147, Amsterdam, 1012GC, the Netherland}}
 
 
-\date{2025-07-26}
+\date{2025-08-12}
 \begin{document}
 \maketitle
 \begin{abstract}
@@ -829,20 +829,15 @@ Depression}\label{causal-structure-linking-precariousness-and-depression}
 
 \subsubsection{Depression as sum score}\label{depression-as-sum-score}
 
-The sum score graphs provide a high-level summary of how precariousness
-factors collectively influence overall depression severity, focusing on
-aggregated relationships. Figure~\ref{fig-sum} illustrates the causal
-relationships between precariousness factors (\emph{P.hou},
-\emph{P.emp}, \emph{P.soc}, \emph{S.rel}, \emph{S.fin}) and the
-depression sum score (\emph{PHQsum}), as identified by the FCI
-algorithm. As described in Section~\ref{sec-analysis}, dashed edges
-indicate ties, and the edge endpoint at which the tie occurs is marked
-by a bold horizontal bar.
+Figure~\ref{fig-sum} provides a high-level summary of how precariousness
+factors collectively influence and are influenced by overall depression
+severity, focusing on the causal relationships between precariousness
+factors (\emph{P.hou}, \emph{P.emp}, \emph{P.soc}, \emph{S.rel},
+\emph{S.fin}) and the depression sum score (\emph{PHQsum}), as
+identified by the FCI algorithm.
 
-The causal graph in panel (a) highlights key pathways in the
-relationships between precariousness factors and depression
-(\emph{PHQsum}). Employment precariousness (\emph{P.emp}) and social
-precariousness (\emph{P.soc}) are not identified as causes of
+In panel (a) we see that employment precariousness (\emph{P.emp}) and
+social precariousness (\emph{P.soc}) are not identified as causes of
 depression, whereas financial stress (\emph{S.fin}) appears to play a
 causal role. While \emph{P.emp} and \emph{P.soc} are generally not
 recognized as causes of other precariousness factors, \emph{S.fin}
@@ -850,17 +845,6 @@ emerges as a potential cause, as indicated by its circle edge endpoint.
 This pattern is further supported by the edge-type proportion matrix
 shown in panel (b), which aggregates edge inference outcomes across
 bootstrapped datasets.
-
-The matrix plot can be interpreted such that the symbol in
-matrix{[}\(i\), \(j\){]} represents the relationship
-\(i -~[symbol] \  j\). For example, if matrix{[}\(i\), \(j\){]} is
-\textgreater{} and matrix{[}j, i{]} is \(\circ\), then the inferred
-relationship is \(i \circarrow j\). In the table, different edge types
-are represented by distinct colors: light gray for the absence of an
-edge, blue for circles, green for arrowheads, and coral for arrowtails.
-The colors are blended based on the proportion of each edge type, with
-higher proportions increasing the opacity of the corresponding color,
-making dominant symbols more visually prominent.
 
 Relational stress (\emph{S.rel}) plays a more nuanced role, interacting
 with depression and \emph{S.fin} through a latent confounder. Its
@@ -875,16 +859,6 @@ causally influences \emph{P.emp} or if their relationship is mediated by
 an unobserved confounder.
 
 The findings from the CCI algorithm (see Figure~\ref{fig-sum-cci}) are
-largely consistent with those from the FCI algorithm, with one
-exception: CCI does not identify \emph{S.fin} as a cause of depression.
-Additionally, CCI introduces greater uncertainty in edge directions,
-with more ties mainly between circle and arrowhead endpoints, and tends
-to favor arrowheads more frequently than FCI. Despite these differences,
-the skeleton structure and overall causal directions derived from CCI
-align well with the results of the FCI algorithm, supporting the key
-pathways.
-
-The findings from the CCI algorithm (see Figure~\ref{fig-sum-cci}) are
 largely consistent with those from the FCI analysis, with one key
 distinction: CCI shows greater ambiguity in the directional relationship
 between \emph{S.fin} and \emph{PHQsum}: CCI assigns an arrowhead from
@@ -893,19 +867,32 @@ remaining cases display an undirected (circle) endpoint. Overall, CCI
 introduces greater uncertainty in edge orientations relative to FCI,
 yielding more undirected endpoints and more frequent bidirectional
 (confounded) edges, which in turn contribute to a slightly higher
-overall count of arrowheads when directions are inferred. Despite this,
-the skeleton structure and overall causal directions derived from CCI
-align well with the results of the FCI algorithm. For example, both
+overall count of arrowheads when directions are inferred. Both
 algorithms identify directional pathways from the stressors
-(\emph{S.rel}, \emph{S.fin}) to \emph{P.soc}, and suggest that
+(\emph{S.rel}, \emph{S.fin}) to \emph{P.soc} and suggest that
 \emph{P.soc} is not a cause of \emph{PHQsum}, but more likely affected
 by it. \emph{P.emp} is not inferred to cause any of its neighboring
-variables (\emph{P.hou}, \emph{PHQsum}, \emph{S.fin}), and instead
+variables (\emph{P.hou}, \emph{PHQsum}, \emph{S.fin}) and instead
 appears to be affected by them. \emph{P.hou}, in turn, is connected to
 \emph{P.emp} and \emph{S.fin} with circle endpoints, indicating that it
-may be a potential source of influence rather than an outcome. These
-consistent pathways underscore the robustness of the core relational
-architecture across algorithms amid variation in directional confidence.
+may be a potential source of influence rather than an outcome.
+
+Causal relationships between five precariousness factors and depression
+sum score (PHQsum), as estimated using the FCI algorithm across
+bootstrapped samples. (a) Aggregated causal graph showing the most
+frequent edge types across bootstraps. Dashed edges indicate ties, with
+a bold horizontal bar marking where the tie occurs. (b) Proportion
+matrix summarizing edge types across all bootstraps. Each matrix cell
+\([i, j]\) represents how often an edge from variable \(i\) to variable
+\(j\) exhibited a particular edge mark---arrowhead, tail, circle, or no
+edge---adjacent to \(j\). The edge mark in matrix\([i,j]\) reflects the
+orientation of the edge ending at \(j\). For example, if
+matrix\([i, j]\) shows a green arrowhead (\(>\)) and matrix\([j, i]\)
+shows a blue circle (\(\circ\)), then the inferred relationship is
+\(i \circarrow j\). Edge types are encoded by distinct colors: green for
+arrowheads, coral for arrowtails, blue for circles, and light gray for
+absence of an edge. Colors are blended and shaded by frequency, with
+greater opacity indicating higher confidence in the inferred edge type.
 
 \begin{figure}
 
@@ -960,27 +947,22 @@ Moving from the sum score representation to the disaggregated
 symptom-level graph provides a more granular perspective on the causal
 relationships between precariousness factors and depression symptoms.
 Unlike the sum score graph, which aggregates all symptoms into a single
-measure, the symptom-level graph reveals the heterogeneity in how
-specific symptoms (\emph{con} (concentration), \emph{slp} (sleep),
-\emph{ene} (energy), \emph{app} (appetite), \emph{mot} (motor),
-\emph{sui} (suicidal), \emph{anh} (anhedonia), \emph{glt} (guilt), and
-\emph{dep} (depressed mood)) are influenced by, and in turn influence,
-different forms of precariousness.
+measure, the symptom-level graph in Figure~\ref{fig-sym} reveals the
+heterogeneity in how specific symptoms (\emph{con} (concentration),
+\emph{slp} (sleep), \emph{ene} (energy), \emph{app} (appetite),
+\emph{mot} (motor), \emph{sui} (suicidal), \emph{anh} (anhedonia),
+\emph{glt} (guilt), and \emph{dep} (depressed mood)) are influenced by,
+and in turn influence, different forms of precariousness.
 
-The symptom-level graph in Figure~\ref{fig-sym-1} reveals a more complex
-and interconnected structure than the sum score graph, reflecting the
-strong interdependence among symptoms and suggesting much presence of
-latent confounders, as indicated by numerous bidirectional edges. As
-before, dashed edges denote ties, with specific ties marked by bold
-horizontal bars. In Figure~\ref{fig-sym-2}, the proportion matrix
-provides more insight into these directionalities. Here, opaque green
-dominates most symptom-to-symptom connections, indicating that
-arrowheads are the most frequently inferred edge type. However, blue
-regions, which correspond to circle endpoints, are particularly common
-for \emph{anh}, \emph{slp}, \emph{ene}, and \emph{sui}, reflecting
-uncertainty in the causal direction among these symptoms. Notably, the
-only arrowtail connection appears between \emph{dep} and \emph{anh},
-suggesting that anhedonia is a potential cause of depressed mood.
+Figure~\ref{fig-sym-1} reveals a strong interdependence among symptoms
+and suggests much presence of latent confounders, as indicated by
+numerous bidirectional edges. In Figure~\ref{fig-sym-2}, the proportion
+matrix indicates that arrowheads are the most frequently inferred edge
+type. However, circle endpoints are particularly common for \emph{anh},
+\emph{slp}, \emph{ene}, and \emph{sui}, reflecting uncertainty in the
+causal direction among these symptoms. Notably, the only arrowtail
+connection appears between \emph{dep} and \emph{anh}, suggesting that
+anhedonia is a potential cause of depressed mood.
 
 Looking at the symptom-precariousness connections, one of the key
 patterns is that ties are most frequently found in the relationships
@@ -990,26 +972,6 @@ Closer examination reveals that most ties arise due to discrepancies
 between the Gaussian CI test and the RCoT test---with Gaussian CI
 favoring arrowheads and RCoT more often predicting the absence of an
 edge.
-
-This discrepancy likely arises from a combination of factors. As the
-analysis moves from aggregated to disaggregated variables, the number of
-CI tests increases substantially, leading to a loss of statistical
-power. With more variables being conditioned on, the effective sample
-size per test diminishes, making it harder to detect subtle
-dependencies. Over-conditioning---controlling for too many
-variables---can also obscure real relationships, resulting in false
-negatives. Beyond these statistical power issues, the underlying
-assumptions of the two CI tests contribute to their divergence. RCoT is
-a nonparametric test that captures both linear and nonlinear
-dependencies without assuming a specific distributional form. However,
-it is more conservative and requires larger sample sizes, especially in
-high-dimensional settings. In contrast, the Gaussian CI test is based on
-partial correlations and assumes linear Gaussian relationships, making
-it more permissive and more likely to detect weak or spurious
-associations. As a result, it is common to see edges where Gaussian CI
-suggests a directional relationship, while RCoT indicates no edge. In
-the proportion matrix, this appears as a 50--50 tie between absence and
-arrowhead symbols.
 
 Despite these differences, some consistent patterns emerge across both
 CI tests, particularly in the case of \emph{S.fin}, which appears to be
@@ -1028,18 +990,18 @@ social precariousness rather than the other way around. Additionally,
 often a consequence rather than a driver of depressive symptoms.
 
 Other precariousness factors exhibit more uncertainty but still notable
-relationships. \emph{S.rel} shows weak but existing connections with
-\emph{slp}, \emph{glt}, and \emph{app}, though directionality remains
-unclear in many cases. \emph{P.emp} also connects to symptoms like
-\emph{slp}, \emph{mot}, and \emph{con}, but, like \emph{S.rel}, these
-relationships exhibit a 50/50 split in directionality, reflecting
-uncertainty in the inferred causal paths. In line with the aggregated
-graph in Figure~\ref{fig-sum}, \emph{P.hou} does not appear to have any
-direct relationship with depression symptoms but consistently shows
-associations with \emph{P.emp} and \emph{S.fin}. The causal
-relationships among precariousness factors remain largely unchanged from
-the aggregated analysis, with \emph{S.fin} exhibiting the strongest
-tendency to influence other precariousness factors.
+relationships. \emph{S.rel} is connected to \emph{slp}, \emph{glt}, and
+\emph{app}, though directionality remains unclear in many cases.
+\emph{P.emp} also connects to symptoms like \emph{slp}, \emph{mot}, and
+\emph{con}, but, like \emph{S.rel}, these relationships exhibit a 50/50
+split in directionality, reflecting uncertainty in the inferred causal
+paths. In line with the aggregated graph in Figure~\ref{fig-sum},
+\emph{P.hou} does not appear to have any direct relationship with
+depression symptoms but consistently shows associations with
+\emph{P.emp} and \emph{S.fin}. The causal relationships among
+precariousness factors remain largely unchanged from the aggregated
+analysis, with \emph{S.fin} exhibiting the strongest tendency to
+influence other precariousness factors.
 
 Among depressive symptoms, \emph{dep}, \emph{glt}, and \emph{slp} appear
 to be the most connected to precariousness factors, while \emph{P.soc}
@@ -1053,13 +1015,10 @@ incoming arrows, indicating they are more likely effects rather than
 causes. Considering both symptom-precariousness connections and
 symptom-level dynamics, \emph{slp} emerges as a central symptom, given
 its strong ties to precariousness factors and its influential role
-within the symptom network. This suggests that sleep issues could be an
-initiating symptom, particularly sensitive to relational stress and
-employment precariousness. On the other hand, \emph{P.soc} serves as a
-key bridge between the depression and precariousness subsystems, as
-depressive symptoms appear to feed back into social precariousness,
-reinforcing a self-sustaining dynamic between depression and precarious
-conditions.
+within the symptom network. \emph{P.soc} appears to function as a bridge
+between the depression and precariousness subsystems, as depressive
+symptoms appear to feed back into social precariousness, reinforcing a
+self-sustaining dynamic between depression and precarious conditions.
 
 Finally, the results from CCI are largely consistent with those from
 FCI, but with some key differences. CCI tends to favor arrowheads more
@@ -1117,10 +1076,10 @@ distributed relationships across different precariousness factors that
 were previously overlooked in the disaggregated analysis.
 
 Unlike the disaggregated graph in Figure~\ref{fig-sym}, the aggregated
-symptom-precariousness graph (Figure~\ref{fig-presum-1}) shows more
-certainty in causal directions, with only a few edges resulting in ties,
-all of which involve the overall precariousness factor. This is even
-more evident in the proportion matrix (Figure~\ref{fig-presum-2}), where
+symptom-precariousness graph (Figure~\ref{fig-presum-1}) shows greater
+certainty in causal directions, with ties occurring only in edges
+involving the overall precariousness factor. This is even more evident
+in the proportion matrix (Figure~\ref{fig-presum-2}), where
 symptom-to-symptom interactions almost fully converge to a single edge
 type. Additionally, all symptom interactions are connected either
 through bidirectional edges or a combination of an arrowhead and a
@@ -1129,9 +1088,9 @@ circle, suggesting a strong presence of latent confounders.
 Examining the symptom-precariousness connections, we observe a stronger
 overall trend of depressive symptoms influencing precariousness, rather
 than the other way around. Specifically, \emph{anh}, \emph{dep}, and
-\emph{slp} show a high probability of causing precariousness, whereas
-\emph{app}, \emph{glt}, and \emph{mot} exhibit more uncertainty in
-directionality, often resulting in circle endpoints. This pattern
+\emph{slp} frequently emerge as sources of influence on precariousness,
+whereas \emph{app}, \emph{glt}, and \emph{mot} exhibit more uncertainty
+in directionality, often resulting in circle endpoints. This pattern
 suggests that when precariousness factors are aggregated, the dominant
 causal flow is from depressive symptoms to precariousness, rather than
 precariousness driving depression. Particularly, \emph{dep} emerges as
@@ -1154,25 +1113,22 @@ depression and overall precariousness, where depression not only arises
 from precarious conditions but also contributes to their persistence,
 creating a self-sustaining dynamic.
 
-Overall, the aggregated precariousness graph supports the key findings
-from both the disaggregated analysis and the depression sum score
-analysis, providing greater certainty in several important patterns. The
-results highlight the significant role of latent confounders in
-symptom-to-symptom interactions. While certain stressor-related
-precariousness factors, particularly \emph{S.fin} and \emph{S.rel},
-appear to causally influence depressive symptoms, other precariousness
-factors are more likely driven by depression rather than acting as
-primary causes, suggesting that precariousness may function more as a
-consequence of depression than its source. Some symptoms, particularly
-\emph{glt}, \emph{slp}, and \emph{dep}, appear to influence precarious
-conditions while also occupying central roles within the symptom
-network. Among them, \emph{slp} and \emph{glt} emerge as influential
-symptoms within the depression network, whereas \emph{con} and
-\emph{dep}, despite their high connectivity, behave more as outcomes
-rather than primary drivers. Together, these findings suggest that
-depression---especially symptoms like sleep disturbances and guilt---may
-contribute to sustaining precarious conditions, possibly forming a
-reciprocal cycle between depression and precariousness.
+Across multiple levels of analysis, our results point to a consistent
+and directional link between precariousness and depression. Financial
+stress (\emph{S.fin}) emerges as a particularly robust and modifiable
+upstream driver: in both aggregated and disaggregated models, it shows
+strong and stable causal influence on depressive symptoms. By contrast,
+other forms of precariousness---particularly social precarity---more
+often appear as outcomes rather than antecedents of depression,
+frequently receiving rather than sending causal arrows. Among symptoms,
+\emph{dep} and \emph{slp} stand out for their centrality and connections
+to precariousness factors, with \emph{dep} also implicated in potential
+feedback loops with social precarity (\emph{P.soc}). These findings
+motivate the use of a simplified three-node model in the
+simulation---capturing depression, financial stress, and social
+precarity---as it preserves the key dynamic motifs observed in the
+causal graphs while enabling tractable exploration of system-level
+responses to stress-reducing interventions.
 
 \begin{figure}
 
@@ -1202,7 +1158,8 @@ reciprocal cycle between depression and precariousness.
 
 \caption{\label{fig-presum}Resulting graph of precariousness sum score
 and individual depression symptoms using FCI and proportion of edge
-endpoint types.}
+endpoint types. As before, dashed edges denote ties, with specific ties
+marked by bold horizontal bars.}
 
 \end{figure}%
 
@@ -1215,26 +1172,22 @@ to external support, we simulate a set of linear models that are
 consistent with the data but vary in the assumed strength of influence
 from precariousness to depression (\(\alpha_{DP}\)). For each model, we
 generate a virtual population of 1,000 individuals and simulate an
-external intervention that reduces financial stress (\(S\)), which acts
-as a shared input across individuals. This intervention defines the
-control input, while different values of \(\alpha_{DP}\) represent
-alternative internal feedback scenarios. We examine system behavior in
-two complementary ways: (1) by analyzing average levels of depression
-and precariousness at selected time points following intervention onset,
-and (2) by simulating full temporal trajectories under sustained
-intervention followed by recovery, using two representative cases at the
-extremes of the \(\alpha_{DP}\) range.
+external intervention that reduces each individual's financial stress
+(\(S\)) proportionally toward the minimum observed value in the dataset.
+While individuals begin with different baseline stress levels, the
+intervention applies a shared proportional reduction across the
+population. This intervention defines the external input, while
+variation in \(\alpha_{DP}\) reflects different assumptions about
+internal feedback from precariousness to depression. We examine system
+behavior in two complementary ways: (1) by analyzing average levels of
+depression and precariousness at selected time points following
+intervention onset, and (2) by simulating full temporal trajectories
+under sustained intervention followed by recovery, using two
+representative cases at the extremes of the \(\alpha_{DP}\) range.
 
 Figure~\ref{fig-intervention} summarizes how variation in
-\(\alpha_{DP}\) shapes system-level responses. Panel A shows the mean
-levels of depression (\(D\)) and precariousness (\(P\)) at time steps
-100, 300, and 500, with the x-axis indicating the strength of external
-support, defined as the proportional reduction of \(S\) toward its
-minimum observed value. Each line represents a different scenario with a
-different \(\alpha_{DP}\), color-coded from low (purple) to high
-(yellow).
-
-In the early phase of intervention (\(t = 100\)), depression and
+\(\alpha_{DP}\) shapes system-level responses to external support. In
+Panel A, during the early phase of intervention, depression and
 precariousness exhibit contrasting patterns. Depression declines more
 rapidly in scenarios with lower \(\alpha_{DP}\), where its dynamics are
 driven more directly by the external stressor \(S\). As \(\alpha_{DP}\)
@@ -1248,28 +1201,29 @@ by \(D\), allowing it to adjust more promptly to changes in the
 stressor.
 
 Despite these short-term differences, all scenarios ultimately converge
-to similar steady-state levels under sustained intervention. By time
-step 300, convergence is already substantial---though some variation
-remains, particularly in \(P\), where gradients between models are still
-visible. By step 500, trajectories have nearly fully aligned across all
-configurations, consistent with the shared equilibrium structure of the
-linear system. This convergence highlights that the key distinctions lie
-not in whether intervention is effective, but in how quickly and through
-which pathways change unfolds.
+to similar steady-state levels under sustained intervention. AS the
+systm approaches convergence, some variation remains, particularly in
+\(P\), where gradients between models are still visible. This
+convergence highlights that the key distinctions lie not in whether
+intervention is effective, but in how quickly and through which pathways
+change unfolds.
 
 Panel B shows full time trajectories for two representative cases: one
 with minimal internal feedback (\(\alpha_{DP} = 0\)) and one at the
-upper admissible limit (\(\alpha_{DP} = 0.65\)). In both, intervention
-begins at step 300 and ends at step 1500. When \(\alpha_{DP} = 0\),
-depression responds rapidly to the reduction in stress and rebounds
-shortly after support is withdrawn. In contrast, when \(\alpha_{DP}\) is
-high, \(D\) responds more gradually and recovers more
-slowly---reflecting its increased dependence on the slower-changing
-\(P\). Precariousness declines in both scenarios during intervention and
-returns to baseline afterward, but with a slightly sharper drop in the
-higher \(\alpha_{DP}\) condition. This occurs because \(P\) becomes more
-directly responsive to \(S\), as \(\alpha_{PS}\) increases with
-\(\alpha_{DP}\).
+upper admissible limit (\(\alpha_{DP} = 0.65\)). In both, there is a
+temporary intervention period. When \(\alpha_{DP} = 0\), depression
+responds rapidly to the reduction in stress and rebounds shortly after
+support is withdrawn. In contrast, when \(\alpha_{DP}\) is high, \(D\)
+responds more gradually and recovers more slowly---reflecting its
+increased dependence on the slower-changing \(P\). Precariousness
+declines in both scenarios during intervention and returns to baseline
+afterward, but with a slightly sharper drop in the higher
+\(\alpha_{DP}\) condition. This occurs because \(P\) becomes more
+directly responsive to \(S\), as consistency with the data requires
+\(\alpha_{PS}\) to increase with \(\alpha_{DP}\) (see
+Figure~\ref{fig-tradeoff}). These parameter shifts reflect trade-offs
+needed to preserve the empirical covariances, with further details
+provided in Appendix Section~\ref{sec-analcalibration}.
 
 These asymmetries further highlight how internal structure---not just
 external inputs---shapes the system's trajectory. Specifically, changes
@@ -1288,16 +1242,21 @@ long-run outcomes remain unchanged.
 \caption{\label{fig-intervention}System response to external
 intervention across variations in internal structure.
 \emph{\textbf{Panel A}: Mean levels of depression (\(D\)) and
-precariousness (\(P\)) at time steps 100, 300, and 500, across different
-values of \(\alpha_{DP}\) and intervention strengths. Models with lower
-\(\alpha_{DP}\) show faster early reductions in \(D\), while higher
-\(\alpha_{DP}\) leads to more immediate declines in \(P\). \textbf{Panel
-B}: Full time trajectories for two models---one with no coupling
-(\(\alpha_{DP} = 0\)) and one with strong coupling
-(\(\alpha_{DP} = 0.65\))---illustrating system response and recovery
-following intervention onset (step 300) and withdrawal (step 1500).
-Depression responds more gradually and persistently in the high
-\(\alpha_{DP}\) model, whereas precariousness adjusts more quickly.}}
+precariousness (\(P\)) at time steps 100, 300, and 500, across varying
+values of \(\alpha_{DP}\) and intervention strengths. The x-axis
+represents the strength of external support, operationalized as the
+proportional reduction of financial stress (\(S\)) toward its minimum
+observed value. Each line corresponds to a different model defined by a
+specific \(\alpha_{DP}\) value, color-coded from low (purple) to high
+(yellow). Models with lower \(\alpha_{DP}\) exhibit faster early
+reductions in \(D\), while higher \(\alpha_{DP}\) leads to more
+immediate declines in \(P\). \textbf{Panel B}: Full time trajectories
+for two models---one with no coupling (\(\alpha_{DP} = 0\)) and one with
+strong coupling (\(\alpha_{DP} = 0.65\))---illustrating system response
+and recovery following intervention onset (step 300) and withdrawal
+(step 1500). Depression responds more gradually and persistently in the
+high \(\alpha_{DP}\) model, whereas precariousness adjusts more
+quickly.}}
 
 \end{figure}%
 
@@ -1305,143 +1264,145 @@ Depression responds more gradually and persistently in the high
 
 This study combined constraint-based causal discovery and dynamical
 modeling to investigate how depression and socioeconomic precariousness
-interact---and how their internal structure modulates responsiveness to
-intervention. Using cross-sectional data from the HELIUS study, we
-applied cycle-capable discovery algorithms to estimate plausible
-directional relationships among multiple domains of precariousness
-factors and depressive symptoms. By analyzing both aggregate constructs
-and individual variables, we aimed to capture patterns that may be
-masked in either extreme of abstraction (i.e., purely aggregate or
-disaggregated analyses).
+interact and how their internal structure modulates responsiveness to
+intervention. Consistent with prior work linking financial strain to
+psychological distress (Ezzy, 1993; Lund et al., 2010), our causal
+analysis identified financial stress as a key upstream driver of
+depression---emerging across both aggregated and disaggregated models.
+This provides empirical support for longstanding hypotheses that
+economic stressors can act as modifiable entry points into broader
+cycles of psychosocial risk.
 
-The causal analysis consistently identified financial stress as a key
-plausible driver of depression, appearing across both aggregated and
-disaggregated models. At the symptom level, several nodes---sleep
-disturbance, depressed mood, guilt, and anhedonia---emerged as
-especially sensitive to external influences. Among these, depressed mood
-played a particularly central role: it was influenced by other symptoms
-and, in turn, showed directional influence on social precariousness,
-suggesting a feedback mechanism wherein worsening mood fosters social
-withdrawal, which may subsequently exacerbate depressive symptoms. The
-CCI algorithm further suggested a potential cyclic link between
-depressed mood and overall precariousness, hinting that symptom and
-precariousness factors may co-evolve in mutually reinforcing ways.
-Symptom sleep disturbance also played a key initiating role. It showed
-directed connections to both social and employment precariousness and
-exhibited many outgoing edges within the symptom network. This suggests
-the symptom sleep disturbance may function as an early warning signal or
-entry point into the depression--precariousness cycle, making it a
-promising target for preventive intervention. In contrast, social
-precariousness more often appeared as an effect rather than a
-cause---receiving arrows from symptoms like depressed mood and guilt,
-but rarely sending them. This asymmetry implies that social
-precariousness may often reflect downstream consequences of worsening
-mental health rather than being its root cause (Compton \& Shim, 2015;
-Lund et al., 2010). While such relationships are complex and likely
-reciprocal over time, the directional patterns observed provide a useful
-foundation for hypothesis generation and targeted intervention.
+At the symptom level, our analysis aligns with established theories of
+psychopathology but offers a more fine-grained map of potential causal
+relationships, generating concrete, testable hypotheses. It also points
+to possible limitations of prevailing models, as some observed
+symptom--symptom links may be shaped by shared confounders rather than
+direct causal influence. This suggests that, in some contexts, broader
+mechanisms or clusters of symptoms may provide more effective units of
+analysis and intervention than individual symptoms alone. Within this
+framework, sleep disturbance emerged as a potentially initiating
+symptom, with directed connections to both symptom-level and
+precariousness variables---mirroring longitudinal findings that identify
+sleep disruption as an early warning signal for depressive episodes and
+social withdrawal (Alvaro et al., 2013; Zawadzki et al., 2013).
+Depressed mood, another core symptom, occupied a central position in the
+network. Not only was it influenced by upstream symptoms like anhedonia
+and guilt, but it also showed directional influence on social
+precariousness---suggesting that internal psychological states may
+actively shape external vulnerability. The CCI algorithm further
+identified a potential feedback loop between depressed mood and overall
+precariousness, resonating with social drift theories in depression,
+which posit that declining mental health can lead to social exclusion,
+job instability, and housing insecurity, reinforcing depressive cycles
+(Boschloo et al., 2015; Compton \& Shim, 2015).
 
-Taken together, these patterns offer actionable insights for
-intervention. Symptoms such as sleep disturbance, which show early and
-wide-reaching influence within the symptom network, may serve as
-effective targets for prevention---limiting escalation into broader
-depressive states or worsening precariousness. Similarly, depressed
-mood, which functions as a central hub influencing both symptom and
-precariousness variables, may offer a leverage point for disrupting
-reinforcing cycles of mental health decline and social isolation. At the
-same time, the broader causal structure points to interconnected
-feedback loops that span both psychological symptoms and external
-conditions such as financial and social precariousness---factors that
-often reflect the influence of structural inequalities (e.g., income
-instability, housing insecurity, or social marginalization). These
-complex dynamics suggest that single-point interventions may be
-insufficient to produce lasting change. Supporting this, recent
-simulation work by Park, Li, et al. (2025) demonstrates that feedback
-loops---even when modest in strength---can substantially reduce the
-long-term impact of isolated interventions, as system dynamics tend to
-re-amplify vulnerability through alternate pathways. In line with
-emerging perspectives in systems-oriented mental health research
-(Borsboom, 2017), our findings underscore the need for multi-pronged
-strategies that address not only internal symptom dynamics but also the
-broader socioeconomic conditions that sustain vulnerability. Intervening
-simultaneously at multiple points of reinforcement may be essential to
-shift the system out of a maladaptive attractor and toward more stable
-trajectories of well-being.
+In contrast, social precariousness itself appeared more often as an
+effect than a cause, receiving arrows from symptoms like depressed mood
+and guilt but rarely sending them. This asymmetry supports prior
+observations that indicators of social vulnerability often reflect
+downstream consequences of poor mental health, though the relationships
+are likely bidirectional over time (Lund et al., 2010). These patterns,
+while derived from Amsterdam-specific data, align with mental health
+research in other high-income city settings, where structural
+inequalities such as poverty, unemployment, and housing insecurity are
+persistent drivers of poor psychological outcomes (Fryers et al., 2003;
+Weich \& Lewis, 1998). Although the specific dynamics may vary by
+context, the parallels with broader literature suggest that similar
+mechanisms could operate in comparable settings. Nonetheless,
+replication in other populations will be important for assessing
+robustness and external validity.
 
-To explore how internal structure shapes response to external support,
-we developed a linear stochastic model of depression and precariousness,
-influenced by financial stress. Crucially, we analytically calibrated
-this model to match empirical covariances from the HELIUS data, ensuring
-that all parameter sets were observationally equivalent but differed in
-their internal configuration. We treated the parameter
-\(\alpha_{DP}\)---the effect of precariousness on depression---as a free
-variable and derived all other parameters accordingly, yielding a family
-of valid models consistent with the data. Simulation results showed that
-even with identical steady-state covariances, differences in internal
-structure produced systematic variation in the timing and profile of
-system responses to intervention. When the effect of precariousness on
-depression was weaker, depression responded more rapidly to reductions
-in financial stress, reflecting a direct coupling to the external input.
-In contrast, as the effect of precariousness on depression increased and
-depression became more indirectly influenced---mediated by the
-slower-changing precariousness variable---its response was more gradual
-and persistent. Precariousness, while generally more directly responsive
-across all models, also showed subtle differences, with slightly faster
-early declines in configurations where it was more sensitive to external
-stress. These results highlight that intervention effectiveness is
-shaped not just by external input (e.g., stress reduction) but also by
-internal system architecture---how tightly different elements are
-coupled and through what paths change propagates. One-size-fits-all
-approaches may therefore fall short. From a policy or clinical
-perspective, more tailored interventions---targeting early-acting
-symptoms in some cases, or sustaining support over time in others---may
-be needed to achieve durable change, particularly in populations facing
-layered psychosocial vulnerabilities.
+Taken together, these findings yield actionable insights for mental
+health intervention. Symptoms like sleep disturbance, which demonstrate
+early and broad influence across both symptom and precariousness
+networks, may serve as effective targets for prevention---potentially
+halting the progression into more entrenched depressive states or
+worsening precariousness. Similarly, intervening on central nodes like
+depressed mood may offer strategic leverage for breaking mutually
+reinforcing cycles of mental decline and social isolation. Importantly,
+interventions targeting such nodes may have ripple effects across
+domains. For instance, evidence suggests that treating core depressive
+symptoms can improve social functioning, employment engagement, and
+housing stability---particularly when combined with social or financial
+supports (Lund et al., 2018; McDaid et al., 2019). These dual benefits
+underscore the value of integrated, cross-domain strategies that
+simultaneously address internal symptoms and external stressors.
 
-That said, our study has several limitations. While the FCI and CCI
-algorithms are designed to recover causal structure from cross-sectional
-data---including feedback and latent confounding---many edge directions
-in our results remain ambiguous, as indicated by the prevalence of
-circle endpoints and bidirectional arrows, especially in weakly
-connected regions of the graph. These uncertainties were most evident in
-the links between individual symptoms and precariousness factors, where
-edge estimates varied across algorithms and CI tests. This likely
-reflects limited statistical signal in high-dimensional settings, where
-large conditioning sets reduce power and small effect sizes are harder
-to detect. Although the CCI algorithm is explicitly designed to detect
-cycles, we found little clear evidence of feedback: most candidate loops
-appeared only as bidirectional edges, which may reflect latent
-confounding or statistical imprecision rather than true cyclic
-structure. This could point to either an absence of strong feedback at
-the symptom level or limitations in the sensitivity of full-graph
-discovery approaches applied to densely interconnected variables. More
-focused strategies, such as local structure tests or theory-guided
-subgraph modeling, may help resolve these ambiguities. In addition,
-while our analyses relied solely on observational data, some structural
-uncertainties---particularly those involving latent confounding or
-bidirectional influence---may ultimately require interventional or
-semi-interventional designs. Extensions such as LLC (Hyttinen et al.,
-2012), NODAGS-Flow (Sethuraman et al., 2023), or Bicycle (Rohbeck et
-al., 2024), which integrate observational and interventional data, may
-prove valuable where such data are available.
+From a systems perspective, our results also highlight why single-point
+interventions may fail to produce lasting change. The broader causal
+structure reveals multiple interlocking feedback loops spanning both
+psychological symptoms and structural risk factors, which may re-amplify
+vulnerability even after temporary relief. Supporting this, recent
+simulation work by Park, Li, et al. (2025) shows that feedback loops,
+even when modest in strength, can substantially diminish the long-term
+impact of isolated interventions unless multiple reinforcing links are
+simultaneously disrupted. Our own simulations support this view: while
+all models converged to similar long-term outcomes under sustained
+support, differences in internal structure---specifically, the strength
+of the link from precariousness to depression---produced systematic
+variation in how quickly and through which pathways systems responded to
+intervention. Models with stronger internal coupling exhibited slower
+recovery dynamics and greater persistence of depression following stress
+reduction, suggesting that internal system architecture, not just
+external input, shapes the effectiveness of support. This supports
+growing calls for system-aware intervention design (Borsboom, 2017).
+Rather than assuming uniform responses, more durable outcomes may
+require (1) targeting early-acting symptoms, (2) sustaining support
+where recovery is slow, and (3) combining structural and psychological
+interventions. Tailoring strategies to match the system's architecture
+can improve effectiveness, particularly in populations with layered
+vulnerabilities. In this light, understanding causal architecture is not
+merely theoretical---it is foundational to designing more effective and
+equitable interventions. By identifying key modifiable drivers like
+financial stress and influential symptoms like sleep disturbance, and by
+modeling how system dynamics unfold under intervention, our study offers
+a flexible framework for improving mental health outcomes in complex
+social environments.
 
-Second, our findings showed sensitivity to the choice of CI test. The
-Gaussian CI test, which assumes linear relationships and Gaussian noise,
-often produced denser graphs---likely due to its tendency to
-overestimate weak or noisy linear associations. In contrast, RCoT, a
-nonparametric alternative, avoids these assumptions but relies on a
-Gaussian radial basis function (RBF) kernel to assess dependence. While
-flexible in capturing nonlinear relationships, this kernel is optimized
-for smooth, continuous variables and may underperform with discrete or
-ordinal data. Its similarity estimates can be unreliable when applied to
-variables with discontinuities, potentially leading to missed
-dependencies---particularly relevant in the HELIUS dataset, where some
-variables are ordinal or mixed-type (Howlett, 2001). To address this,
-future work should consider adapting kernel-based CI tests to better
-handle mixed data structures---for example, by employing hybrid kernels
-that explicitly combine continuous and discrete similarity measures.
-This could improve the reliability of nonparametric causal discovery in
+While the FCI and CCI algorithms are designed to recover causal
+structure from cross-sectional data---including feedback and latent
+confounding---many edge directions in our results remain ambiguous,
+particularly in links between individual symptoms and precariousness
+factors. These inconsistencies likely reflect limited statistical signal
+in high-dimensional settings, where large conditioning sets reduce power
+and small effect sizes are harder to detect. Moreover, our findings
+showed sensitivity to the choice of conditional independence (CI) test.
+The Gaussian CI test, which assumes linearity and Gaussian noise, often
+produced denser graphs, likely due to overestimating weak or noisy
+linear associations. In contrast, RCoT, a nonparametric alternative,
+avoids these assumptions but relies on a Gaussian radial basis function
+(RBF) kernel to assess dependence. While flexible in capturing nonlinear
+relationships, this kernel is optimized for smooth, continuous variables
+and may underperform with discrete or ordinal data. Its similarity
+estimates can be unreliable when applied to variables with
+discontinuities, potentially leading to missed dependencies. This is
+particularly relevant in the HELIUS dataset, where some variables are
+ordinal or mixed-type (Howlett, 2001). To address this, future work
+should consider adapting kernel-based CI tests to better handle mixed
+data structures---for example, by employing hybrid kernels that
+explicitly combine continuous and discrete similarity measures. This
+could improve the reliability of nonparametric causal discovery in
 settings with heterogeneous variable types.
+
+Although the CCI algorithm is explicitly designed to detect cycles,
+aside from the connection between precarity and depression in the
+aggregate precarity setting, we found little clear evidence of feedback:
+most candidate loops appeared only as bidirectional edges, which may
+reflect latent confounding or statistical imprecision. This could point
+to either an absence of strong feedback at the symptom and the
+precariousness factor levels or limitations in the sensitivity of
+full-graph discovery approaches applied to densely interconnected
+variables. More focused strategies, such as local structure tests or
+theory-guided subgraph modeling, may help resolve these ambiguities.
+Moreover, our analyses relied solely on observational data from the
+Amsterdam population. Some structural uncertainties, particularly those
+involving latent confounding or bidirectional influence, may ultimately
+require interventional or semi-interventional designs. Extensions such
+as LLC (Hyttinen et al., 2012), NODAGS-Flow (Sethuraman et al., 2023),
+or Bicycle (Rohbeck et al., 2024), which integrate observational and
+interventional data, could be especially valuable where such data are
+available.
 
 Finally, the structure of our dynamical model introduces important
 limitations. The model focused on a restricted set of variables
@@ -1471,48 +1432,46 @@ meaningful change becomes possible---clarifying whether some subgroups
 require forceful, threshold-crossing interventions, while others may
 benefit from sustained, moderate support.
 
-Our findings demonstrate that intervention effectiveness depends not
-only on external stressors but also on the internal structure of the
-system. While all models converge to the same long-term outcome,
-internal coupling shapes how quickly and through which pathways change
-unfolds. This highlights the importance of designing interventions that
-are sensitive to the system's internal architecture, particularly when
-timely or rapid impact is a key concern.
-
 As public health research has long shown, social and psychological
 systems do not always respond passively to external inputs; internal
 constraints can limit the impact of even well-intentioned policies
 (Savigny \& Adam, 2009; Wagenaar \& Burris, 2013). By using causal
 discovery and computational modeling, researchers and policymakers can
 better identify these structural constraints and tailor interventions
-accordingly.
-
-More broadly, this study offers a generalizable framework for
-investigating complex mental health dynamics. Causal discovery supports
-principled hypothesis generation from observational data, while
+accordingly. More broadly, this study offers a generalizable framework
+for investigating complex mental health dynamics. Causal discovery
+supports principled hypothesis generation from observational data, while
 dynamical modeling enables exploration of how hypothesized structures
 behave under external change. Together, these tools move us beyond
 static descriptions toward mechanistic insight with direct relevance for
-real-world mental health policy and intervention design.
-
-Future research should build on this foundation by developing richer,
-more nuanced dynamical models grounded in longitudinal and
-interventional data. Incorporating time, multiple domains of precarity,
-and adaptive feedback processes would help assess whether the mechanisms
-proposed here---such as delayed response, saturation, or
-multi-stability---manifest in actual mental health trajectories.
-Ultimately, we hope this study encourages further integration of causal
-structure learning and systems modeling in efforts to understand and
-improve mental health outcomes under conditions of socioeconomic
-precariousness.
+real-world mental health policy and intervention design. Future research
+should build on this foundation by developing richer, more nuanced
+dynamical models grounded in longitudinal and interventional data.
+Incorporating time, multiple domains of precarity, and adaptive feedback
+processes would help assess whether the mechanisms proposed manifest in
+actual mental health trajectories. Ultimately, we hope this study
+encourages further integration of causal structure learning and systems
+modeling in efforts to understand and improve mental health outcomes
+under conditions of socioeconomic precariousness.
 
 \section{References}\label{references}
 
 \phantomsection\label{refs}
 \begin{CSLReferences}{1}{0}
+\bibitem[\citeproctext]{ref-alvaro2013systematic}
+Alvaro, P. K., Roberts, R. M., \& Harris, J. K. (2013). A systematic
+review assessing bidirectionality between sleep disturbances, anxiety,
+and depression. \emph{Sleep}, \emph{36}(7), 1059--1068.
+
 \bibitem[\citeproctext]{ref-borsboom2017network}
 Borsboom, D. (2017). A network theory of mental disorders. \emph{World
 Psychiatry}, \emph{16}(1), 5--13.
+
+\bibitem[\citeproctext]{ref-boschloo2015network}
+Boschloo, L., Van Borkulo, C. D., Rhemtulla, M., Keyes, K. M., Borsboom,
+D., \& Schoevers, R. A. (2015). The network structure of symptoms of the
+diagnostic and statistical manual of mental disorders. \emph{PloS One},
+\emph{10}(9), e0137621.
 
 \bibitem[\citeproctext]{ref-butterworth2012role}
 Butterworth, P., Olesen, S. C., \& Leach, L. S. (2012). The role of
@@ -1550,6 +1509,17 @@ precariousness in the HELIUS study. \emph{Social Science \& Medicine},
 Entner, D., \& Hoyer, P. O. (2010). On causal discovery from time series
 data using FCI. \emph{Probabilistic Graphical Models}, \emph{16}.
 
+\bibitem[\citeproctext]{ref-epskamp2018personalized}
+Epskamp, S., Borkulo, C. D. van, Veen, D. C. van der, Servaas, M. N.,
+Isvoranu, A.-M., Riese, H., \& Cramer, A. O. (2018). Personalized
+network modeling in psychopathology: The importance of contemporaneous
+and temporal connections. \emph{Clinical Psychological Science},
+\emph{6}(3), 416--427.
+
+\bibitem[\citeproctext]{ref-ezzy1993unemployment}
+Ezzy, D. (1993). Unemployment and mental health: A critical review.
+\emph{Social Science \& Medicine}, \emph{37}(1), 41--52.
+
 \bibitem[\citeproctext]{ref-fone2014effect}
 Fone, D., White, J., Farewell, D., Kelly, M., John, G., Lloyd, K.,
 Williams, G., \& Dunstan, F. (2014). Effect of neighbourhood deprivation
@@ -1566,6 +1536,12 @@ non-linear structural causal models with cycles and latent confounders.
 Franz, R., \& Nakamura, R. (2015). \emph{nsga2R: Elitist non-dominated
 sorting genetic algorithm for multi-objective optimization}.
 \url{https://CRAN.R-project.org/package=nsga2R}
+
+\bibitem[\citeproctext]{ref-fryers2003social}
+Fryers, T., Melzer, D., \& Jenkins, R. (2003). Social inequalities and
+the common mental disorders: A systematic review of the evidence.
+\emph{Social Psychiatry and Psychiatric Epidemiology}, \emph{38}(5),
+229--237.
 
 \bibitem[\citeproctext]{ref-galenkamp2017measurement}
 Galenkamp, H., Stronks, K., Snijder, M. B., \& Derks, E. M. (2017).
@@ -1615,6 +1591,18 @@ Lund, C., Breen, A., Flisher, A. J., Kakuma, R., Corrigall, J., Joska,
 J. A., Swartz, L., \& Patel, V. (2010). Poverty and common mental
 disorders in low and middle income countries: A systematic review.
 \emph{Social Science \& Medicine}, \emph{71}(3), 517--528.
+
+\bibitem[\citeproctext]{ref-lund2018social}
+Lund, C., Brooke-Sumner, C., Baingana, F., Baron, E. C., Breuer, E.,
+Chandra, P., Haushofer, J., Herrman, H., Jordans, M., Kieling, C., et
+al. (2018). Social determinants of mental disorders and the sustainable
+development goals: A systematic review of reviews. \emph{The Lancet
+Psychiatry}, \emph{5}(4), 357--369.
+
+\bibitem[\citeproctext]{ref-mcdaid2019economic}
+McDaid, D., Park, A.-L., \& Wahlbeck, K. (2019). The economic case for
+the prevention of mental illness. \emph{Annual Review of Public Health},
+\emph{40}(1), 373--389.
 
 \bibitem[\citeproctext]{ref-mckee2017living}
 McKee, M., Reeves, A., Clair, A., \& Stuckler, D. (2017). Living on the
@@ -1749,6 +1737,11 @@ From complexity science to actionable targets for intervention.
 Wagenaar, A. C., \& Burris, S. (2013). \emph{Public health law research:
 Theory and methods}. John Wiley \& Sons.
 
+\bibitem[\citeproctext]{ref-weich1998poverty}
+Weich, S., \& Lewis, G. (1998). Poverty, unemployment, and common mental
+disorders: Population based cohort study. \emph{Bmj}, \emph{317}(7151),
+115--119.
+
 \bibitem[\citeproctext]{ref-wichers2016critical}
 Wichers, M., Groot, P. C., Psychosystems, E., Group, E., et al. (2016).
 Critical slowing down as a personalized early warning signal for
@@ -1759,6 +1752,12 @@ depression. \emph{Psychotherapy and Psychosomatics}, \emph{85}(2),
 World Health Organization. (2022). \emph{Mental disorders}. World Health
 Organization.
 \url{https://www.who.int/news-room/fact-sheets/detail/mental-disorders}
+
+\bibitem[\citeproctext]{ref-zawadzki2013rumination}
+Zawadzki, M. J., Graham, J. E., \& Gerin, W. (2013). Rumination and
+anxiety mediate the effect of loneliness on depressed mood and sleep
+quality in college students. \emph{Health Psychology}, \emph{32}(2),
+212.
 
 \bibitem[\citeproctext]{ref-zhang2012kernel}
 Zhang, K., Peters, J., Janzing, D., \& Schölkopf, B. (2012).
