@@ -2,8 +2,10 @@
 title: "From Causal Discovery to Intervention Simulation: Modeling Precariousness and Depression in the HELIUS Study"
 #subtitle: Using the HELIUS dataset
 author: 
-  - name: Kyuri Park
+  - name: Kyuri Park \thanks{To whom correspondence should be addressed. \url{k.park@uva.nl}}
     affil-id: 1
+    corresponding: true
+    corresponding-note: "Corresponding author: kyuri.park@uva.nl"
   - name: Leonie K. Elsenburg
     affil-id: 2
   - name: Mary Nicolao
@@ -27,7 +29,7 @@ format:
   pdf:
     pdf-engine: pdflatex
     fontfamily: palatino
-    toc: true
+    #toc: true
     number-sections: true
     appendix: true
     colorlinks: true
@@ -56,8 +58,6 @@ abstract: |
   \noindent This study investigates how the internal structure of depression–precariousness dynamics shapes responsiveness to external support. Using cross-sectional data from the HELIUS study, we first apply cycle-capable causal discovery algorithms to estimate directional dependencies between financial stress, domain-specific precariousness, and depressive symptoms. Our multi-resolution analysis—spanning both aggregate and symptom-level constructs—highlights financial stress as a plausible upstream driver of depression, with symptoms such as sleep disturbance and depressed mood emerging as initiators of broader social vulnerability.
   To translate these structural insights into dynamic predictions, we construct a family of analytically calibrated linear stochastic models. Simulations reveal that variations in internal structure can substantially alter system responses to financial stress reduction. Some models show rapid but transient improvements in depression, while others adjust more slowly yet sustain gains over time. Precariousness tends to respond more immediately across all configurations, though its trajectory also shifts subtly with structural variation.
   Together, these findings demonstrate that intervention outcomes depend not only on the magnitude of external input but also on latent properties of the system. More broadly, this study illustrates how combining causal discovery with dynamical modeling supports principled, simulation-based exploration of intervention scenarios—grounded in data, yet able to probe counterfactual structure. This approach offers a scalable framework for diagnosing hidden system constraints and informing targeted public health strategies in complex psychosocial domains.
-  
-  <!-- Understanding the causal mechanisms linking precariousness and depression is critical for developing effective interventions. This study utilizes data from the HELIUS cohort study to explore these relationships using advanced causal discovery methods. By applying algorithms such as FCI, and CCI, and combining traditional Gaussian CI tests with non-parametric approaches like RCoT, we investigate how different indicators of precariousness—including factors related to employment, social relations and relational stress, financial situation, and housing—affect depressed mood, both as a sum score and at the individual symptom level. Our findings reveal that relational stress consistently emerges as a potential causal factor for depressed mood, while symptoms such as sleep disturbances, guilt, and anhedonia are particularly sensitive to external stressors, acting as potential early warning signals or intervention points for prevention. Moreover, the results highlight complexities in the data, including the influence of latent confounders and the challenges of capturing cyclic relationships. Despite some limitations, such as unresolved ambiguities in causal directions and challenges with mixed data distributions, this study demonstrates the utility of causal discovery tools in disentangling the intricate interplay between social and mental health dynamics. By mapping these causal structures into computational models, future research can simulate intervention effects, providing actionable insights to mitigate the impact of precariousness on mental health. This study serves as a foundational effort, offering both methodological advancements and practical implications for addressing depression at a population level. -->
 ---
 
 ```{r, include=FALSE}

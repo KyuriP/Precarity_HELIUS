@@ -129,14 +129,14 @@
 \renewcommand*{\Authand}{, }
 \renewcommand*{\Authands}{, }
 \renewcommand\Affilfont{\small}
+
 \usepackage{amssymb}
 \usepackage{booktabs} % Add to your preamble for cleaner table lines
 \usepackage{makecell} % Add to your preamble for multi-line cells
 \usepackage{tikz}
 \usepackage{amsmath}
 \usepackage{geometry}
-
-
+\usepackage{hyperref}
 
 \usetikzlibrary{arrows.meta, shapes.geometric}
 
@@ -284,7 +284,7 @@
 \urlstyle{same} % disable monospaced font for URLs
 \hypersetup{
   pdftitle={From Causal Discovery to Intervention Simulation: Modeling Precariousness and Depression in the HELIUS Study},
-  pdfauthor={Kyuri Park; Leonie K. Elsenburg; Mary Nicolao; Karien Stronks; Vítor V. Vasconcelos},
+  pdfauthor={Kyuri Park ; Leonie K. Elsenburg; Mary Nicolao; Karien Stronks; Vítor V. Vasconcelos},
   colorlinks=true,
   linkcolor={blue},
   filecolor={Maroon},
@@ -297,18 +297,37 @@
 Precariousness and Depression in the HELIUS Study}
 
 
-\author[1]{Kyuri Park}
-\author[2]{Leonie K. Elsenburg}
-\author[2]{Mary Nicolao}
-\author[2]{Karien Stronks}
-\author[1, 3]{Vítor V. Vasconcelos}
+\author[1]{%
+  Kyuri Park
+\thanks{To whom correspondence should be addressed. \url{k.park@uva.nl}}%
+  %
+}
+\author[2]{%
+  Leonie K. Elsenburg%
+  %
+}
+\author[2]{%
+  Mary Nicolao%
+  %
+}
+\author[2]{%
+  Karien Stronks%
+  %
+}
+\author[1, 3]{%
+  Vítor V. Vasconcelos%
+  %
+}
 
 \affil[1]{\textit{Computational Science Lab, Informatics Institute, University of Amsterdam, PO Box 94323, Amsterdam, 1090GH, the Netherlands}}
 \affil[2]{\textit{Department of Public and Occupational Health, Amsterdam Public Health Research Institute, Amsterdam UMC, University of Amsterdam, Amsterdam, the Netherland}}
 \affil[3]{\textit{Institute for Advanced Study, University of Amsterdam, Oude Turfmarkt 147, Amsterdam, 1012GC, the Netherland}}
 
+\date{2025-08-14}
 
-\date{2025-08-12}
+
+
+
 \begin{document}
 \maketitle
 \begin{abstract}
@@ -340,12 +359,6 @@ hidden system constraints and informing targeted public health
 strategies in complex psychosocial domains.
 \end{abstract}
 
-\renewcommand*\contentsname{Table of contents}
-{
-\hypersetup{linkcolor=}
-\setcounter{tocdepth}{3}
-\tableofcontents
-}
 
 \section{Introduction}\label{introduction}
 
