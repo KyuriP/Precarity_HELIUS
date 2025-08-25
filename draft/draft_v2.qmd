@@ -8,7 +8,7 @@ author:
     corresponding-note: "Corresponding author: kyuri.park@uva.nl"
   - name: Leonie K. Elsenburg
     affil-id: 2
-  - name: Mary Nicolao
+  - name: Mary Nicolaou
     affil-id: 2
   - name: Karien Stronks
     affil-id: 2
