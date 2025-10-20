@@ -47,16 +47,49 @@ format:
       appendix-title: "App."
       appendix-delim: ":"
 date: today
-execute:
-  echo: false
-  warning: false
 bibliography: references_draft.bib
 nocite: |
   @*
 csl: apa.csl
+params:
+  masked: true
+execute:
+  echo: false
+  warning: false
 abstract: |
   \noindent Mental health outcomes are shaped not only by individual vulnerabilities but also by structural conditions such as financial strain and precarious living circumstances. Understanding how these factors interact is essential for designing effective interventions. Previous research has established associations between socioeconomic stressors and depression, but the causal pathways and feedback loops that sustain vulnerability remain unclear. Here we investigate how the internal structure linking precariousness and depression shapes responsiveness to external support. Using cross-sectional data from more than 21,000 participants in the HELIUS study, we applied cycle-capable causal discovery to infer directional dependencies among financial stress, domain-specific precariousness, and depressive symptoms. Our analysis identifies financial stress as a likely upstream driver of depression, with symptoms such as sleep disturbance and depressed mood initiating broader social vulnerability. Embedding these insights in a calibrated dynamical model, we show that system responses to stress reduction depend on internal feedback strength: some configurations yield rapid but short-lived improvements, whereas others produce slower yet more persistent gains. These findings demonstrate that intervention outcomes are shaped not only by external support but also by the system’s internal feedback architecture. More broadly, this work illustrates how combining causal discovery with dynamical modelling can guide targeted strategies to improve mental health under socioeconomic stress.
 ---
+
+## Author Note{.unnumbered}
+Correspondence concerning this article should be addressed to *Kyuri Park*, Computational
+Science Lab, Informatics Institute, University of Amsterdam, PO Box 94323, Amsterdam, 1090
+GH, the Netherlands. E-mail: k.park@uva.nl.  
+
+This work was supported by ZonMW under the project “*How can we best act upon
+contextual factors that influence mental health in lower socio-economic groups? Insights offered
+by system dynamics methodologies*” (dossier number: 05550032110014). *KP* and *VVV*
+acknowledge this funding support.
+
+**Acknowledgments.**  
+The HELIUS study is conducted by the Amsterdam University Medical Centers, location AMC and the Public Health Service of Amsterdam. Both organisations provided core support for HELIUS. The HELIUS study is also funded by the Dutch Heart Foundation, the Netherlands Organization for Health Research and Development (ZonMw), the European Union (FP-7), and the European Fund for the Integration of non-EU immigrants (EIF). We are most grateful to the participants of the HELIUS study and the management team, research nurses, interviewers, research assistants and other staff who have taken part in gathering the data of this study.
+
+**Author contributions (CRediT).**  
+- Kyuri Park: Conceptualization, Methodology, Formal analysis, Writing – Original Draft.  
+- Leonie K. Elsenburg: Data curation, Writing – Review & Editing.  
+- Mary Nicolaou: Data curation, Writing – Review & Editing.  
+- Karien Stronks: Data curation, Funding acquisition, Writing – Review & Editing.  
+- Vítor V. Vasconcelos: Conceptualization, Methodology, Visualization, Supervision, Writing – Review & Editing.
+
+**Conflicts of interest.**
+The authors declare no conflicts of interest.
+
+**Transparency and openness.**
+The HELIUS dataset is available upon request from the Amsterdam UMC data access committee (see https://www.heliusstudy.nl).
+The analysis code for the causal discovery and dynamical simulation models is publicly available at an open repository.  
+
+*This study was not preregistered.*
+
+\newpage
 
 ```{r, include=FALSE}
 library(haven)
@@ -282,63 +315,6 @@ To support transparency, each final graph is accompanied by a matrix summarizing
 
 
 
-<!-- To ensure robust estimation and guard against sensitivity to parameter settings, we implemented a systematic grid of analysis conditions: -->
-
-<!-- * Significance levels: $\alpha$ = 0.01 and 0.05 -->
-<!-- * Bootstrap thresholds: 0.5, 0.6, 0.7, 0.8 -->
-<!-- * CI tests: Gaussian and RCoT -->
-<!-- * Algorithms: FCI, CCI, and PC -->
-
-<!-- Each combination was bootstrapped 100 times for sum-score level analyses and 30 times for symptom-level analyses, yielding a total of 1,600 graphs per algorithm for the full analysis. For symptom networks, we fixed the skeleton structure using a consensus graph estimated across PC, FCI, and CCI ($\alpha$ = 0.01, RCoT). This constraint improves computational efficiency without limiting the estimation of directional edges between symptoms and precariousness variables. -->
-
-<!-- To summarize the results, we adopted a two-level aggregation strategy. First, within each analysis condition, we recorded the most frequently observed edge-endpoint type (e.g., directed, undirected, uncertain) from the bootstraps. Then, across all conditions, we tallied the most frequent endpoint type per edge. In cases of ties, we assigned dashed edges to reflect uncertainty. For transparency, we accompany each graph with a table showing the relative frequencies of each edge symbol. -->
-
-<!-- This procedure yields a final graph for each algorithm and analysis type—offering both robustness and interpretability. See @fig-workflow for an overview of the causal discovery pipeline. -->
-<!-- For detailed explanations of the algorithms, edge interpretations, and graph types (e.g., PAG, MAAG, CPDAG), as well as algorithmic assumptions and limitations, see the [Appendix](#sec-appendix). -->
-
-
-
-
-
-<!-- To uncover directional relationships between precariousness and depression, we used constraint-based causal discovery algorithms capable of detecting feedback loops and latent confounding. Specifically, we applied the *Fast Causal Inference* (FCI) and *Cyclic Causal Inference* (CCI) algorithms, both of which support cyclic and non-acyclic structures [@mooij2020constraint; @strobl2019]. Additionally, we include the *PC* algorithm as a reference, given its simplicity and prominence as one of the most widely known causal discovery methods [@spirtes2001causation]. -->
-
-<!-- One practical challenge in applying these algorithms to the HELIUS dataset is that most variables do not follow a Gaussian distribution, and the relationships among variables are unlikely to be strictly linear. To address this, we supplement the commonly used Gaussian conditional independence (CI) test, which relies on partial correlations, with a non-parametric CI test based on reproducing kernel methods [@zhang2012kernel]. -->
-<!-- While kernel-based conditional independence tests (KCIT) are theoretically effective in capturing non-linear dependencies and subtle interactions in data with non-Gaussian noise, they are computationally demanding for large datasets like HELIUS. Their quadratic scaling with sample size is primarily due to the need to invert large kernel matrices, making them impractical for large-scale analysis [@rahimi2007random]. -->
-<!-- To mitigate this issue, we use the Randomized Conditional Correlation Test (RCoT), which approximates kernel methods using random Fourier features. This approach reduces computational complexity from quadratic to linear scaling with sample size, significantly lowering computational costs while maintaining robustness [@strobl2019approximate]. For a more detailed explanation of RCoT, refer to @sec-rcot. -->
-
-<!-- We analyze the causal structure using three complementary approaches: (1) Examining the relationship between the five individual precariousness factors and the PHQ sum score, which represents overall depression severity. -->
-<!-- (2) Investigating the relationship between individual depressive symptoms and individual precariousness factors. (3) Assessing the relationship between individual depressive symptoms and overall precariousness (the sum of all precariousness factors). -->
-<!-- Using the PHQ sum score as a measure of depression simplifies the analysis by reducing dimensionality, improving computational efficiency, and providing a broad, interpretable perspective on how precariousness factors relate to overall depression severity. However, this aggregated approach may overlook granular symptom-level relationships. -->
-
-<!-- By zooming in on individual symptoms, we capture a more detailed picture of how specific depressive symptoms interact with different precariousness factors. This approach allows us to map individual causal pathways, identifying which symptoms are particularly sensitive to certain precarious conditions and vice versa. However, this level of detail introduces methodological challenges, including non-standard distributions of symptom variables and the high-dimensional nature of the analysis, which can reduce statistical power and significantly increase computational demands—especially when using non-parametric conditional independence (CI) tests. -->
-
-<!-- Finally, analyzing individual symptoms in relation to overall precariousness provides an integrative perspective, revealing how depression symptoms collectively relate to precarious conditions. This approach complements the fully disaggregated analysis by aggregating precariousness factors, potentially uncovering relationships that may be too weak to detect when examined separately. This is particularly relevant when a symptom is associated with multiple precariousness factors, but these associations are not strong enough to emerge in an individual-level analysis. -->
-<!-- By integrating these three approaches — ranging from partially aggregated to fully disaggregated — we aim to achieve a balance between capturing detailed granularity and gaining a broader understanding of the relationship between precariousness and depression.  -->
-
-
-<!-- Furthermore, to address sensitivity to parameter values and enhance the robustness of our results, we implement multiple settings combined with bootstrapping. For each condition, we generate 100 bootstrap samples, estimate causal graphs, and retain only the edge-endpoints that exceed predefined thresholds. If no edge-endpoint type surpasses the threshold, we assign a circle ($\circ$) to indicate uncertainty in the edge direction. -->
-
-<!-- The analyses are conducted under the following conditions: -->
-
-<!-- -   Significance levels ($\alpha$): 0.01 and 0.05 -->
-<!-- -   Thresholds: 0.5, 0.6, 0.7, and 0.8 -->
-<!-- -   CI test: Gaussian CI test, RCoT -->
-<!-- -   Algorithms: FCI, CCI, and PC -->
-
-<!-- This setup yields 16 combinations (2 significance levels × 4 thresholds × 2 CI tests), applied across three algorithms. Each combination is repeated for 100 bootstrap samples, yielding a total of 1,600 graphs per algorithm.  -->
-<!-- For analyses involving individual symptom variables, we simplify the setup by focusing on thresholds of 0.6 and 0.7 and reducing the number of bootstrap samples to 30, easing computational demands. -->
-<!-- To further enhance efficiency, we fix the skeleton of the symptom network using a common structure derived from PC, FCI, and CCI algorithms ($\alpha$ = 0.01, RCoT CI test). This step constrains which edges can be present among symptoms but does not restrict the estimation of causal directions within the symptom network. Additionally, the entire causal structure between symptoms and precariousness factors remains fully estimable, ensuring that key relationships are still inferred. -->
-<!-- Beyond its computational benefits — particularly in reducing the time required for skeleton estimation — this fixed structure also aligns well with commonly reported symptom network structures in the literature [@park2025individual], ensuring consistency with existing findings. -->
-
-<!-- To obtain a final, stable summary of causal relationships, we identify the most frequently occurring edge-endpoints across different experimental setups. First, within each condition, we determine the most frequent edge-endpoint from all bootstrap samples. Then, across different conditions, we aggregate these selected symbols and determine the overall most common edge-endpoint for each graph entry. -->
-
-<!-- Since we have an even number of experimental setups, ties may occasionally occur. In such cases, we explicitly denote them in the resulting graph using dashed lines. To further help with the interpretation and understanding of the resulting graph, we provide a corresponding table for each graph, showing the proportion of each edge-endpoint type to clarify how dominant a given symbol is in each case. -->
-
-<!-- By double summarizing the results in this way, we generate one final graph per algorithm for each analysis approach: the partially aggregated analysis, which uses either the sum of precariousness factors or the sum of depression factors to capture overall trends, and the fully disaggregated analysis, which examines individual precariousness and depression factors separately. -->
-<!-- This approach ensures that only stable and consistent edges — those that persist across different parameter settings — are retained, leading to a robust and reliable understanding of the relationships between precariousness factors and depression. See @fig-workflow for an overview of the analysis workflow. -->
-
-
-
 
 
 
@@ -431,6 +407,13 @@ We assess the system’s behavior using two complementary approaches:
 
 Together, these simulations demonstrate how internal structure governs not just whether change occurs, but how it unfolds — shaping the pace, persistence, and variability of response to external support.
 
+
+
+## Data Availibility {.unnumbered}
+The data used in this study come from the HELIUS (HEalthy LIfe in an Urban Setting) cohort. Due to privacy and ethical restrictions, the raw HELIUS data are not publicly available. Researchers who wish to access the data can submit a request to the HELIUS study team via the study website (<https://heliusstudy.nl>), following the governance procedures of the HELIUS Executive Board.
+
+## Code Availibility {.unnumbered}
+All analysis scripts used for causal discovery, model calibration, and simulation are available at <https://github.com/KyuriP/Precarity_HELIUS>. The repository contains documented R code and instructions for reproducing the analyses reported in this manuscript.
 
 
 
@@ -656,6 +639,11 @@ Incorporating such features would allow models to capture not just average effec
 As public health research has long shown, social and psychological systems do not always respond passively to external inputs; internal constraints can limit the impact of even well-intentioned policies [@wagenaar2013public; @desavigny2009systems]. By using causal discovery and computational modeling, researchers and policymakers can better identify these structural constraints and tailor interventions accordingly.
 More broadly, this study offers a generalizable framework for investigating complex mental health dynamics. Causal discovery supports principled hypothesis generation from observational data, while dynamical modeling enables exploration of how hypothesized structures behave under external change. Together, these tools move us beyond static descriptions toward mechanistic insight with direct relevance for real-world mental health policy and intervention design.
 Future research should build on this foundation by developing richer, more nuanced dynamical models grounded in longitudinal and interventional data. Incorporating time, multiple domains of precarity, and adaptive feedback processes would help assess whether the mechanisms proposed manifest in actual mental health trajectories. Ultimately, we hope this study encourages further integration of causal structure learning and systems modeling in efforts to understand and  improve mental health outcomes under conditions of socioeconomic precariousness.
+
+
+
+
+
 
 # References
 
@@ -1748,6 +1736,3 @@ This guarantees that resulting systems are dynamically stable, fully positive, a
 
 
 
-# Acknowledgements {.unnumbered}
-
-The HELIUS study is conducted by the Amsterdam University Medical Centers, location AMC and the Public Health Service of Amsterdam. Both organisations provided core support for HELIUS. The HELIUS study is also funded by the Dutch Heart Foundation, the Netherlands Organization for Health Research and Development (ZonMw), the European Union (FP-7), and the European Fund for the Integration of non-EU immigrants (EIF). We are most grateful to the participants of the HELIUS study and the management team, research nurses, interviewers, research assistants and other staff who have taken part in gathering the data of this study.
