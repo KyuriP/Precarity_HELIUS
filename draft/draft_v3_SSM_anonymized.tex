@@ -302,7 +302,7 @@ to Intervention Simulation}
 }
 
 
-\date{2026-03-03}
+\date{2026-03-04}
 
 
 
@@ -310,7 +310,7 @@ to Intervention Simulation}
 \begin{document}
 \maketitle
 \begin{abstract}
-\noindent \textcolor{BrickRed}{Socioeconomic precariousness and depression are closely linked, yet the mechanisms through which they may reinforce one another, and the implications for intervention trajectories, remain insufficiently understood. Using cross-sectional data from more than 21,000 adults in the multi-ethnic HELIUS study, we applied cycle-capable constraint-based causal discovery methods that allow for latent confounding and feedback to estimate candidate graph structures linking financial stress, domain-specific precariousness, and depressive symptoms. Because the data are cross-sectional and many edge orientations are not uniquely determined, we summarize results as stability patterns across specifications and resampling, and we treat orientations as hypothesis-generating rather than as identified causal directionality. We then developed a calibrated simulation framework to examine how depression and precariousness could co-evolve under stress-reducing scenarios across alternative plausible feedback regimes that are compatible with the observed data. Across specifications, financial stress is the most consistently connected factor to depression, and the estimated graphs more often constrain this relationship in a direction consistent with financial stress preceding depression, although orientations remain partly indeterminate. Several symptom-level configurations are also consistent with depressive symptoms contributing to downstream social precariousness. In scenario simulations, stronger internal feedback produces slower but more persistent improvement following reductions in financial stress, whereas weaker feedback produces faster but less durable change. These results suggest that intervention trajectories may depend not only on the magnitude of external support but also on the feedback architecture linking economic stress and mental health, and they motivate future longitudinal and quasi-experimental work to adjudicate directionality and quantify policy-relevant effects.}
+\noindent \textcolor{BrickRed}{Socioeconomic precariousness and depression are closely linked, yet the mechanisms through which they may reinforce one another, and the implications for intervention trajectories, remain insufficiently understood. Using cross-sectional data from more than 21,000 adults in the multi-ethnic HELIUS study, we applied cycle-capable constraint-based causal discovery methods that allow for latent confounding and feedback to estimate candidate graph structures linking financial stress, domain-specific precariousness, and depressive symptoms. Because the data are cross-sectional and many edge orientations are not uniquely determined, we summarize results as stability patterns across specifications and resampling, and we treat orientations as hypothesis-generating rather than as identified causal directionality. We then developed a calibrated simulation framework to examine how depression and precariousness could co-evolve under stress-reducing scenarios across alternative plausible feedback regimes that are compatible with the observed data. Across specifications and algorithms, financial stress is the most consistently adjacent factor to depression. Directional edge marks are less stable: in some FCI summaries the endpoint pattern is more often compatible with financial stress preceding depression in the PAG (ancestral-constraint) sense, whereas CCI and PC more often leave the same relation directionally unresolved; we therefore treat direction as hypothesis-generating and partly indeterminate. Several symptom-level configurations are also consistent with depressive symptoms contributing to downstream social precariousness. In scenario simulations, stronger internal feedback produces slower but more persistent improvement following reductions in financial stress, whereas weaker feedback produces faster but less durable change. These results suggest that intervention trajectories may depend not only on the magnitude of external support but also on the feedback architecture linking economic stress and mental health, and they motivate future longitudinal and quasi-experimental work to adjudicate directionality and quantify policy-relevant effects.}
 \end{abstract}
 
 
@@ -467,21 +467,21 @@ density. \textbf{\emph{P.emp}} = \emph{employment precariousness};
 
 \textcolor{BrickRed}{To characterize candidate causal structures and directional constraints between precariousness and depression, we use constraint-based causal discovery algorithms that allow for feedback loops and latent confounding.}
 Specifically, we apply the \emph{Fast Causal Inference} (FCI) and
-\emph{Cyclic Causal Inference} (CCI) algorithms, both of which can
-detect cycles and non-acyclic structures (Mooij \& Claassen, 2020;
-Strobl, 2019). For reference, we also include the \emph{PC} algorithm,
-one of the most widely used methods for acyclic causal discovery
-(Spirtes et al., 2001). While our full analysis includes results from
-three causal discovery algorithms---FCI, CCI, and PC---we focus on FCI
-in the main text, as it offers a strong balance between flexibility and
-theoretical soundness. FCI accommodates latent confounding and potential
-feedback, making it well-suited for the complexity of our data (Mooij \&
-Claassen, 2020). The PC algorithm is included for reference but relies
-on more restrictive assumptions, such as acyclicity and no unmeasured
-confounding. CCI, while capable of modeling cycles explicitly, has its
-own theoretical limitations; for example, its output may not fully
-preserve the d-separation properties of the true causal graph (Strobl,
-2019). Results from both PC and CCI are provided in the
+\emph{Cyclic Causal Inference} (CCI) algorithms,
+\textcolor{BrickRed}{both of which allow latent confounding and can represent certain classes of feedback/cyclicity under additional assumptions}
+(Mooij \& Claassen, 2020; Strobl, 2019). For reference, we also include
+the \emph{PC} algorithm, one of the most widely used methods for acyclic
+causal discovery (Spirtes et al., 2001). While our full analysis
+includes results from three causal discovery algorithms---FCI, CCI, and
+PC---we focus on FCI in the main text, as it offers a strong balance
+between flexibility and theoretical soundness.
+\textcolor{BrickRed}{FCI accommodates latent confounding and can represent certain classes of feedback under additional assumptions/extensions, making it well-suited for the complexity of our data}
+(Mooij \& Claassen, 2020). The PC algorithm is included for reference
+but relies on more restrictive assumptions, such as acyclicity and no
+unmeasured confounding. CCI, while capable of modeling cycles
+explicitly, has its own theoretical limitations; for example, its output
+may not fully preserve the d-separation properties of the true causal
+graph (Strobl, 2019). Results from both PC and CCI are provided in the
 \hyperref[sec-appendix]{Appendix}
 (Section~\ref{sec-cci}, Section~\ref{sec-pc}) for completeness and
 comparison. For readers interested in detailed explanations of the
@@ -489,7 +489,9 @@ algorithms, edge interpretations, and graph types (e.g., PAG, MAAG,
 CPDAG), as well as algorithmic assumptions and limitations, please refer
 to the \hyperref[sec-appendix]{Appendix}
 (Section~\ref{sec-causalprimer}).
-\textcolor{BrickRed}{These discovery procedures do not explicitly model participation or missingness mechanisms. We therefore interpret inferred adjacencies as conditional on the analyzed sample, and selection-induced associations cannot be ruled out without additional information about the selection process. Finally, alternative families of causal discovery methods that exploit non-Gaussianity or additive-noise assumptions (e.g., LiNGAM or additive-noise models; Shimizu et al., 2006) can be useful under acyclicity and stronger functional-form restrictions, but they do not directly address the combination of latent confounding and potential feedback that motivates our analysis.}
+\textcolor{BrickRed}{These discovery procedures do not explicitly model participation or missingness mechanisms. We therefore interpret inferred adjacencies as conditional on the analyzed sample, and selection-induced associations cannot be ruled out without additional information about the selection process. Finally, alternative families of causal discovery methods that exploit non-Gaussianity or additive-noise assumptions (e.g., LiNGAM or additive-noise models;}
+Shimizu et al. (2006), Hoyer et al. (2008))
+\textcolor{BrickRed}{can be useful under acyclicity and stronger functional-form restrictions, but they do not directly address the combination of latent confounding and potential feedback that motivates our analysis.}
 
 \textcolor{BrickRed}{The output of these algorithms is interpreted as an equivalence-class summary of edge marks compatible with the conditional independencies observed in the data under stated assumptions. In cross-sectional settings with measurement error and finite samples, edge orientations are often not uniquely determined and may vary across algorithms, conditional independence tests, and resampling. We therefore interpret stable adjacencies as relatively consistent conditional-dependence patterns under the tested specifications and treat orientations as hypothesis-generating constraints rather than identified causal directionality or causal effects.}
 
@@ -501,11 +503,11 @@ are computationally intensive---scaling quadratically with sample size
 due to the need to invert large kernel matrices---making them
 impractical for large datasets like HELIUS (Rahimi \& Recht, 2007). To
 address this, we use the Randomized Conditional Correlation Test (RCoT),
-a nonparametric alternative that approximates kernel methods using
-random Fourier features. This reduces computational complexity from
-quadratic to linear in sample size, substantially lowering runtime while
-preserving sensitivity to nonlinear relationships (Strobl et al., 2019;
-Zhang et al., 2012). For further details, see Section~\ref{sec-rcot}.
+a
+\textcolor{BrickRed}{scalable nonparametric alternative that approximates kernel methods using random Fourier features, replacing expensive kernel-matrix computations with lower-dimensional feature operations and thereby substantially reducing runtime at large sample sizes}
+(Strobl et al., 2019; Zhang et al., 2011).
+\textcolor{BrickRed}{RCoT improves computational feasibility relative to KCIT and allows sensitivity analyses at HELIUS sample size, but it does not remove the fundamental loss of statistical power that typically occurs as the conditioning set size $|Z|$ increases.}
+For further details, see Section~\ref{sec-rcot}.
 
 We examine the causal structure using three complementary approaches:
 
@@ -586,14 +588,13 @@ To summarize these results, we apply a two-level aggregation strategy:
 
 This summarization process is repeated separately for each causal
 discovery algorithm (FCI, CCI, PC),
-\textcolor{BrickRed}{yielding a single summary graph per algorithm.}
-These final graphs represent only the most stable and consistent
-relationships across a wide range of plausible parameterizations,
-enhancing both reliability and interpretability. To support
-transparency, each final graph is accompanied by a matrix summarizing
-the relative frequency of each edge type for every variable pair,
-enabling readers to assess the degree of uncertainty or agreement
+\textcolor{BrickRed}{yielding a single summary graph per algorithm. These final graphs represent only the most stable and consistent relationships across a wide range of plausible parameterizations, improving interpretability and making sensitivity to analysis choices explicit.}
+To support transparency, each final graph is accompanied by a matrix
+summarizing the relative frequency of each edge type for every variable
+pair, enabling readers to assess the degree of uncertainty or agreement
 underlying each connection.
+
+\textcolor{BrickRed}{The purpose of this pipeline is not to produce a single definitive causal graph, but to make sensitivity to modeling choices explicit. Accordingly, the summaries can yield absent edges and indeterminate endpoint marks (ties/dashed edges). We treat these outcomes as substantive indicators of limited information in the data and refrain from resolving them by selecting a preferred specification.}
 
 \textcolor{BrickRed}{Our procedure is intended to summarize how sensitive the estimated graphs are to sampling variation and to a prespecified set of analysis choices. The bootstrap-based edge-type proportions are therefore interpreted as \emph{selection frequencies} rather than hypothesis-test p-values. We treat stability as a descriptive property with two components. First, \emph{adjacency stability} refers to how consistently an edge is recovered across bootstrap resamples and specifications. Second, \emph{orientation stability} refers to how consistently an endpoint is oriented when an adjacency is present.}
 
@@ -772,7 +773,7 @@ admissible value), with all other parameters derived analytically to
 preserve the empirical covariances observed in the HELIUS data (see
 Figure~\ref{fig-tradeoff}).
 
-\textcolor{BrickRed}{In each simulation, we represent external support by shifting the financial stress proxy for individual $i$ ($S_i$) downward by a common proportion toward the lowest observed value in the cohort. This is a stylized representation of stress-reducing policies that are expected to lower acute financial strain (for example, income support or benefits, debt relief, or related forms of financial assistance). We do not intervene directly on depressionn $D_i(t)$ or social precariousness $P_i(t)$. Instead, $D_i(t)$ and $P_i(t)$ evolve endogenously in response to the change in $S_i$ through the model couplings.}
+\textcolor{BrickRed}{In each simulation, we represent external support by shifting the financial stress proxy for individual $i$ ($S_i$) downward by a common proportion toward the lowest observed value in the cohort. This is a stylized representation of stress-reducing policies that are expected to lower acute financial strain (for example, income support or benefits, debt relief, or related forms of financial assistance). We do not intervene directly on depression $D_i(t)$ or social precariousness $P_i(t)$. Instead, $D_i(t)$ and $P_i(t)$ evolve endogenously in response to the change in $S_i$ through the model couplings.}
 We simulate 1000 virtual individuals per model, sampling baseline stress
 levels from the empirical distribution and scaling them according to the
 intervention level.
@@ -803,7 +804,7 @@ persistence, and variability of response to external support.
 \subsection{Causal Structure Linking Precariousness and
 Depression}\label{causal-structure-linking-precariousness-and-depression}
 
-\textcolor{BrickRed}{Because the estimated graphs are equivalence-class outputs and HELIUS is cross-sectional, we interpret these results as hypothesis-generating constraints. We distinguish adjacency stability, meaning whether a connection is repeatedly recovered, from orientation stability, meaning how consistently endpoints are oriented across specifications. Unresolved orientations are treated as indeterminacy rather than as evidence for or against a directional effect.}
+\textcolor{BrickRed}{Because the estimated graphs are equivalence-class outputs and HELIUS is cross-sectional, we interpret these results as hypothesis-generating constraints. We distinguish adjacency stability, meaning whether a connection is repeatedly recovered, from orientation stability, meaning how consistently endpoints are oriented across specifications. Unresolved orientations are treated as indeterminacy rather than as evidence for or against a directional effect. When stability is limited, we report the relation as indeterminate and refrain from directional interpretation.}
 
 \subsubsection{Depression as sum score}\label{depression-as-sum-score}
 
@@ -818,20 +819,22 @@ causes of other precariousness factors, \emph{S.fin} emerges as a
 potential cause, as indicated by its circle edge endpoint.
 \textcolor{BrickRed}{This pattern is summarized in the edge-type proportion matrix shown in panel (b). Panel (b) reports \emph{selection frequencies} of edge marks across bootstrap resamples (and specifications), not p-values or significance levels; values close to 0 or 1 indicate stability of the recovered mark under the procedure.}
 
-\textcolor{BrickRed}{Relational stress (\textit{S.rel}) shows a less consistent pattern across specifications. In several settings, its links with depression and S.fin include edge marks that are compatible with latent confounding, and orientations vary across algorithms and CI tests. Its connection to \textit{P.soc} is comparatively unstable: the proportion matrix in}
+\textcolor{BrickRed}{Relational stress (\textit{S.rel}) shows a less consistent pattern across specifications. In several settings, its links with depression and \textit{S.fin} include edge marks that are compatible with latent confounding, and orientations vary across algorithms and CI tests. Its connection to \textit{P.soc} is comparatively unstable: the proportion matrix in}
 Figure~\ref{fig-sum-2}
-\textcolor{BrickRed}{indicates that this adjacency is often absent, and when present the endpoint marks are frequently indeterminate. Housing precariousness (\textit{P.hou}) does not show a stable adjacency with depression in the aggregated summaries, but it is more consistently connected to \textit{P.emp} and \textit{S.fin.} For these links, directional information remains limited. Across bootstrap resamples and specifications, endpoint marks adjacent to P.hou are often unresolved, so the summaries do not distinguish whether \textit{P.hou} precedes \textit{P.emp}, follows it, or whether both are linked through unobserved confounders.}
+\textcolor{BrickRed}{indicates that this adjacency is often absent, and when present the endpoint marks are frequently indeterminate. Housing precariousness (\textit{P.hou}) does not show a stable adjacency with depression in the aggregated summaries, but it is more consistently connected to \textit{P.emp} and \textit{S.fin}. For these links, directional information remains limited. Across bootstrap resamples and specifications, endpoint marks adjacent to P.hou are often unresolved, so the summaries do not distinguish whether \textit{P.hou} precedes \textit{P.emp}, follows it, or whether both are linked through unobserved confounders.}
 
 The findings from the CCI algorithm (see Figure~\ref{fig-sum-cci}) are
 largely consistent with those from the FCI analysis, with one key
 distinction: CCI shows greater ambiguity in the directional relationship
-between \emph{S.fin} and \emph{PHQsum}: CCI assigns an arrowhead from
-\emph{S.fin} to \emph{PHQsum} in roughly 50\% of bootstraps, while the
-remaining cases display an undirected (circle) endpoint. Overall, CCI
-introduces greater uncertainty in edge orientations relative to FCI,
-yielding more undirected endpoints and more frequent bidirectional
-(confounded) edges, which in turn contribute to a slightly higher
-overall count of arrowheads when directions are inferred.
+between \emph{S.fin} and \emph{PHQsum}:
+\textcolor{BrickRed}{CCI assigns an arrowhead at the \textit{PHQsum} endpoint on the \textit{S.fin}–\textit{PHQsum} adjacency in roughly 50\% of bootstraps, while the remaining cases display an undirected (circle) endpoint.}
+
+Overall, CCI introduces greater uncertainty in edge orientations
+relative to FCI, yielding more undirected endpoints and more frequent
+bidirectional (confounded) edges, which in turn contribute to a slightly
+higher overall count of arrowheads when directions are inferred.
+
+\textcolor{BrickRed}{Importantly, we do not treat the FCI summary as "more correct" than the CCI summary. Rather, we treat the contrast as a reflection of how different algorithms encode uncertainty in this cross-sectional, finite-sample setting. In particular, CCI tends to return a higher share of bidirectional/confounded-type patterns and fewer strongly constraining tail marks, which we interpret as a more conservative treatment of ancestry under latent confounding/cyclicity and finite-sample variability. Accordingly, we report the stable \textit{S.fin}–\textit{PHQsum} adjacency as the main cross-method finding, and we treat any directional tendency (when present) as hypothesis-generating rather than identified.}
 
 \textcolor{BrickRed}{Both algorithms frequently return adjacencies linking the stressors (\textit{S.rel}, \textit{S.fin}) and \textit{P.soc}. Across specifications, endpoint orientations are often consistent with the stressors preceding \textit{P.soc}, although a substantial fraction remain undetermined. With respect to depression, there is limited directional support for \textit{P.soc} $\rightarrow$ \textit{PHQsum}. When \textit{P.soc} and \textit{PHQsum} are adjacent, orientations more often point toward \textit{P.soc} or remain indeterminate. Similarly, \textit{P.emp} is rarely oriented as an upstream parent of its neighboring variables (\textit{P.hou}, \textit{PHQsum}, \textit{S.fin}). Inferred directions more often point toward \textit{P.emp} or remain unresolved. Finally, the links between \textit{P.hou} and (\textit{P.emp}, \textit{S.fin}) commonly include circle endpoints, indicating that the data and assumptions do not uniquely determine whether \textit{P.hou} is upstream, downstream, or connected via latent confounding.}
 
@@ -1253,7 +1256,9 @@ modeling to investigate how depression and socioeconomic precariousness
 interact and how their internal structure modulates responsiveness to
 intervention. Consistent with prior work linking financial strain to
 psychological distress (Ezzy, 1993; Lund et al., 2010),
-\textcolor{BrickRed}{financial stress showed the most consistent adjacency with depression in both the aggregated and symptom-level analyses. Across specifications, edge marks more often pointed in a direction consistent with financial stress preceding depression than the reverse, but many orientations remained unresolved. We interpret this pattern as support for the hypothesis that economic stressors may contribute to broader cycles of psychosocial risk.}
+\textcolor{BrickRed}{the most consistent finding from the causal discovery stage is the stable adjacency between recent financial stressors (\textit{S.fin}) and depression (PHQsum / symptoms) across bootstrap resamples and across our prespecified specification grid. Beyond this adjacency, directional information is substantially less stable: endpoint marks vary across algorithms and CI tests, and many orientations remain unresolved.
+Accordingly, we treat disagreement as evidence of limited identifying information in this cross-sectional setting, and we restrict interpretation to patterns that remain stable across methods rather than privileging one algorithm’s orientation.
+Where directional constraints do appear, they should be read in the equivalence-class/ancestral-constraint sense (e.g., a PAG mark indicating that one variable is not an ancestor of the other), not as an identified causal effect or effect size. We therefore treat any directional tendency involving \textit{S.fin} and depression as hypothesis-generating rather than conclusive, and we view the stable \textit{S.fin}--depression connection as motivating the hypothesis that economic stressors may contribute to broader cycles of psychosocial risk.}
 
 At the symptom level, our analysis aligns with established theories of
 psychopathology and provides a more fine-grained map of potential causal
@@ -1310,38 +1315,33 @@ Tailoring strategies to match the system's architecture can improve
 effectiveness, particularly in populations with layered vulnerabilities.
 \textcolor{BrickRed}{In this context, clarifying plausible causal structure is important for designing more effective and equitable interventions.}
 
+\textcolor{BrickRed}{Because the intervention variables are measured proxies and the data are cross-sectional, the simulations should be interpreted as scenario analyses of proxy shifts rather than as identified effects of specific policy interventions.}
 \textcolor{BrickRed}{We interpret the causal discovery results as equivalence-class constraints and stability summaries, and we treat them as hypothesis-generating inputs that motivate future longitudinal or quasi-experimental evaluation.}
-\textcolor{BrickRed}{Two limitations are particularly relevant for interpreting the estimated graph summaries. First, selection bias is a plausible concern in this setting. HELIUS has a modest participation rate, and our analyses condition on completion of the questionnaire items used in the current study. Conditioning on participation and complete-case inclusion can induce associations among measured variables, including collider-type dependencies, which could appear as edges in graph learning. Because the discovery procedures used here do not explicitly model selection, we cannot separate selection-induced associations from associations that would persist under representative sampling without additional information. Methodological work on causal discovery under selection mechanisms is active, but current approaches typically require explicit assumptions or auxiliary information about the selection process;}
-Chen et al. (2024)
-\textcolor{BrickRed}{provide a recent SCM-based treatment.}
-\textcolor{BrickRed}{Second, even in the absence of selection bias, edge orientations can remain ambiguous in cross-sectional data with measurement error and finite samples. In our results, many directions vary across algorithms, conditional independence tests, and resampling, particularly for symptom-level relations, which likely reflects limited statistical signal in high-dimensional settings. We therefore avoid treating orientation patterns as identified directionality and instead report them as stability summaries.}
-\textcolor{BrickRed}{Finally, applying additional discovery families (e.g., functional-model identification approaches) would be a valuable extension, but their standard guarantees typically rely on assumptions such as acyclicity and stronger functional-form restrictions that do not align with our target setting}
-(Shimizu et al., 2006). \textcolor{BrickRed}{In addition, although} the
-FCI and CCI algorithms are designed to recover causal structure from
-cross-sectional data---including feedback and latent confounding---many
-edge directions in our results remain ambiguous, particularly in links
-between individual symptoms and precariousness factors. These
-inconsistencies likely reflect limited statistical signal in
-high-dimensional settings, where large conditioning sets reduce power
-and small effect sizes are harder to detect.
+\textcolor{BrickRed}{Two limitations are particularly relevant for interpreting the estimated graph summaries. First, selection bias is a plausible concern in this setting. HELIUS has a modest participation rate, and our analyses condition on completion of the questionnaire items used in the current study. Conditioning on participation and complete-case inclusion can induce associations among measured variables, including collider-type dependencies, which could appear as edges in graph learning. Because the discovery procedures used here do not explicitly model selection, we cannot separate selection-induced associations from associations that would persist under representative sampling without additional information. Methodological work on causal discovery under selection mechanisms is currently active. Recent SCM-based developments formalize selection as conditioning on a selection variable and characterize when such conditioning induces spurious associations that need not reflect target-population relations}
+(Chen et al., 2024).
+\textcolor{BrickRed}{In light of these theoretical developments, future work could incorporate explicit models of participation and missingness, weighting strategies, or auxiliary design information, with the goal of evaluating how robust the recovered adjacency patterns are to plausible selection mechanisms.}
+\textcolor{BrickRed}{Second, even in the absence of selection bias, edge orientations can remain ambiguous in cross-sectional data with measurement error and finite samples. In our results, many directions vary across algorithms, conditional independence tests, and resampling, particularly for symptom-level relations, which likely reflects limited statistical signals in high-dimensional settings. We therefore avoid treating orientation patterns as identified directionality and instead report them as stability summaries. 
+Future work could combine theory-guided subgraph restriction with longitudinal or quasi-experimental data, and could assess orientation stability under a wider range of tuning choices or alternative conditional-independence tests, to determine which directional constraints persist under designs with stronger identifying information.}
 
-Moreover, some of the relations showed sensitivity to the choice of
-conditional independence (CI) test. The Gaussian CI test, which assumes
-linearity and Gaussian noise, often produced denser graphs, likely due
-to overestimating weak or noisy linear associations. In contrast, RCoT,
-a nonparametric alternative, avoids these assumptions but relies on a
-Gaussian radial basis function (RBF) kernel to assess dependence. While
-flexible in capturing nonlinear relationships, this kernel is optimized
-for smooth, continuous variables and may underperform with discrete or
-ordinal data. Its similarity estimates can be unreliable when applied to
-variables with discontinuities, potentially leading to missed
-dependencies. This is particularly relevant in the HELIUS dataset, where
-some variables are ordinal or mixed-type (Howlett, 2001). To address
-this, future work should consider adapting kernel-based CI tests to
-better handle mixed data structures---for example, by employing hybrid
-kernels that explicitly combine continuous and discrete similarity
-measures. This could improve the reliability of nonparametric causal
-discovery in settings with heterogeneous variable types.
+Moreover, some relations showed sensitivity to the choice of conditional
+independence (CI) test. The Gaussian CI test, which assumes linearity
+and Gaussian noise, often produced denser graphs, plausibly because
+partial-correlation tests can be more permissive for weak linear
+associations in large samples. In contrast, RCoT avoids strict Gaussian
+assumptions and can capture nonlinear dependencies, but it relies on
+kernel-based approximations (via random Fourier features) and, in
+practice, performance can vary with variable type and distributional
+properties. In particular, kernels commonly used in this setting (e.g.,
+RBF kernels) are optimized for smooth relationships among continuous
+variables and may behave differently for ordinal or mixed-type measures,
+which is relevant for HELIUS (Howlett, 2001).
+\textcolor{BrickRed}{Two complementary directions could help address this in future work. First, CI testing could be adapted to better handle mixed data structures, for example by employing hybrid kernels or test procedures that explicitly combine continuous and discrete similarity measures, and by systematically evaluating sensitivity across a wider range of CI tests and tuning choices. Second, applying additional discovery families may be informative under alternative identifying assumptions. 
+For example, functional-model identification approaches that exploit non-Gaussianity or additive-noise assumptions—such as LiNGAM}
+(Shimizu et al., 2006) \textcolor{BrickRed}{and additive-noise models}
+(Hoyer et al.,
+2008)\textcolor{BrickRed}{—can be useful under acyclicity and stronger functional-form restrictions, although these assumptions do not align with our target setting and we therefore treat them as a complementary extension rather than a primary approach here. Relatedly, invariance-based approaches such as Invariant Causal Prediction (ICP;}
+Peters et al.
+(2016)\textcolor{BrickRed}{) aim to identify causal drivers of a response by leveraging stability of the conditional distribution across multiple environments (e.g., interventions, sites, policy contexts, or time periods). This is appealing for "what drives depression?" questions, but it requires meaningful environment structure that is not available for our central variables in the present HELIUS cross-sectional cohort, and standard ICP targets acyclic parent sets; extensions exist but still require environments. We therefore view ICP as a promising direction for future work once suitable environments or quasi-experimental/longitudinal variation are available.}
 
 Although the CCI algorithm is explicitly designed to detect cycles,
 aside from the connection between precarity and depression in the
@@ -1491,7 +1491,8 @@ population-based longitudinal study. \emph{Psychological Medicine},
 \bibitem[\citeproctext]{ref-forre2018constraint}
 Forré, P., \& Mooij, J. M. (2018). Constraint-based causal discovery for
 non-linear structural causal models with cycles and latent confounders.
-\emph{arXiv Preprint arXiv:1807.03024}.
+\emph{Proceedings of the 34th Conference on Uncertainty in Artificial
+Intelligence (UAI 2018)}, 269--278.
 
 \bibitem[\citeproctext]{ref-nsga2R}
 Franz, R., \& Nakamura, R. (2015). \emph{nsga2R: Elitist non-dominated
@@ -1517,6 +1518,11 @@ International}, \emph{114}(8), 121.
 \bibitem[\citeproctext]{ref-howlett2001radial}
 Howlett, R. J. (2001). \emph{Radial basis function networks 1: Recent
 developments in theory and applications}.
+
+\bibitem[\citeproctext]{ref-hoyer2008nonlinear}
+Hoyer, P., Janzing, D., Mooij, J. M., Peters, J., \& Schölkopf, B.
+(2008). Nonlinear causal discovery with additive noise models.
+\emph{Advances in Neural Information Processing Systems}, \emph{21}.
 
 \bibitem[\citeproctext]{ref-hyttinen2012learning}
 Hyttinen, A., Eberhardt, F., \& Hoyer, P. O. (2012). Learning linear
@@ -1592,6 +1598,12 @@ models in psychological research. \emph{Advances. In/Psychology},
 Park, K., Waldorp, L., \& Vasconcelos, V. V. (2025). \emph{The
 individual-and population-level mechanistic implications of statistical
 networks of symptoms}.
+
+\bibitem[\citeproctext]{ref-peters2016causal}
+Peters, J., Bühlmann, P., \& Meinshausen, N. (2016). Causal inference by
+using invariant prediction: Identification and confidence intervals.
+\emph{Journal of the Royal Statistical Society Series B: Statistical
+Methodology}, \emph{78}(5), 947--1012.
 
 \bibitem[\citeproctext]{ref-pevalin2017impact}
 Pevalin, D. J., Reeves, A., Baker, E., \& Bentley, R. (2017). The impact
@@ -1726,9 +1738,10 @@ quality in college students. \emph{Health Psychology}, \emph{32}(2),
 212.
 
 \bibitem[\citeproctext]{ref-zhang2012kernel}
-Zhang, K., Peters, J., Janzing, D., \& Schölkopf, B. (2012).
+Zhang, K., Peters, J., Janzing, D., \& Schölkopf, B. (2011).
 Kernel-based conditional independence test and application in causal
-discovery. \emph{arXiv Preprint arXiv:1202.3775}.
+discovery. \emph{Proceedings of the 27th Conference on Uncertainty in
+Artificial Intelligence (UAI 2011)}, 804--813.
 
 \end{CSLReferences}
 
@@ -1773,9 +1786,10 @@ of \emph{ancestral graphs}, which are designed to encode causal
 relationships between variables, where the presence of an edge indicates
 causal \emph{ancestry.} In these graphs, directed edges,
 \(A \stararrow B\), indicate that \(B\) is not an ancestor of \(A\) in
-every graph within the Markov equivalence class, \(Equiv(G)\). The
-Markov equivalence class represents a set of graphs that encode the same
-conditional independence relationships, ensuring that the same
+every graph within the Markov equivalence class, \(Equiv(G)\).
+\textcolor{BrickRed}{Importantly, these endpoint marks encode \emph{ancestral constraints} within an equivalence class (e.g., "B is not an ancestor of A"), and should not be interpreted as identified causal effects or effect sizes from A to B.}
+The Markov equivalence class represents a set of graphs that encode the
+same conditional independence relationships, ensuring that the same
 \emph{d-separation} conditions hold across all graphs in the class
 (Spirtes et al., 2001). Conversely, an edge marked as \(A \startail B\)
 indicates that \(B\) is an ancestor of \(A\) across all graphs in
@@ -2664,7 +2678,7 @@ Testing}\label{kernel-based-conditional-independence-testing}
 Traditional kernel-based CI tests, such as the Kernel Conditional
 Independence Test (KCIT), compute dependencies using the Hilbert-Schmidt
 Independence Criterion (HSIC) in reproducing kernel Hilbert spaces
-(RKHS) (Zhang et al., 2012). KCIT uses the following hypothesis
+(RKHS) (Zhang et al., 2011). KCIT uses the following hypothesis
 framework: \[
 H_0: X \perp\!\!\!\perp Y \,|\, Z, \quad H_1: X \not\!\perp\!\!\!\perp Y \,|\, Z.
 \] The core quantity in KCIT is the partial cross-covariance operator:
@@ -2748,6 +2762,7 @@ reducing complexity and improving scalability.
 These distinctions are particularly important for large-scale datasets,
 where RCoT's computational efficiency makes it a practical choice for
 high-dimensional causal discovery tasks.
+\textcolor{BrickRed}{In our study, we use RCoT primarily for computational scalability at the HELIUS sample size and as part of our sensitivity analyses; it does not remove the fundamental loss of statistical power and increased estimation difficulty that typically occurs as the conditioning set $|Z|$ grows.}
 
 \paragraph{RCIT: Randomized Conditional Independence
 Test}\label{rcit-randomized-conditional-independence-test}
@@ -2779,9 +2794,8 @@ matrix. The hypotheses are: \[
 H_0: \|C_{AB \cdot C}\|_F^2 = 0, \quad H_1: \|C_{AB \cdot C}\|_F^2 > 0.
 \]
 
-RCoT is computationally efficient and well-suited for large conditioning
-sets (\(|Z| \geq 4\)). Its simplicity enables robust calibration of the
-null distribution and improved scalability for high-dimensional data.
+\textcolor{BrickRed}{RCoT is computationally efficient and therefore computationally feasible for larger conditioning sets (relative to KCIT), because it approximates kernel operations via random Fourier features.
+However, computational feasibility should not be conflated with statistical suitability: as the conditioning dimension increases, conditional-independence tests—parametric or nonparametric—typically lose power and become more sensitive to model misspecification and measurement error. For this reason, in our application we interpret results involving larger conditioning sets cautiously and emphasize stability/indeterminacy across resampling and specification choices rather than treating orientations as definitive.}
 
 \subsection{Analytical Calibration of the Linear Feedback
 Model}\label{sec-analcalibration}
