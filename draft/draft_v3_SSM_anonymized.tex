@@ -137,6 +137,15 @@
 \usepackage{geometry}
 \usepackage{xcolor}
 
+\usepackage[most]{tcolorbox}
+\newtcolorbox{abbrbox}{
+  colback=white,
+  colframe=black!40,
+  boxrule=0.4pt,
+  arc=2mm,
+  left=2mm,right=2mm,top=1mm,bottom=1mm
+}
+
 
 \usetikzlibrary{arrows.meta, shapes.geometric}
 
@@ -302,7 +311,7 @@ to Intervention Simulation}
 }
 
 
-\date{2026-03-04}
+\date{2026-03-05}
 
 
 
@@ -310,7 +319,7 @@ to Intervention Simulation}
 \begin{document}
 \maketitle
 \begin{abstract}
-\noindent \textcolor{BrickRed}{Socioeconomic precariousness and depression are closely linked, yet the mechanisms through which they may reinforce one another, and the implications for intervention trajectories, remain insufficiently understood. Using cross-sectional data from more than 21,000 adults in the multi-ethnic HELIUS study, we applied cycle-capable constraint-based causal discovery methods that allow for latent confounding and feedback to estimate candidate graph structures linking financial stress, domain-specific precariousness, and depressive symptoms. Because the data are cross-sectional and many edge orientations are not uniquely determined, we summarize results as stability patterns across specifications and resampling, and we treat orientations as hypothesis-generating rather than as identified causal directionality. We then developed a calibrated simulation framework to examine how depression and precariousness could co-evolve under stress-reducing scenarios across alternative plausible feedback regimes that are compatible with the observed data. Across specifications and algorithms, financial stress is the most consistently adjacent factor to depression. Directional edge marks are less stable: in some FCI summaries the endpoint pattern is more often compatible with financial stress preceding depression in the PAG (ancestral-constraint) sense, whereas CCI and PC more often leave the same relation directionally unresolved; we therefore treat direction as hypothesis-generating and partly indeterminate. Several symptom-level configurations are also consistent with depressive symptoms contributing to downstream social precariousness. In scenario simulations, stronger internal feedback produces slower but more persistent improvement following reductions in financial stress, whereas weaker feedback produces faster but less durable change. These results suggest that intervention trajectories may depend not only on the magnitude of external support but also on the feedback architecture linking economic stress and mental health, and they motivate future longitudinal and quasi-experimental work to adjudicate directionality and quantify policy-relevant effects.}
+\noindent \textcolor{BrickRed}{Socioeconomic precariousness and depression are closely linked, yet the directional structure and the conditions under which feedback may matter for intervention trajectories remain insufficiently understood. Using cross-sectional data from more than 21,000 adults in the multi-ethnic HELIUS study, we applied cycle-capable constraint-based causal discovery methods that allow for latent confounding and feedback to estimate candidate graph structures linking financial stress, domain-specific precariousness, and depressive symptoms. Because the data are cross-sectional and many edge orientations are not uniquely determined, we summarize results as stability patterns across specifications and resampling, and we treat orientations as hypothesis-generating rather than as identified causal directionality. We then developed a calibrated simulation framework to examine how depression and precariousness could co-evolve under stress-reducing scenarios across alternative plausible feedback regimes that are compatible with the observed data. Across specifications and algorithms, financial stress is the most consistently adjacent factor to depression. Directional edge marks are less stable: in some FCI summaries the endpoint pattern is more often compatible with financial stress preceding depression in the PAG (ancestral-constraint) sense, whereas CCI and PC more often leave the same relation directionally unresolved; we therefore treat direction as hypothesis-generating and partly indeterminate. Several symptom-level configurations are also consistent with depressive symptoms contributing to downstream social precariousness. In scenario simulations, stronger internal feedback produces slower but more persistent improvement following reductions in financial stress, whereas weaker feedback produces faster but less durable change. These results suggest that intervention trajectories may depend not only on the magnitude of external support but also on the feedback architecture linking economic stress and mental health, and they motivate future longitudinal and quasi-experimental work to clarify directionality and quantify policy-relevant effects.}
 \end{abstract}
 
 
@@ -356,30 +365,14 @@ insight, it remains difficult to identify priority targets for
 intervention or to anticipate and quantify intended and unintended
 effects.
 
-This study aims to investigate the causal mechanisms linking
-precariousness and depression and how those mechanisms shape system
-responses to external intervention. Specifically, we ask: \emph{How does
-the internal configuration of the precariousness--depression
-relationship affect the outcomes of stress-reducing interventions?} To
-answer this, we combine two approaches. First, we use cycle-capable
-causal discovery algorithms to infer directional relationships among
-domain-specific precariousness factors and depressive symptoms. By
-examining both aggregated measures (depression sum score and a composite
-precariousness index) and disaggregated variables (individual depressive
-symptoms and specific life-domain indicators), we capture broad patterns
-of relationship as well as fine-grained causal pathways. Second, we
-translate these insights into a computational dynamical model that
-simulates how depression and precariousness co-evolve under varying
-levels of external stress. This model enables us to probe how system
-properties---such as feedback strength and stochastic noise---govern
-responsiveness to intervention. When the effects of depression symptoms
-onto the social precarity subsystem are weaker than the reverse path,
-there is higher sensitivity of depression to intervention, reflecting
-both a faster reduction post financial intervention but also quicker
-relapse once financial stresses are reestablished. By integrating causal
-discovery with dynamic simulation, we demonstrate that intervention
-strategies can be tailored to the underlying architecture of
-vulnerability.
+\textcolor{BrickRed}{This study aims to characterize candidate causal structure linking precariousness and depression and to examine how alternative plausible internal configurations could shape responses to stress-reducing scenarios. Specifically, we ask: \textit{How does the internal configuration of the precariousness–depression relationship affect system responses under external reductions in stress?}
+To answer this, we combine two approaches. First, we use cycle-capable causal discovery algorithms to infer equivalence-class constraints among domain-specific precariousness factors and depressive symptoms under possible latent confounding and feedback.
+By examining both aggregated measures (depression sum score and a composite precariousness index) and disaggregated variables (individual depressive symptoms and specific life-domain indicators), we capture broad patterns of conditional dependence as well as finer-grained candidate pathways.
+Second, we translate the most stable motifs and remaining uncertainty into a deliberately simplified dynamical model that simulates how depression and precariousness could co-evolve under external stress reduction.
+This model is used as a scenario tool to probe how system properties—especially feedback strength—can shape the speed and persistence of response. For example, when feedback from precariousness to depression is weaker, depression responds more directly to stress reduction but can also rebound more quickly when stress is reintroduced; when feedback is stronger, responses can be slower but more persistent.}
+
+\textcolor{BrickRed}{Because HELIUS is cross-sectional and many orientations are unstable across algorithms and CI tests, we do not treat the discovery output as identifying a unique mechanism of mutual reinforcement. Instead, we use causal discovery to summarize which adjacencies and motifs are stable versus indeterminate, and we carry the remaining uncertainty forward into scenario simulations that illustrate how different plausible feedback regimes could shape intervention trajectories.}
+\textcolor{BrickRed}{Our contribution is primarily integrative. We provide an applied workflow that (i) estimates candidate structural constraints among precariousness and depression under latent confounding and possible feedback, (ii) makes uncertainty explicit via resampling and a prespecified specification grid, and (iii) carries the stable motifs and remaining uncertainty forward into scenario simulations rather than fixing a single directed graph.}
 
 \section{Methods}\label{methods}
 
@@ -488,10 +481,9 @@ comparison. For readers interested in detailed explanations of the
 algorithms, edge interpretations, and graph types (e.g., PAG, MAAG,
 CPDAG), as well as algorithmic assumptions and limitations, please refer
 to the \hyperref[sec-appendix]{Appendix}
-(Section~\ref{sec-causalprimer}).
-\textcolor{BrickRed}{These discovery procedures do not explicitly model participation or missingness mechanisms. We therefore interpret inferred adjacencies as conditional on the analyzed sample, and selection-induced associations cannot be ruled out without additional information about the selection process. Finally, alternative families of causal discovery methods that exploit non-Gaussianity or additive-noise assumptions (e.g., LiNGAM or additive-noise models;}
-Shimizu et al. (2006), Hoyer et al. (2008))
-\textcolor{BrickRed}{can be useful under acyclicity and stronger functional-form restrictions, but they do not directly address the combination of latent confounding and potential feedback that motivates our analysis.}
+(Section~\ref{sec-causalprimer})\textcolor{BrickRed}{; a more tutorial-style walkthrough with simulations is provided in}
+Park et al. (2024).
+\textcolor{BrickRed}{These discovery procedures do not explicitly model participation or missingness mechanisms. We therefore interpret inferred adjacencies as conditional on the analyzed sample, and selection-induced associations cannot be ruled out without additional information about the selection process.}
 
 \textcolor{BrickRed}{The output of these algorithms is interpreted as an equivalence-class summary of edge marks compatible with the conditional independencies observed in the data under stated assumptions. In cross-sectional settings with measurement error and finite samples, edge orientations are often not uniquely determined and may vary across algorithms, conditional independence tests, and resampling. We therefore interpret stable adjacencies as relatively consistent conditional-dependence patterns under the tested specifications and treat orientations as hypothesis-generating constraints rather than identified causal directionality or causal effects.}
 
@@ -623,11 +615,12 @@ Depression}\label{modeling-dynamics-between-precariousness-and-depression}
 
 To explore how internal system structure shapes responses to external
 support, we implement a high-level computational model that formalizes
-key mechanisms suggested by the causal discovery analysis. Rather than
-attempting to replicate the full estimated causal graph, this model
-abstracts the essential structure into a compact, tractable system
-focused on dynamic interactions between depression and social
+\textcolor{BrickRed}{core motifs highlighted by the causal discovery analysis}.
+Rather than attempting to replicate the full estimated causal graph,
+this model abstracts the essential structure into a compact, tractable
+system focused on dynamic interactions between depression and social
 precariousness, both influenced by financial stress.
+\textcolor{BrickRed}{The dynamical model is intentionally reduced and should be read as a scenario model anchored to the most stable cross-specification motifs (in particular, the \textit{S.fin}--depression--\textit{P.soc} motif), rather than as a dynamical implementation of the full estimated graph. This reduction is motivated by the discovery results themselves: beyond a small number of recurring adjacencies, many endpoint marks are unstable or method-dependent in this cross-sectional setting, so translating the full graph would risk hard-coding directions that are not stably supported across specifications.}\footnote{\textcolor{BrickRed}{Because the graph-learning outputs are defined by conditional-independence constraints, whereas our dynamical calibration matches second-order moments (variances/covariances), the scenario model is not expected to reproduce the full PAG/MAAG conditional-independence structure, and we do not interpret it as such.}}
 
 As illustrated in Figure~\ref{fig-concept}, the model includes three
 components: social precariousness \(P_i(t)\), depressive symptoms
@@ -806,6 +799,11 @@ Depression}\label{causal-structure-linking-precariousness-and-depression}
 
 \textcolor{BrickRed}{Because the estimated graphs are equivalence-class outputs and HELIUS is cross-sectional, we interpret these results as hypothesis-generating constraints. We distinguish adjacency stability, meaning whether a connection is repeatedly recovered, from orientation stability, meaning how consistently endpoints are oriented across specifications. Unresolved orientations are treated as indeterminacy rather than as evidence for or against a directional effect. When stability is limited, we report the relation as indeterminate and refrain from directional interpretation.}
 
+\begin{abbrbox}
+\textbf{Abbreviations used in Results.}
+\emph{P.emp} = employment precariousness; \emph{P.hou} = housing precariousness; \emph{P.soc} = social precariousness; \emph{S.fin} = recent financial stressors; \emph{S.rel} = recent relational stressors; \emph{PHQsum} = PHQ-9 sum score; \emph{anh} = anhedonia; \emph{app} = appetite; \emph{con} = concentration; \emph{dep} = depressed mood; \emph{ene} = energy; \emph{glt} = guilt; \emph{mot} = psychomotor change; \emph{slp} = sleep disturbance; \emph{sui} = suicidal ideation.
+\end{abbrbox}
+
 \subsubsection{Depression as sum score}\label{depression-as-sum-score}
 
 Figure~\ref{fig-sum} provides a summary of how precariousness factors
@@ -854,6 +852,8 @@ shows a blue circle (\(\circ\)), then the inferred relationship is
 arrowheads, coral for arrowtails, blue for circles, and light gray for
 absence of an edge.
 \textcolor{BrickRed}{Colors are blended and shaded by frequency, with greater opacity indicating higher selection frequency in the inferred edge type.}\footnote{\textcolor{BrickRed}{Within each run, the discovery algorithms rely on conditional independence tests that return p-values used to decide whether variables are conditionally independent at a chosen significance level $\alpha$. However, the proportion matrices we report do not display these p-values. Instead, each entry is a selection frequency of a discrete edge-mark output (arrowhead, tail, circle, or no edge), summarizing how often that mark is returned across bootstrap resamples (and across the pre-specified specification grid). Because these frequencies are not derived from a null-hypothesis test and are not calibrated to control Type I error, they should be interpreted as stability summaries rather than as p-values or significance levels.}}
+
+\textcolor{BrickRed}{\textbf{Main takeaway.} In the aggregated analysis, the most stable cross-method finding is the \textit{S.fin}–\textit{PHQsum} adjacency; other precariousness domains show weaker or less stable connections, and orientations are frequently unresolved.}
 
 \begin{figure}
 
@@ -991,6 +991,8 @@ arrowheads, while RCoT more often suggests the absence of an edge. For a
 detailed visualization of the CCI-derived graph and proportion matrix,
 see Figure~\ref{fig-sym-cci}.
 
+\textcolor{BrickRed}{\textbf{Main takeaway.} At the symptom level, sleep disturbance (\textit{slp}) is highly connected, and multiple configurations are consistent with depressive symptoms feeding into social precariousness (\textit{P.soc}), but many symptom–precariousness directions are unstable across CI tests and specifications.}
+
 \newgeometry{top=10mm, bottom=20mm, left=40mm, right=40mm}
 
 \begin{figure}
@@ -1091,6 +1093,8 @@ from precarious conditions but also contributes to their persistence,
 creating a self-sustaining dynamic.
 
 \textcolor{BrickRed}{Across multiple levels of analysis, our results show consistent connections between precariousness and depression, with the most stable adjacency linking financial stress (\textit{S.fin}) to depressive outcomes. Across many specifications, edge marks are more often compatible with financial stress preceding depression, although directionality remains partly indeterminate and varies with modeling choices. Other precariousness dimensions, especially social precariousness, more often appear downstream of depressive symptoms or remain unresolved. At the symptom level, \textit{dep} and \textit{slp} stand out for their connectivity to precariousness factors, with several configurations consistent with feedback involving social precariousness. On this basis, we use a simplified three-node simulation model of depression, financial stress, and social precarity to examine how alternative plausible feedback strengths, which cannot be identified from cross-sectional data, shape trajectories under stress-reducing scenarios.}
+
+\textcolor{BrickRed}{\textbf{Main takeaway.} When precariousness is aggregated, symptom-to-precariousness orientations appear more consistent than in the fully disaggregated setting, and some configurations are compatible with feedback between depression and overall precariousness, though directionality remains method-dependent.}
 
 \newgeometry{top=10mm, bottom=20mm, left=40mm, right=40mm}
 
@@ -1249,6 +1253,21 @@ more quickly.}
 
 \restoregeometry
 
+Across bootstrap resamples and across our prespecified specification
+grid, the most consistent finding from the causal discovery stage is the
+stable adjacency between recent financial stressors (\textit{S.fin}) and
+depression (PHQsum / symptoms). Beyond this adjacency, directional
+information is substantially less stable: endpoint marks vary across
+algorithms and CI tests, and many orientations remain unresolved. We
+therefore emphasize patterns that replicate across methods and interpret
+orientation marks conservatively, as equivalence-class
+(ancestral-constraint) information rather than identified causal effects
+or effect sizes. In particular, any directional tendency involving
+\textit{S.fin} and depression is treated as hypothesis-generating, while
+the stable \textit{S.fin}--depression connection motivates the broader
+hypothesis that economic stressors may contribute to cycles of
+psychosocial risk.\}
+
 \section{Discussion}\label{discussion}
 
 This study combined constraint-based causal discovery and dynamical
@@ -1256,10 +1275,13 @@ modeling to investigate how depression and socioeconomic precariousness
 interact and how their internal structure modulates responsiveness to
 intervention. Consistent with prior work linking financial strain to
 psychological distress (Ezzy, 1993; Lund et al., 2010),
-\textcolor{BrickRed}{the most consistent finding from the causal discovery stage is the stable adjacency between recent financial stressors (\textit{S.fin}) and depression (PHQsum / symptoms) across bootstrap resamples and across our prespecified specification grid. Beyond this adjacency, directional information is substantially less stable: endpoint marks vary across algorithms and CI tests, and many orientations remain unresolved.
-Accordingly, we treat disagreement as evidence of limited identifying information in this cross-sectional setting, and we restrict interpretation to patterns that remain stable across methods rather than privileging one algorithm’s orientation.
-Where directional constraints do appear, they should be read in the equivalence-class/ancestral-constraint sense (e.g., a PAG mark indicating that one variable is not an ancestor of the other), not as an identified causal effect or effect size. We therefore treat any directional tendency involving \textit{S.fin} and depression as hypothesis-generating rather than conclusive, and we view the stable \textit{S.fin}--depression connection as motivating the hypothesis that economic stressors may contribute to broader cycles of psychosocial risk.}
+\textcolor{BrickRed}{the most consistent finding from the causal discovery stage is the stable adjacency between recent financial stressors (\textit{S.fin}) and depression (PHQsum / symptoms) across bootstrap resamples and across our prespecified specification grid. Beyond this adjacency, directional information is substantially less stable: endpoint marks vary across algorithms and CI tests, and many orientations remain unresolved.}
+\textcolor{BrickRed}{
+Across bootstrap resamples and across our prespecified specification grid, the most consistent finding from the causal discovery stage is the stable adjacency between recent financial stressors (\textit{S.fin}) and depression (PHQsum / symptoms). Beyond this adjacency, directional information is substantially less stable: endpoint marks vary across algorithms and CI tests, and many orientations remain unresolved. We therefore emphasize patterns that replicate across methods and interpret orientation marks conservatively, as equivalence-class (ancestral-constraint) information rather than identified causal effects or effect sizes. In particular, any directional tendency involving \textit{S.fin} and depression is treated as hypothesis-generating, while the stable \textit{S.fin}--depression connection motivates the broader hypothesis that economic stressors may contribute to cycles of psychosocial risk.}
+\textcolor{BrickRed}{
+With this framing, the causal discovery stage serves to identify which structural motifs are consistently supported (and where direction collapses into indeterminacy), and the simulation stage then explores how different plausible feedback regimes—compatible with the observed moments and those stable motifs—translate into different intervention trajectories.}
 
+\textcolor{BrickRed}{Several estimated configurations are compatible with mutually reinforcing dynamics, but the present analyses do not identify a single reinforcement pathway. Instead, they delineate the stable motifs and key uncertainties, motivating follow-up work with stronger identifying information to clarify reinforcement mechanisms and quantify policy-relevant effects.}
 At the symptom level, our analysis aligns with established theories of
 psychopathology and provides a more fine-grained map of potential causal
 relationships, generating concrete, testable hypotheses. It points to
@@ -1322,6 +1344,7 @@ effectiveness, particularly in populations with layered vulnerabilities.
 \textcolor{BrickRed}{In light of these theoretical developments, future work could incorporate explicit models of participation and missingness, weighting strategies, or auxiliary design information, with the goal of evaluating how robust the recovered adjacency patterns are to plausible selection mechanisms.}
 \textcolor{BrickRed}{Second, even in the absence of selection bias, edge orientations can remain ambiguous in cross-sectional data with measurement error and finite samples. In our results, many directions vary across algorithms, conditional independence tests, and resampling, particularly for symptom-level relations, which likely reflects limited statistical signals in high-dimensional settings. We therefore avoid treating orientation patterns as identified directionality and instead report them as stability summaries. 
 Future work could combine theory-guided subgraph restriction with longitudinal or quasi-experimental data, and could assess orientation stability under a wider range of tuning choices or alternative conditional-independence tests, to determine which directional constraints persist under designs with stronger identifying information.}
+\textcolor{BrickRed}{A further limitation is that we do not examine whether the recovered motifs differ across ethnicity, gender, age, or SES, despite HELIUS being a multi-ethnic cohort. This matters because both participation and item nonresponse may vary across subgroups, so subgroup-specific analyses would be more sensitive to selection and measurement differences, making it difficult to separate genuine structural heterogeneity from artifacts of differential missingness, measurement non-invariance, or reduced statistical information per group. We view subgroup heterogeneity as an important direction for future work, ideally paired with explicit checks of measurement comparability and robustness to plausible selection mechanisms.}
 
 Moreover, some relations showed sensitivity to the choice of conditional
 independence (CI) test. The Gaussian CI test, which assumes linearity
@@ -1362,6 +1385,8 @@ or Bicycle (Rohbeck et al., 2024), which integrate observational and
 interventional data, could be especially valuable where such data are
 available.
 
+\textcolor{BrickRed}{Because the simulation uses a linear Ornstein–Uhlenbeck specification calibrated to match the same empirical second-order moments, some qualitative response patterns, such as differences in adjustment speed as coupling varies, are expected properties of linear relaxation dynamics. We therefore do not interpret the OU behavior itself as a novel dynamical finding. Rather, we use it as a transparent baseline to carry forward the most stable motif identified in the discovery stage and to treat feedback strength as a sensitivity/uncertainty dimension, rather than fixing a single value that is not well constrained in the present setting.}
+
 Finally, the structure of our dynamical model introduces important
 limitations. The model focused on a restricted set of variables
 (depression, social precariousness, and financial stress). This design
@@ -1371,24 +1396,14 @@ additional stressors, and potential unintended consequences of
 intervention. In addition, while the linear formulation offered
 analytical tractability and transparent calibration, it likely
 oversimplifies the true dynamics of depression and socioeconomic
-precariousness. A growing body of evidence suggests that psychosocial
-systems are fundamentally nonlinear. Empirical and theoretical work
-points to phenomena such as threshold effects, where improvements only
-occur after a tipping point is crossed (Leemput et al., 2014; Park,
-Waldorp, et al., 2025); saturation, where the impact of support
-diminishes as basic needs are met (Cramer et al., 2010); and path
-dependence, where past adversity shapes sensitivity to future stressors
-(Wichers et al., 2016). These behaviors are fundamentally incompatible
-with linear dynamics, yet they may be essential for understanding why
-some individuals remain trapped in high-risk states while others recover
-more easily. Future modeling efforts should therefore incorporate
-mechanisms such as saturating input-response functions (e.g., sigmoidal
-form) and state-dependent feedback (where coupling strength varies by
-system state). Incorporating such features would allow models to capture
-not just average effects but also the critical conditions under which
-meaningful change becomes possible---clarifying whether some subgroups
-require forceful, threshold-crossing interventions, while others may
-benefit from sustained, moderate support.
+precariousness.
+\textcolor{BrickRed}{A growing body of evidence suggests that psychosocial systems are fundamentally nonlinear. Empirical and theoretical work points to phenomena such as threshold effects, where improvements only occur after a tipping point is crossed}
+(Leemput et al., 2014; Park, Waldorp, et al., 2025);
+\textcolor{BrickRed}{saturation, where the impact of support diminishes as basic needs are met}
+(Cramer et al., 2010);
+\textcolor{BrickRed}{and path dependence, where past adversity shapes sensitivity to future stressors}
+(Wichers et al., 2016).
+\textcolor{BrickRed}{These behaviors are fundamentally incompatible with linear dynamics, yet they may be essential for understanding why some individuals remain trapped in high-risk states while others recover more easily. Future modeling efforts should therefore incorporate mechanisms such as saturating input-response functions (e.g., sigmoidal form) and state-dependent feedback where coupling strength varies by system state. Such nonlinear terms would allow the model to capture threshold-type deterioration (feedback becoming disproportionately strong beyond a critical depression level) as well as recovery nonlinearities, where improvements in precariousness translate into delayed or amplified reductions in depression only after crossing a recovery threshold. Incorporating such features would allow models to capture not just average effects but also the critical conditions under which meaningful change becomes possible, clarifying whether some subgroups require forceful, threshold-crossing interventions, while others may benefit from sustained, moderate support.}
 
 As public health research has long shown, social and psychological
 systems do not always respond passively to external inputs; internal
@@ -1599,6 +1614,9 @@ Park, K., Waldorp, L., \& Vasconcelos, V. V. (2025). \emph{The
 individual-and population-level mechanistic implications of statistical
 networks of symptoms}.
 
+\bibitem[\citeproctext]{ref-pearl2009causality}
+Pearl, J. (2009). \emph{Causality}. Cambridge university press.
+
 \bibitem[\citeproctext]{ref-peters2016causal}
 Peters, J., Bühlmann, P., \& Meinshausen, N. (2016). Causal inference by
 using invariant prediction: Identification and confidence intervals.
@@ -1620,6 +1638,10 @@ machines. \emph{Advances in Neural Information Processing Systems},
 Rehm, J., \& Shield, K. D. (2019). Global burden of disease and the
 impact of mental and addictive disorders. \emph{Current Psychiatry
 Reports}, \emph{21}, 1--7.
+
+\bibitem[\citeproctext]{ref-richardson2002ancestral}
+Richardson, T., \& Spirtes, P. (2002). Ancestral graph markov models.
+\emph{The Annals of Statistics}, \emph{30}(4), 962--1030.
 
 \bibitem[\citeproctext]{ref-ridley2020poverty}
 Ridley, M., Rao, G., Schilbach, F., \& Patel, V. (2020). Poverty,
@@ -1778,15 +1800,22 @@ obtained from all participants prior to enrollment.
 
 \subsection{Causal Discovery Primer}\label{sec-causalprimer}
 
-As shown in Table 1, the resulting graphs from FCI and CCI differ
-slightly (\emph{PAG}: partial ancestral graph; \emph{MAAG}: maximal
-almost ancestral graph) due to their reliance on different underlying
-assumptions. Despite these differences, both graphs belong to the class
-of \emph{ancestral graphs}, which are designed to encode causal
-relationships between variables, where the presence of an edge indicates
-causal \emph{ancestry.} In these graphs, directed edges,
-\(A \stararrow B\), indicate that \(B\) is not an ancestor of \(A\) in
-every graph within the Markov equivalence class, \(Equiv(G)\).
+\textcolor{BrickRed}{Here, we provide a short primer for interpreting PAG/MAAG/CPDAG outputs and edge marks used in the Results. Readers who want a longer tutorial-style introduction and simulation-based demonstrations of finite-sample behavior can consult}
+Park et al. (2024). As shown in Table 1, the resulting graphs from FCI
+and CCI differ slightly (\emph{PAG}: partial ancestral graph;
+\emph{MAAG}: maximal almost ancestral graph) due to their reliance on
+different underlying assumptions. Despite these differences, both graphs
+belong to the class of \emph{ancestral graphs}, which are designed to
+encode causal relationships between variables, where the presence of an
+edge indicates causal \emph{ancestry.}
+
+\textcolor{BrickRed}{A common question is how these graphs can carry causal meaning without time-ordered measurements. The key point is that constraint-based methods do not orient edges by temporal precedence; they orient edges by exploiting the link between causal structure and (conditional) independence. Under the causal Markov assumption, a given causal graph implies a set of conditional-independence relations in the observational distribution (via d-separation for DAGs/CPDAGs; and via the appropriate separation criterion for ancestral graphs and PAGs, which are designed to represent latent confounding and selection). Under faithfulness-type assumptions, the conditional independencies observed in the data are taken to reflect these graph-implied separations rather than accidental parameter cancellations. The algorithms then search for graph structures consistent with the inferred (in)dependence pattern, and they orient endpoints only when the implied constraints rule out competing ancestral relations within the corresponding equivalence class.}
+(Forré \& Mooij, 2018; Mooij \& Claassen, 2020; Pearl, 2009; Richardson
+\& Spirtes, 2002; Spirtes et al., 2001)
+
+In these graphs, directed edges, \(A \stararrow B\), indicate that \(B\)
+is not an ancestor of \(A\) in every graph within the Markov equivalence
+class, \(Equiv(G)\).
 \textcolor{BrickRed}{Importantly, these endpoint marks encode \emph{ancestral constraints} within an equivalence class (e.g., "B is not an ancestor of A"), and should not be interpreted as identified causal effects or effect sizes from A to B.}
 The Markov equivalence class represents a set of graphs that encode the
 same conditional independence relationships, ensuring that the same
