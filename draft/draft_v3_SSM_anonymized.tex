@@ -360,10 +360,11 @@ ecosystem of risk. However, despite growing evidence of association
 between precariousness and mental health, a fundamental question remains
 unresolved: \emph{How do these factors causally influence one another?}
 Most existing studies rely on cross-sectional correlations, leaving open
-questions about directionality and feedback. Without stronger causal
-insight, it remains difficult to identify priority targets for
-intervention or to anticipate and quantify intended and unintended
-effects.
+questions about directionality and
+feedback.\footnote{\textcolor{BrickRed}{For conventional effect-size context in HELIUS (e.g., regression-based associations between socioeconomic exposures and depressive symptoms), see the broader HELIUS epidemiologic and measurement literature, for example: Elsenburg et al. (2025), Galenkamp et al. (2017), and Stronks et al. (2013, 2020).}}
+Without stronger causal insight, it remains difficult to identify
+priority targets for intervention or to anticipate and quantify intended
+and unintended effects.
 
 \textcolor{BrickRed}{This study aims to characterize candidate causal structure linking precariousness and depression and to examine how alternative plausible internal configurations could shape responses to stress-reducing scenarios. Specifically, we ask: \textit{How does the internal configuration of the precariousness–depression relationship affect system responses under external reductions in stress?}
 To answer this, we combine two approaches. First, we use cycle-capable causal discovery algorithms to infer equivalence-class constraints among domain-specific precariousness factors and depressive symptoms under possible latent confounding and feedback.
@@ -1721,6 +1722,12 @@ kernel-based conditional independence tests for fast non-parametric
 causal discovery. \emph{Journal of Causal Inference}, \emph{7}(1),
 20180017.
 
+\bibitem[\citeproctext]{ref-stronks2020higher}
+Stronks, K., Şekercan, A., Snijder, M., Lok, A., Verhoeff, A. P., Kunst,
+A. E., \& Galenkamp, H. (2020). Higher prevalence of depressed mood in
+immigrants' offspring reflects their social conditions in the host
+country: The HELIUS study. \emph{PLoS One}, \emph{15}(6), e0234006.
+
 \bibitem[\citeproctext]{ref-stronks2013unravelling}
 Stronks, K., Snijder, M. B., Peters, R. J., Prins, M., Schene, A. H., \&
 Zwinderman, A. H. (2013). Unravelling the impact of ethnicity on health
@@ -1800,7 +1807,7 @@ obtained from all participants prior to enrollment.
 
 \subsection{Causal Discovery Primer}\label{sec-causalprimer}
 
-\textcolor{BrickRed}{Here, we provide a short primer for interpreting PAG/MAAG/CPDAG outputs and edge marks used in the Results. Readers who want a longer tutorial-style introduction and simulation-based demonstrations of finite-sample behavior can consult}
+\textcolor{BrickRed}{Here, we provide a short primer for interpreting PAG/MAAG/CPDAG outputs and edge marks used in the Results. Readers who want a more detailed tutorial-style introduction and simulation-based demonstrations of finite-sample behavior can consult}
 Park et al. (2024). As shown in Table 1, the resulting graphs from FCI
 and CCI differ slightly (\emph{PAG}: partial ancestral graph;
 \emph{MAAG}: maximal almost ancestral graph) due to their reliance on
