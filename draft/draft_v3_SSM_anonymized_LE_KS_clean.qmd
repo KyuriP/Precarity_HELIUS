@@ -23,11 +23,11 @@ author: " "
 #   - id: 3
 #     name: \textit{Institute for Advanced Study, University of Amsterdam, Oude Turfmarkt 147, Amsterdam, 1012GC, the Netherland}   
 format: 
-  docx:
-    number-sections: true
-    number-depth: 3
-    toc: false
-    reference-doc: custom-reference.docx
+  # docx:
+  #   number-sections: true
+  #   number-depth: 3
+  #   toc: false
+  #   reference-doc: custom-reference.docx
   pdf:
     pdf-engine: pdflatex
     fontfamily: palatino
@@ -453,7 +453,7 @@ Because the estimated graphs are equivalence-class outputs and HELIUS is cross-s
 <!-- As described in [@sec-analysis], dashed edges indicate ties, and the edge endpoint at which the tie occurs is marked by a bold horizontal bar. -->
 
 <!-- The causal graph in panel (a) highlights key pathways in the relationships between precariousness factors and depression (*PHQsum*).  -->
-In panel (a) we see that employment precariousness (\textit{P.emp}) and social precariousness (\textit{P.soc}) are adjacent to PHQsum, but their endpoint marks do not consistently support an interpretation in which they precede depression; in fact, the most frequent patterns are often unresolved or oriented in the opposite direction. By contrast, financial stress (\textit{S.fin}) shows the most stable adjacency with \textit{PHQsum} and is more often oriented in a direction compatible with \textit{S.fin} preceding \textit{PHQsum}. While *P.emp* and *P.soc* are generally not recognized as causes of other precariousness factors, *S.fin* emerges as a potential cause, as indicated by its circle edge endpoint. This pattern is summarized in the edge-type proportion matrix shown in panel (b). Panel (b) reports the proportion of bootstrap resamples and analysis specifications in which each edge mark is selected, rather than p-values or significance levels. Values close to 1 indicate that a given edge mark is selected frequently across resamples and specifications, whereas values close to 0 indicate that it is selected rarely.
+In panel (a) we see that employment precariousness (\textit{P.emp}) and social precariousness (\textit{P.soc}) are adjacent to *PHQsum*, but their endpoint marks do not consistently support an interpretation in which they precede depression; in fact, the most frequent patterns are often unresolved or oriented in the opposite direction. By contrast, financial stress (\textit{S.fin}) shows the most stable adjacency with \textit{PHQsum} and is more often oriented in a direction compatible with \textit{S.fin} preceding \textit{PHQsum}. While *P.emp* and *P.soc* are generally not recognized as causes of other precariousness factors, *S.fin* emerges as a potential cause, as indicated by its circle edge endpoint. This pattern is summarized in the edge-type proportion matrix shown in panel (b). Panel (b) reports the proportion of bootstrap resamples and analysis specifications in which each edge mark is selected, rather than p-values or significance levels. Values close to 1 indicate that a given edge mark is selected frequently across resamples and specifications, whereas values close to 0 indicate that it is selected rarely.
 
 <!-- The matrix plot can be interpreted such that the symbol in matrix[$i$, $j$] represents the relationship $i -~[symbol] \  j$. For example, if matrix[$i$, $j$] is > and matrix[j, i] is $\circ$, then the inferred relationship is $i \circarrow j$.  In the table, different edge types are represented by distinct colors: light gray for the absence of an edge, blue for circles, green for arrowheads, and coral for arrowtails. The colors are blended based on the proportion of each edge type, with higher proportions increasing the opacity of the corresponding color, making dominant symbols more visually prominent.  -->
 
@@ -701,7 +701,10 @@ More broadly, this study offers a generalizable framework for investigating comp
 Future research should build on this foundation by developing richer, more nuanced dynamical models grounded in longitudinal and interventional data. Incorporating time, multiple domains of precarity, and adaptive feedback processes would help assess whether the mechanisms proposed manifest in actual mental health trajectories. Ultimately, we hope this study encourages further integration of causal structure learning and systems modeling in efforts to understand and  improve mental health outcomes under conditions of socioeconomic precariousness.
 
 
-
+# Acknowledgement
+This work was supported by ZonMW under the project “How can we best act upon
+contextual factors that influence mental health in lower socio-economic groups? Insights offered
+by system dynamics methodologies” (dossier number: 05550032110014). 
 
 
 

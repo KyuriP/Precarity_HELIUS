@@ -311,7 +311,7 @@ to Intervention Simulation}
 }
 
 
-\date{2026-03-16}
+\date{2026-03-17}
 
 
 
@@ -1013,20 +1013,22 @@ precariousness factors (\textit{P.hou, P.emp, P.soc, S.rel, S.fin}) and
 the depression sum score (PHQsum), as returned by the FCI algorithm.
 
 In panel (a) we see that employment precariousness (\textit{P.emp}) and
-social precariousness (\textit{P.soc}) are adjacent to PHQsum, but their
-endpoint marks do not consistently support an interpretation in which
-they precede depression; in fact, the most frequent patterns are often
-unresolved or oriented in the opposite direction. By contrast, financial
-stress (\textit{S.fin}) shows the most stable adjacency with
+social precariousness (\textit{P.soc}) are adjacent to \emph{PHQsum},
+but their endpoint marks do not consistently support an interpretation
+in which they precede depression; in fact, the most frequent patterns
+are often unresolved or oriented in the opposite direction. By contrast,
+financial stress (\textit{S.fin}) shows the most stable adjacency with
 \textit{PHQsum} and is more often oriented in a direction compatible
 with \textit{S.fin} preceding \textit{PHQsum}. While \emph{P.emp} and
 \emph{P.soc} are generally not recognized as causes of other
 precariousness factors, \emph{S.fin} emerges as a potential cause, as
 indicated by its circle edge endpoint. This pattern is summarized in the
-edge-type proportion matrix shown in panel (b). Panel (b) reports
-\emph{selection frequencies} of edge marks across bootstrap resamples
-(and specifications), not p-values or significance levels; values close
-to 0 or 1 indicate stability of the recovered mark under the procedure.
+edge-type proportion matrix shown in panel (b). Panel (b) reports the
+proportion of bootstrap resamples and analysis specifications in which
+each edge mark is selected, rather than p-values or significance levels.
+Values close to 1 indicate that a given edge mark is selected frequently
+across resamples and specifications, whereas values close to 0 indicate
+that it is selected rarely.
 
 Relational stress (\textit{S.rel}) shows a less consistent pattern
 across specifications. In several settings, its links with depression
@@ -1100,10 +1102,10 @@ matrix\([i, j]\) shows a green arrowhead (\(>\)) and matrix\([j, i]\)
 shows a blue circle (\(\circ\)), then the inferred relationship is
 \(i \circarrow j\). Edge types are encoded by distinct colors: green for
 arrowheads, coral for arrowtails, blue for circles, and light gray for
-absence of an edge. Colors are blended and shaded by frequency, with
-greater opacity indicating higher selection frequency in the inferred
-edge
-type.\footnote{Within each run, the discovery algorithms rely on conditional independence tests that return p-values used to decide whether variables are conditionally independent at a chosen significance level $\alpha$. However, the proportion matrices we report do not display these p-values. Instead, each entry is a selection frequency of a discrete edge-mark output (arrowhead, tail, circle, or no edge), summarizing how often that mark is returned across bootstrap resamples (and across the pre-specified specification grid). Because these frequencies are not derived from a null-hypothesis test and are not calibrated to control Type I error, they should be interpreted as stability summaries rather than as p-values or significance levels.}
+absence of an edge. Colors are blended according to how often each edge
+type appears, with greater opacity indicating a higher proportion of
+runs yielding that edge
+type.\footnote{Within each run, the discovery algorithms rely on conditional independence tests that return p-values used to decide whether variables are conditionally independent at a chosen significance level $\alpha$. However, the proportion matrices we report do not display these p-values. Instead, each entry shows the proportion of bootstrap resamples and pre-specified analysis specifications in which a given edge mark (arrowhead, tail, circle, or no edge) is returned. Because these frequencies are not derived from a null-hypothesis test and are not calibrated to control Type I error, they should be interpreted as stability summaries rather than as p-values or significance levels.}
 
 \textbf{Main takeaway.} In the aggregated analysis, the most stable
 cross-method finding is the \textit{S.fin}--\textit{PHQsum} adjacency;
@@ -1832,6 +1834,13 @@ actual mental health trajectories. Ultimately, we hope this study
 encourages further integration of causal structure learning and systems
 modeling in efforts to understand and improve mental health outcomes
 under conditions of socioeconomic precariousness.
+
+\section{Acknowledgement}\label{acknowledgement}
+
+This work was supported by ZonMW under the project ``How can we best act
+upon contextual factors that influence mental health in lower
+socio-economic groups? Insights offered by system dynamics
+methodologies'' (dossier number: 05550032110014).
 
 \section{References}\label{references}
 
