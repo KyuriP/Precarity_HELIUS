@@ -1,0 +1,28 @@
+$if(title)$
+\title{$title$$if(thanks)$\thanks{$thanks$}$endif$}
+$endif$
+
+$if(subtitle)$
+\subtitle{$subtitle$}
+$endif$
+
+$for(by-author)$
+\author$if(it.metadata.affil-id)$[$it.metadata.affil-id$]$endif${%
+  $it.name.literal$%
+  $if(it.metadata.corresponding)$%
+    \thanks{$if(it.metadata.corresponding-note)$$it.metadata.corresponding-note$$else$Corresponding author: \href{mailto:$it.email$}{$it.email$}$endif$}%
+  $endif$%
+}
+$endfor$
+
+$if(by-affiliation)$
+$for(by-affiliation)$
+\affil[$it.id$]{$it.name$}
+$endfor$
+$endif$
+
+\date{$date$}
+
+
+
+
