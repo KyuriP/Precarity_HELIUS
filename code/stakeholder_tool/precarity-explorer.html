@@ -1,0 +1,612 @@
+<title>Precarity–Depression Explorer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Public+Sans:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: left = guided tour, support plan, system tweaks; right = scenario graph (instant redraw + playhead), neighbourhood of residents, system map. Stacks on phones. */
+:root{
+  --bg:#f2f4f3; --surface:#ffffff; --fg:#1b2226; --muted:#5b676d; --line:#d6dddc; --chip:#e8edeb;
+  --dep:#b8780a; --dep-soft:#f5e6c8;
+  --pre:#2c5f86; --pre-soft:#d8e5ef;
+  --fin:#8a3d5a; --fin-soft:#f0dfe5;
+  --pin:#6f7c82; --street:#e4e9e7; --warn:#b3261e;
+  --b0:#dfe6e3; --b1:#f0d49a; --b2:#df9b33; --b3:#ad5a12; --b4:#6e2510;
+  --font-display:"Bricolage Grotesque","Avenir Next","Segoe UI",sans-serif;
+  --font-body:"Public Sans","Helvetica Neue",Arial,sans-serif;
+  --font-data:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11171a; --surface:#192125; --fg:#e6ecec; --muted:#9aa8ad; --line:#2c383d; --chip:#233034;
+  --dep:#e6a83e; --dep-soft:#3a2f1e; --pre:#7db1d8; --pre-soft:#1e3142; --fin:#d98fab; --fin-soft:#3a2430;
+  --pin:#8e9ca2; --street:#1f292d; --warn:#ff8a80;
+  --b0:#2c3a3e; --b1:#6a5428; --b2:#b47a22; --b3:#e49a36; --b4:#ffcf7a; color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#11171a; --surface:#192125; --fg:#e6ecec; --muted:#9aa8ad; --line:#2c383d; --chip:#233034;
+  --dep:#e6a83e; --dep-soft:#3a2f1e; --pre:#7db1d8; --pre-soft:#1e3142; --fin:#d98fab; --fin-soft:#3a2430;
+  --pin:#8e9ca2; --street:#1f292d; --warn:#ff8a80;
+  --b0:#2c3a3e; --b1:#6a5428; --b2:#b47a22; --b3:#e49a36; --b4:#ffcf7a; color-scheme:dark;}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:15px;line-height:1.5;margin:0}
+.wrap{max-width:1260px;margin:0 auto;padding-inline:20px;padding-block:24px 56px;display:grid;gap:22px}
+header{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between}
+header .t{min-width:0;max-width:66ch}
+.eyebrow{font-family:var(--font-data);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--font-display);font-weight:700;font-size:clamp(28px,4.2vw,42px);line-height:1.05;margin:.2em 0 .3em;text-wrap:balance}
+h2{font-family:var(--font-display);font-weight:700;font-size:19px;margin:0;text-wrap:balance}
+h3{font-family:var(--font-display);font-weight:500;font-size:16px;margin:0}
+p{margin:0}
+.lede{color:var(--muted)}
+.headtools{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.guide-link{font-size:14px;font-weight:600;color:var(--pre);text-decoration:underline;text-underline-offset:3px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--surface)}
+.seg button{border:0;background:transparent;color:var(--muted);font:500 13px var(--font-data);padding:6px 12px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
+.main{display:grid;grid-template-columns:minmax(0,350px) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:960px){.main{grid-template-columns:minmax(0,1fr)}}
+.side{display:grid;gap:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;min-width:0}
+.tour{border:2px solid var(--fg);display:grid;gap:10px}
+.tour .step{font-family:var(--font-data);font-size:12px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.tour h3{font-family:var(--font-display);font-weight:700;font-size:19px}
+.tour p{font-size:14.5px}
+.tour .nav{display:flex;align-items:center;gap:8px;justify-content:space-between;flex-wrap:wrap}
+.dots{display:flex;gap:6px}
+.dots span{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.dots span.on{background:var(--fg)}
+.btn{border:1px solid var(--line);background:var(--surface);color:var(--fg);font:600 14px var(--font-body);padding:7px 13px;border-radius:8px;cursor:pointer}
+.btn:hover{border-color:var(--fg)}
+.btn.primary{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.btn.small{font-size:12.5px;padding:5px 10px}
+.btn:disabled{opacity:.4;cursor:default}
+.levers{display:grid;gap:10px}
+.lever{display:grid;gap:6px;padding:12px;border-radius:10px;border:1px solid var(--line);transition:background .2s,border-color .2s}
+.lever.on.fin{background:var(--fin-soft);border-color:var(--fin)}
+.lever.on.mh{background:var(--dep-soft);border-color:var(--dep)}
+.lever.on.soc{background:var(--pre-soft);border-color:var(--pre)}
+.lever:not(.on) .sched{opacity:.45}
+.lever-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.lever-top .nm{font-weight:600}
+.chip{display:inline-block;font-family:var(--font-data);font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;background:var(--chip);color:var(--muted);border-radius:4px;padding:1px 6px;margin-left:4px;vertical-align:1px}
+.switch{position:relative;width:50px;height:27px;border-radius:999px;border:0;background:var(--line);cursor:pointer;flex:none;transition:background .2s}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:21px;height:21px;border-radius:50%;background:var(--surface);box-shadow:0 1px 2px rgba(0,0,0,.25);transition:left .2s}
+.switch[aria-checked="true"]::after{left:26px}
+.fin .switch[aria-checked="true"]{background:var(--fin)}
+.mh .switch[aria-checked="true"]{background:var(--dep)}
+.soc .switch[aria-checked="true"]{background:var(--pre)}
+.row{display:grid;grid-template-columns:70px minmax(0,1fr) 72px;align-items:center;gap:8px;font-size:12.5px;color:var(--muted)}
+.row .v{font-family:var(--font-data);text-align:right;font-variant-numeric:tabular-nums;color:var(--fg)}
+input[type=range]{width:100%;accent-color:var(--fg);margin:0}
+.fin input[type=range]{accent-color:var(--fin)} .mh input[type=range]{accent-color:var(--dep)} .soc input[type=range]{accent-color:var(--pre)}
+.hint{font-size:12.5px;color:var(--muted)}
+.tweaks{display:grid;gap:10px}
+.tw{display:grid;gap:3px}
+.tw .row{grid-template-columns:minmax(0,1fr) 48px}
+.tw label{font-size:13.5px;color:var(--fg);font-weight:600}
+.presets{display:flex;flex-wrap:wrap;gap:6px}
+.warn{color:var(--warn);font-size:13px;font-weight:600}
+.stage{display:grid;gap:16px;min-width:0}
+.playbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;justify-content:space-between}
+.playbar .l{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.clock{font-family:var(--font-data);font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+@media (max-width:640px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:11px 12px;display:grid;gap:2px;align-content:start}
+.tile .k{font-size:12.5px;color:var(--muted);line-height:1.3}
+.tile .v{font-family:var(--font-display);font-weight:700;font-size:25px;font-variant-numeric:tabular-nums;line-height:1.15}
+.tile .u{font-size:12px;color:var(--muted)}
+.tile.d .v{color:var(--dep)} .tile.p .v{color:var(--pre)} .tile.s .v{color:var(--fin)}
+.pair{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:16px}
+@media (max-width:1100px){.pair{grid-template-columns:minmax(0,1fr)}}
+.cardhead{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.bands{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12px;color:var(--muted);margin-top:8px}
+.bands span{display:inline-flex;align-items:center;gap:5px}
+.bands i{width:11px;height:11px;border-radius:50%;display:inline-block}
+.hood{position:relative}
+canvas{display:block;width:100%}
+#cv-tl{cursor:ew-resize;touch-action:pan-y}
+.tip{position:absolute;pointer-events:none;background:var(--fg);color:var(--bg);font-size:12.5px;padding:6px 9px;border-radius:6px;white-space:nowrap;transform:translate(-50%,-115%)}
+#map{width:100%;height:auto;display:block}
+#map text{font-family:var(--font-data);font-size:12px;fill:var(--muted)}
+#map .hit{cursor:pointer}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:12.5px;color:var(--muted);margin-top:8px;align-items:center}
+.legend i{display:inline-block;width:22px;height:0;border-top:2.5px solid var(--fg);vertical-align:4px;margin-right:6px}
+.legend i.dash{border-top-style:dashed;border-top-width:2px;border-color:var(--pin)}
+.lp{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-top:12px}
+.lp .card{display:grid;gap:6px;align-content:start}
+.lp .n{font-family:var(--font-data);font-size:12px;color:var(--muted)}
+.lp p{font-size:14px;color:var(--muted)}
+.notes{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;font-size:14px;color:var(--muted)}
+@media (max-width:760px){.notes{grid-template-columns:minmax(0,1fr)}}
+.notes h3{color:var(--fg);margin-bottom:6px}
+.notes ul{margin:6px 0 0;padding-left:18px;display:grid;gap:6px}
+.notes a{color:var(--fg)}
+.formula{font-family:var(--font-data);font-size:12.5px;background:var(--chip);border-radius:6px;padding:10px;overflow-x:auto;white-space:pre;color:var(--fg);margin-block:8px}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--pre);outline-offset:2px}
+@keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--fg) 35%,transparent)}100%{box-shadow:0 0 0 10px transparent}}
+.flash{animation:pulse .9s ease-out 2;border-radius:6px}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="t">
+      <div class="eyebrow" data-i="eyebrow">DINAMICS-2 · Amsterdam UMC &amp; University of Amsterdam</div>
+      <h1 data-i="title">Precarity–Depression Explorer</h1>
+      <p class="lede" data-i="lede">A simulated neighbourhood of 300 residents, starting from data on more than 21,000 Amsterdam adults (HELIUS). Plan support, tweak how the system works, and the graph redraws instantly.</p>
+    </div>
+    <div class="headtools">
+      <a class="guide-link" href="https://kyuripark.net/misc/tools/precarity-explorer/guide/" target="_blank" rel="noopener" data-i="guide">How to use this tool</a>
+      <div class="seg" role="group" aria-label="Language">
+        <button id="lang-en" aria-pressed="true">EN</button>
+        <button id="lang-nl" aria-pressed="false">NL</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="main">
+    <aside class="side">
+      <section class="card tour" aria-live="polite">
+        <div class="step" id="tour-step"></div>
+        <h3 id="tour-title"></h3>
+        <p id="tour-text"></p>
+        <div class="nav">
+          <div class="dots" id="tour-dots"></div>
+          <div style="display:flex;gap:8px">
+            <button class="btn" id="tour-back" data-i="back">Back</button>
+            <button class="btn primary" id="tour-next" data-i="next">Next</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" style="display:grid;gap:12px">
+        <h2 data-i="planT">1 · Plan the support</h2>
+        <div class="levers" id="levers"></div>
+      </section>
+
+      <section class="card" style="display:grid;gap:12px">
+        <h2 data-i="twT">2 · Tweak the system</h2>
+        <p class="hint" data-i="twH">Start from the HELIUS calibration, or change any arrow yourself. You can also click an arrow in the "What drives what" diagram.</p>
+        <div class="presets">
+          <button class="btn small" id="pr-0" data-i="prW">HELIUS · weak loop</button>
+          <button class="btn small" id="pr-1" data-i="prM">HELIUS · medium</button>
+          <button class="btn small" id="pr-2" data-i="prS">HELIUS · strong loop</button>
+        </div>
+        <div class="tweaks" id="tweaks"></div>
+        <p class="warn" id="warn" hidden></p>
+      </section>
+    </aside>
+
+    <section class="stage">
+      <div class="playbar">
+        <div class="l">
+          <button class="btn primary" id="play" style="min-width:110px">❚❚ Pause</button>
+          <button class="btn" id="restart" data-i="restart">↺ From the start</button>
+          <button class="btn" id="pin" data-i="pinB">Pin for comparison</button>
+          <button class="btn" id="unpin" data-i="unpinB">Clear pin</button>
+          <div class="seg" role="group" aria-label="Speed"><button id="sp-1" aria-pressed="true" data-i="spS">Slow</button><button id="sp-2" aria-pressed="false" data-i="spN">Normal</button><button id="sp-4" aria-pressed="false" data-i="spF">Fast</button></div>
+        </div>
+        <span class="clock" id="clock"></span>
+      </div>
+
+      <div class="card">
+        <div class="cardhead"><h3 data-i="tlT">What happens over time</h3><span class="hint" data-i="tlH">Redraws the moment you change anything. Pause any time, or drag across the graph to move through time.</span></div>
+        <canvas id="cv-tl" aria-label="Scenario graph"></canvas>
+        <div class="legend">
+          <span><i style="border-color:var(--dep)"></i><span data-i="lgD">Residents with PHQ-9 ≥ 10 (%)</span></span>
+          <span><i style="border-color:var(--pre)"></i><span data-i="lgP">Social precarity (change, SD)</span></span>
+          <span id="lg-pin"><i class="dash"></i><span data-i="lgPin">Pinned scenario</span></span>
+        </div>
+      </div>
+
+      <div class="tiles">
+        <div class="tile d"><span class="k" data-i="tk1">Residents with PHQ-9 ≥ 10</span><span class="v" id="tv1"></span><span class="u" data-i="tu1">moderate symptoms or worse</span></div>
+        <div class="tile d"><span class="k" data-i="tk2">Average PHQ-9 score</span><span class="v" id="tv2"></span><span class="u" id="tu2"></span></div>
+        <div class="tile p"><span class="k" data-i="tk3">Social precarity</span><span class="v" id="tv3"></span><span class="u" data-i="tu3">change, standard deviations</span></div>
+        <div class="tile s"><span class="k" data-i="tk4">Financial stress</span><span class="v" id="tv4"></span><span class="u" data-i="tu4">of usual level (above the HELIUS minimum)</span></div>
+      </div>
+
+      <div class="pair">
+        <div class="card">
+          <div class="cardhead"><h3 data-i="hoodT">The neighbourhood</h3><span class="hint" data-i="hoodH">One dot per simulated resident, at the time of the playhead. Hover to meet them.</span></div>
+          <div class="hood"><canvas id="cv-hood" aria-label="Residents coloured by depressive symptoms"></canvas><div class="tip" id="tip" hidden></div></div>
+          <div class="bands" id="bands"></div>
+        </div>
+        <div class="card">
+          <div class="cardhead"><h3 data-i="mapT">What drives what</h3><span class="hint" data-i="mapH">Thicker, faster arrows = stronger push. Click an arrow to change it.</span></div>
+          <svg id="map" viewBox="0 0 420 330" role="img" aria-label="System map"></svg>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <section>
+    <h2 data-i="lpT">Leverage points from the research</h2>
+    <div class="lp">
+      <div class="card"><span class="n" data-i="lp1n">Entry point</span><h3 data-i="lp1t">Financial stress</h3><p data-i="lp1">Across all methods, recent financial stress was the part of precarity most consistently linked to depression. Lowering it is the most direct way into the system.</p></div>
+      <div class="card"><span class="n" data-i="lp2n">Feedback</span><h3 data-i="lp2t">Depression and social precarity reinforce each other</h3><p data-i="lp2">Depressive symptoms (low mood, guilt, loss of interest) were often linked to social precarity. Once both are high, each can keep the other going.</p></div>
+      <div class="card"><span class="n" data-i="lp3n">Duration</span><h3 data-i="lp3t">Short support fades fast</h3><p data-i="lp3">With a strong loop, improvement comes slowly but lasts longer. With a weak loop, it comes fast and disappears soon after support ends.</p></div>
+      <div class="card"><span class="n" data-i="lp4n">Combination</span><h3 data-i="lp4t">Combine structural and psychological help</h3><p data-i="lp4">Because the domains are linked, support in one spills over into the other. Financial plus mental health support works well whatever the loop strength.</p></div>
+    </div>
+  </section>
+
+  <section class="notes">
+    <div>
+      <h3 data-i="mT">How the model works</h3>
+      <p data-i="m1">Each resident has a level of financial stress (S), drawn from its distribution in HELIUS. Their depressive symptoms (D) and social precarity (P) keep moving toward a target set by S and by each other, at a given recovery speed λ, plus random ups and downs:</p>
+      <div class="formula">dD = λ(α_SD·S + α_PD·P − D − mental health support) dt + σ_D dW
+dP = λ(α_SP·S + α_DP·D − P − social support) dt + σ_P dW</div>
+      <p data-i="m2">The HELIUS presets reproduce the variances and covariances in the data, including about 14% of people with PHQ-9 ≥ 10. The model works on standardized scores; to show PHQ-9 points, each resident's score is matched to the same percentile of the HELIUS PHQ-9 distribution. Everything you change in "Tweak the system" goes beyond the data and is meant for thinking through what-ifs. Time is in model units: 1 unit is roughly how long the system takes to adjust.</p>
+    </div>
+    <div>
+      <h3 data-i="kT">Keep in mind</h3>
+      <ul>
+        <li data-i="k1">The residents are simulated, not real people.</li>
+        <li data-i="k2">HELIUS is cross-sectional. Directions of influence are hypotheses that fit the data, not proven causal effects.</li>
+        <li data-i="k3">Mental health support and social support (marked "extra") were not part of the published simulation.</li>
+        <li data-i="k4">Use the numbers for direction and relative size, not as forecasts.</li>
+      </ul>
+      <p style="margin-top:10px"><a href="https://kyuripark.net/misc/tools/precarity-explorer/guide/" target="_blank" rel="noopener" data-i="guide2">Full guide (English and Dutch)</a></p>
+      <p style="margin-top:6px"><span data-i="src">Sources:</span> <a href="https://www.sciencedirect.com/science/article/pii/S2666560326000526" target="_blank" rel="noopener">Park et al. (2026), SSM – Mental Health</a> · <a href="https://link.springer.com/article/10.3758/s13428-026-03030-z" target="_blank" rel="noopener">causalnet tutorial (2026), Behavior Research Methods</a> · <a href="https://cran.r-project.org/package=causalnet" target="_blank" rel="noopener">causalnet on CRAN</a></p>
+    </div>
+  </section>
+</div>
+
+<script>
+// ============ Calibration (closed-form solution from Park et al. 2026, appendix) ============
+// Observed HELIUS variances and covariances of D = PHQ-9 (z), P = social precarity, S = financial stress.
+// (These are covariances, as used by the paper's simulation script; the appendix table lists the correlations.)
+const MOM={vD:1,vP:0.807129,vS:0.742806,cDP:0.335533,cDS:0.308064,cPS:0.197564};
+const SD_P=Math.sqrt(MOM.vP);   // to express social precarity in its own standard deviations
+const S_MIN=-0.852379, PHQ_MEAN=4.65, PHQ_SD=5.13;
+// HELIUS analytic sample (n = 21,628): financial-stress composite levels (standardized) and their frequencies
+const S_LEVELS=[-0.8524,-0.3616,0.1291,0.4147,0.6198,0.9054,1.3961,1.8869], S_COUNTS=[5966,6705,3657,195,1127,536,1470,1972];
+// HELIUS PHQ-9 sum score: cumulative share with score <= k, k = 0..27
+const PHQ_CDF=[0.21787,0.32731,0.43407,0.53722,0.62401,0.69026,0.74639,0.79092,0.82666,0.85579,0.87738,0.89597,0.91247,0.92635,0.93957,0.94923,0.95682,0.9637,0.97055,0.97623,0.98104,0.98446,0.98798,0.9914,0.99468,0.99681,0.99792,1];
+function invNorm(p){const a=[-39.6968302866538,220.946098424521,-275.928510446969,138.357751867269,-30.6647980661472,2.50662827745924],b=[-54.4760987982241,161.585836858041,-155.698979859887,66.8013118877197,-13.2806815528857],c=[-0.00778489400243029,-0.322396458041136,-2.40075827716184,-2.54973253934373,4.37466414146497,2.93816398269878],d=[0.00778469570904146,0.32246712907004,2.445134137143,3.75440866190742],pl=0.02425;
+  let q,r; if(p<pl){q=Math.sqrt(-2*Math.log(p));return(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5])/((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1);}
+  if(p<=1-pl){q=p-0.5;r=q*q;return(((((a[0]*r+a[1])*r+a[2])*r+a[3])*r+a[4])*r+a[5])*q/(((((b[0]*r+b[1])*r+b[2])*r+b[3])*r+b[4])*r+1);}
+  q=Math.sqrt(-2*Math.log(1-p));return-(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5])/((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1);}
+// Model scores are standardized (z). We convert z to PHQ-9 points by percentile: a resident at the
+// 85th percentile of the model gets the PHQ-9 score at the 85th percentile of HELIUS.
+const PHQ_Z=PHQ_CDF.slice(0,27).map(invNorm);            // z cut-offs between PHQ-9 = k and k+1
+function phqOf(D){let k=0;while(k<27&&D>PHQ_Z[k])k++;return k;}
+const THR=PHQ_Z[9];                                      // PHQ-9 >= 10
+const N=300, DT=0.025, TMAX=40, REC=0.1, NF=Math.round(TMAX/REC)+1, LOOPS=[0,0.3,0.65];
+// keys: sd_ = S→D, sp_ = S→P, pd = P→D (α_DP in the paper), dp = D→P (α_PD in the paper)
+function calibrate(a){
+  const {vD,vP,vS,cDP,cDS,cPS}=MOM, den=cDS*cDS-vD*vS;
+  const sd2=-(2*(cDS*cDS-vD*vS-cDS*cPS*a+cDP*vS*a))/vS;
+  const sp2=(8*cDP*cDS*cPS*vS-4*cDP*cDP*vS*vS-2*cDS*cDS*(cPS*cPS+vP*vS)+2*cDS*cPS*(cPS*cPS-vP*vS)*a+2*vS*(-cPS*cPS+vP*vS)*(vD+cDP*a))/(vS*(-cDS*cDS+vD*vS));
+  return {sd_:(cDS-a*cPS)/vS, sp_:(-cDS*cDS*cPS+cDS*(a*cPS*cPS-a*vP*vS+2*cDP*vS)-cPS*vD*vS)/(vS*den),
+          pd:a, dp:(-a*cPS*cPS+a*vP*vS-2*cDP*vS+2*cDS*cPS)/den, sigD:Math.sqrt(sd2), sigP:Math.sqrt(sp2)};
+}
+let RNGs=1; function rnd(){RNGs|=0;RNGs=RNGs+0x6D2B79F5|0;let t=Math.imul(RNGs^RNGs>>>15,1|RNGs);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;}
+function gauss(){let u=0,v=0;while(!u)u=rnd();while(!v)v=rnd();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+const S0=(()=>{const tot=S_COUNTS.reduce((a,b)=>a+b,0), raw=S_COUNTS.map(c=>c/tot*N), n=raw.map(Math.floor);
+  let left=N-n.reduce((a,b)=>a+b,0); raw.map((r,i)=>[r-n[i],i]).sort((a,b)=>b[0]-a[0]).slice(0,left).forEach(([,i])=>n[i]++);
+  const out=[]; n.forEach((k,i)=>{for(let j=0;j<k;j++)out.push(S_LEVELS[i]);});
+  RNGs=11; for(let i=out.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[out[i],out[j]]=[out[j],out[i]];} return out;})();
+// one fixed table of random shocks: every scenario gets the same "luck", so only your changes move the curves (and it is fast)
+const WARM=400, NSTEP=WARM+Math.round(TMAX/DT), NOISE=new Float32Array(NSTEP*N*2); RNGs=12345; for(let i=0;i<NOISE.length;i++) NOISE[i]=gauss();
+
+// ============ State ============
+const M={sd_:0,sp_:0,pd:0,dp:0,lam:1,noise:1,sigD:1,sigP:1};
+function applyPreset(i){Object.assign(M,calibrate(LOOPS[i]),{lam:1,noise:1});}
+applyPreset(0);
+const LEV={fin:{on:true,amt:0.6,start:5,len:15},mh:{on:false,amt:0.25,start:5,len:15},soc:{on:false,amt:0.3,start:5,len:15}};
+let SIM=null, PIN=null, ph=0, playing=true, speed=1, lang="en";
+const SPEEDS={1:0.5,2:1,4:2}; // model time units per second
+try{const s=localStorage.getItem("pde-lang");if(s==="nl"||s==="en")lang=s;}catch(e){}
+
+const onAt=(k,t)=>LEV[k].on&&t>=LEV[k].start&&t<LEV[k].start+LEV[k].len;
+function simulate(){
+  const D=new Float64Array(N),P=new Float64Array(N), det=1-M.pd*M.dp;
+  for(let i=0;i<N;i++){ if(det>0.05){D[i]=(M.sd_+M.pd*M.sp_)*S0[i]/det;P[i]=(M.sp_+M.dp*M.sd_)*S0[i]/det;} }
+  // noise scaled by sqrt(lam) keeps the spread fixed when recovery speed changes; sqrt(1 - lam*DT/2) removes
+  // the small variance inflation of the Euler–Maruyama step, so stationary variances match the calibration
+  const sqdt=Math.sqrt(DT), eu=Math.sqrt(Math.max(0.5,1-M.lam*DT/2)), sD=M.sigD*M.noise*Math.sqrt(M.lam)*eu, sP=M.sigP*M.noise*Math.sqrt(M.lam)*eu;
+  let si=0;
+  const step=t=>{
+    const fOn=onAt("fin",t), mh=onAt("mh",t)?LEV.mh.amt:0, soc=onAt("soc",t)?LEV.soc.amt:0, f=LEV.fin.amt;
+    for(let i=0;i<N;i++){
+      const S=fOn?S0[i]-f*(S0[i]-S_MIN):S0[i];
+      const d=D[i]+M.lam*(M.sd_*S+M.pd*P[i]-D[i]-mh)*DT+sD*sqdt*NOISE[si++];
+      const p=P[i]+M.lam*(M.sp_*S+M.dp*D[i]-P[i]-soc)*DT+sP*sqdt*NOISE[si++];
+      D[i]=Math.max(-6,Math.min(8,d)); P[i]=Math.max(-6,Math.min(8,p));
+    }
+  };
+  for(let k=0;k<WARM;k++) step(-1);   // settle without support
+  const out={D:new Float32Array(NF*N),meanD:new Float64Array(NF),meanP:new Float64Array(NF),hi:new Float64Array(NF),phq:new Float64Array(NF),S:new Float64Array(NF)};
+  const record=fr=>{let sd=0,sp=0,h=0,q=0;for(let i=0;i<N;i++){out.D[fr*N+i]=D[i];sd+=D[i];sp+=P[i];q+=phqOf(D[i]);if(D[i]>THR)h++;}
+    out.phq[fr]=q/N;out.meanD[fr]=sd/N;out.meanP[fr]=sp/N;out.hi[fr]=h/N*100;out.S[fr]=onAt("fin",fr*REC)?(1-LEV.fin.amt):1;};
+  record(0); const per=Math.round(REC/DT);
+  for(let fr=1;fr<NF;fr++){for(let k=0;k<per;k++) step((fr-1)*REC+k*DT); record(fr);}
+  const sm=(arr,w=8)=>{const r=new Float64Array(arr.length);for(let i=0;i<arr.length;i++){let s=0,n=0;for(let j=Math.max(0,i-w);j<=Math.min(arr.length-1,i+w);j++){s+=arr[j];n++;}r[i]=s/n;}return r;};
+  const avg=(a,n)=>{let s=0;for(let i=0;i<n;i++)s+=a[i];return s/n;};
+  out.hiS=sm(out.hi); const p0=avg(out.meanP,40); out.pS=sm(out.meanP.map(v=>(v-p0)/SD_P)); out.d0=avg(out.meanD,40); out.phqS=sm(out.phq); out.q0=avg(out.phq,40);
+  out.runaway=det<=0.05;
+  return out;
+}
+function rerun(){SIM=simulate();updateWarn();}
+
+// ============ i18n ============
+const NL={
+  eyebrow:"DINAMICS-2 · Amsterdam UMC &amp; Universiteit van Amsterdam",
+  title:"Verkenner Bestaansonzekerheid en Depressie",
+  lede:"Een gesimuleerde buurt van 300 bewoners, gebaseerd op gegevens van ruim 21.000 Amsterdamse volwassenen (HELIUS). Plan steun, verander hoe het systeem werkt, en de grafiek past zich direct aan.",
+  back:"Terug", next:"Volgende", planT:"1 · Plan de steun", twT:"2 · Verander het systeem",
+  twH:"Begin bij de HELIUS-kalibratie of verander zelf een pijl. Je kunt ook op een pijl in 'Wat drijft wat' klikken.",
+  prW:"HELIUS · zwakke kringloop", prM:"HELIUS · middel", prS:"HELIUS · sterke kringloop",
+  pause:"Pauze", play:"Afspelen", replay:"Opnieuw afspelen", restart:"↺ Vanaf het begin", spS:"Langzaam", spN:"Normaal", spF:"Snel", pinB:"Vastzetten ter vergelijking", unpinB:"Vergelijking wissen",
+  tlT:"Wat er in de tijd gebeurt", tlH:"Past zich direct aan als je iets verandert. Pauzeer wanneer je wilt, of sleep over de grafiek om door de tijd te bewegen.",
+  lgD:"Bewoners met PHQ-9 ≥ 10 (%)", lgP:"Sociale bestaansonzekerheid (verandering, SD)", lgPin:"Vastgezet scenario",
+  tk1:"Bewoners met PHQ-9 ≥ 10", tu1:"matige klachten of erger", tk2:"Gemiddelde PHQ-9-score", tk3:"Sociale bestaansonzekerheid", tu3:"verandering, standaarddeviaties", tk4:"Financiële stress", tu4:"van het gewone niveau (boven het HELIUS-minimum)",
+  hoodT:"De buurt", hoodH:"Eén stip per gesimuleerde bewoner, op het tijdstip van de afspeelkop. Ga erover om kennis te maken.",
+  mapT:"Wat drijft wat", mapH:"Dikkere, snellere pijlen = sterkere invloed. Klik op een pijl om hem te veranderen.",
+  lpT:"Aangrijpingspunten uit het onderzoek",
+  lp1n:"Ingang", lp1t:"Financiële stress", lp1:"Bij alle methoden hing recente financiële stress het vaakst samen met depressie. Die verlagen is de meest directe ingang tot het systeem.",
+  lp2n:"Terugkoppeling", lp2t:"Depressie en sociale bestaansonzekerheid versterken elkaar", lp2:"Depressieve klachten (sombere stemming, schuldgevoel, verlies van interesse) hingen vaak samen met sociale bestaansonzekerheid. Als beide hoog zijn, houdt het een het ander in stand.",
+  lp3n:"Duur", lp3t:"Korte steun verdwijnt snel", lp3:"Bij een sterke kringloop komt verbetering langzaam maar houdt ze langer aan. Bij een zwakke komt ze snel en verdwijnt ze snel na het stoppen.",
+  lp4n:"Combinatie", lp4t:"Combineer structurele en psychische hulp", lp4:"Omdat de domeinen verbonden zijn, werkt steun in het ene door in het andere. Financiële plus psychische steun werkt goed, hoe sterk de kringloop ook is.",
+  mT:"Hoe het model werkt", m1:"Elke bewoner heeft een niveau van financiële stress (S). Depressieve klachten (D) en sociale bestaansonzekerheid (P) bewegen steeds naar een doelwaarde die door S en door elkaar wordt bepaald, met herstelsnelheid λ, plus willekeurige schommelingen:",
+  m2:"De HELIUS-instellingen bootsen de varianties en covarianties in de data na, inclusief ongeveer 14% mensen met PHQ-9 ≥ 10. Het model rekent met gestandaardiseerde scores; voor PHQ-9-punten wordt de score van elke bewoner gekoppeld aan hetzelfde percentiel van de PHQ-9-verdeling in HELIUS. Alles wat je bij 'Verander het systeem' aanpast gaat verder dan de data en is bedoeld om wat-als-vragen te verkennen. Tijd is in modeleenheden: 1 eenheid is ongeveer de tijd die het systeem nodig heeft om zich aan te passen.",
+  kT:"Houd rekening met", k1:"De bewoners zijn gesimuleerd, geen echte mensen.", k2:"HELIUS is cross-sectioneel. Richtingen van invloed zijn hypothesen die bij de data passen, geen bewezen causale effecten.",
+  k3:"Psychische steun en sociale steun (gemarkeerd 'extra') zaten niet in de gepubliceerde simulatie.", k4:"Gebruik de getallen voor richting en relatieve grootte, niet als voorspelling.",
+  src:"Bronnen:", guide:"Uitleg bij dit hulpmiddel", guide2:"Volledige uitleg (Engels en Nederlands)"
+};
+const EN={}; document.querySelectorAll("[data-i]").forEach(el=>EN[el.dataset.i]=el.innerHTML); EN.play="Play"; EN.pause="Pause"; EN.replay="Replay";
+const T=(en,nl)=>lang==="nl"?nl:en;
+const L=k=>lang==="nl"?(NL[k]??EN[k]):EN[k];
+const dec=(x,d)=>x.toFixed(d).replace(".",lang==="nl"?",":".");
+const sgn=(x,d)=>(x>0.0049?"+":x<-0.0049?"−":"")+dec(Math.abs(x),d);
+const BANDS=[["0–4 minimal","0–4 minimaal"],["5–9 mild","5–9 licht"],["10–14 moderate","10–14 matig"],["15–19 moderately severe","15–19 matig-ernstig"],["20+ severe","20+ ernstig"]];
+const bandOf=phq=>phq>=20?4:phq>=15?3:phq>=10?2:phq>=5?1:0;
+const $=id=>document.getElementById(id);
+
+// ============ Controls ============
+const LEVDEF=[["fin","Financial support","Financiële steun","Lowers financial stress toward the lowest level in HELIUS (income support, debt relief).","Verlaagt financiële stress richting het laagste niveau in HELIUS (inkomensondersteuning, schuldhulp).",false],
+              ["mh","Mental health support","Psychische steun","Directly eases depressive symptoms (accessible psychological care).","Verlicht direct depressieve klachten (toegankelijke psychologische zorg).",true],
+              ["soc","Social support","Sociale steun","Directly reduces social precarity (neighbourhood networks, peer support).","Vermindert direct sociale bestaansonzekerheid (buurtnetwerken, lotgenotensteun).",true]];
+const TWDEF=[["sd_","Financial stress → depression","Financiële stress → depressie",0,1,0.01],
+             ["sp_","Financial stress → social precarity","Financiële stress → bestaansonzekerheid",0,1,0.01],
+             ["pd","Social precarity → depression","Bestaansonzekerheid → depressie",0,1,0.01],
+             ["dp","Depression → social precarity","Depressie → bestaansonzekerheid",0,1,0.01],
+             ["lam","Recovery speed","Herstelsnelheid",0.2,2,0.05],
+             ["noise","Day-to-day ups and downs","Dagelijkse schommelingen",0,1.5,0.05]];
+function buildControls(){
+  $("levers").innerHTML=LEVDEF.map(([k,en,nl,hen,hnl,extra])=>`
+    <div class="lever ${k}" id="lv-${k}">
+      <div class="lever-top"><span class="nm">${T(en,nl)}${extra?`<span class="chip">extra</span>`:""}</span><button class="switch" role="switch" id="sw-${k}" aria-label="${T(en,nl)}"></button></div>
+      <p class="hint">${T(hen,hnl)}</p>
+      <div class="sched" style="display:grid;gap:4px">
+        <div class="row"><span>${T("Strength","Sterkte")}</span><input type="range" id="${k}-amt" min="${k==="fin"?0.1:0.05}" max="${k==="fin"?1:0.5}" step="0.05"><span class="v" id="${k}-amt-v"></span></div>
+        <div class="row"><span>${T("Starts at","Start op")}</span><input type="range" id="${k}-start" min="0" max="35" step="1"><span class="v" id="${k}-start-v"></span></div>
+        <div class="row"><span>${T("Lasts","Duurt")}</span><input type="range" id="${k}-len" min="1" max="40" step="1"><span class="v" id="${k}-len-v"></span></div>
+      </div>
+    </div>`).join("");
+  $("tweaks").innerHTML=TWDEF.map(([k,en,nl,mn,mx,st])=>`
+    <div class="tw" id="tw-${k}"><label for="m-${k}">${T(en,nl)}</label>
+      <div class="row"><input type="range" id="m-${k}" min="${mn}" max="${mx}" step="${st}"><span class="v" id="m-${k}-v"></span></div></div>`).join("");
+  for(const [k] of LEVDEF){
+    $("sw-"+k).addEventListener("click",()=>{LEV[k].on=!LEV[k].on;changed();});
+    for(const f of ["amt","start","len"]) $(k+"-"+f).addEventListener("input",e=>{LEV[k][f]=+e.target.value;changed();});
+  }
+  for(const [k] of TWDEF) $("m-"+k).addEventListener("input",e=>{M[k]=+e.target.value;changed();});
+  syncControls();
+}
+function syncControls(){
+  for(const [k] of LEVDEF){const l=LEV[k];
+    $("sw-"+k).setAttribute("aria-checked",l.on); $("lv-"+k).classList.toggle("on",l.on);
+    $(k+"-amt").value=l.amt; $(k+"-start").value=l.start; $(k+"-len").value=l.len;
+    $(k+"-amt-v").textContent=k==="fin"?Math.round(l.amt*100)+"%":dec(l.amt,2);
+    $(k+"-start-v").textContent="t = "+l.start; $(k+"-len-v").textContent=l.len+T(" units"," eenh.");}
+  for(const [k] of TWDEF){$("m-"+k).value=M[k]; $("m-"+k+"-v").textContent=dec(M[k],2);}
+}
+function updateWarn(){const w=$("warn");
+  if(SIM&&SIM.runaway){w.hidden=false;w.textContent=T("The loop is now so strong that it runs away: changes keep amplifying. Lower one of the two loop arrows.","De kringloop is nu zo sterk dat hij op hol slaat: veranderingen blijven groeien. Verlaag een van de twee kringlooppijlen.");}
+  else w.hidden=true;}
+let pending=false;
+function changed(){syncControls(); if(!pending){pending=true;requestAnimationFrame(()=>{pending=false;rerun();});}}
+
+// ============ Tour ============
+const TOUR=[
+ {t:["A support programme in a neighbourhood","Een steunprogramma in een buurt"],
+  x:["These 300 residents are simulated from HELIUS data; colour shows depressive symptoms (PHQ-9). From time 5 to 20 a financial support programme runs. In the graph, the share of residents with moderate or worse symptoms drops while it runs, then comes back. Move any slider on the left: the graph redraws immediately.",
+     "Deze 300 bewoners zijn gesimuleerd op basis van HELIUS; de kleur toont depressieve klachten (PHQ-9). Van tijdstip 5 tot 20 loopt een financieel steunprogramma. In de grafiek daalt het aandeel bewoners met matige of ernstigere klachten zolang het loopt, en daarna stijgt het weer. Beweeg een schuif links: de grafiek past zich direct aan."],
+  go(){applyPreset(0);Object.assign(LEV.fin,{on:true,amt:0.6,start:5,len:15});LEV.mh.on=false;LEV.soc.on=false;PIN=null;}},
+ {t:["Make it short","Maak het kort"],
+  x:["The programme now lasts only 3 units. The dashed line is the 15-unit version, pinned for comparison. Short support never reaches its full effect: the system needs time to adjust.",
+     "Het programma duurt nu maar 3 eenheden. De stippellijn is de versie van 15 eenheden, vastgezet ter vergelijking. Korte steun bereikt nooit het volle effect: het systeem heeft tijd nodig."],
+  go(){TOUR[0].go();SIM=simulate();pinNow();LEV.fin.len=3;}},
+ {t:["What if the loop is strong?","Wat als de kringloop sterk is?"],
+  x:["Back to 15 units, but now social precarity strongly drives depression (this still fits HELIUS). Compare with the dashed weak-loop line: improvement comes more slowly, and also fades more slowly after the programme ends.",
+     "Weer 15 eenheden, maar nu drijft sociale bestaansonzekerheid depressie sterk aan (dit past nog steeds bij HELIUS). Vergelijk met de stippellijn van de zwakke kringloop: verbetering komt langzamer en verdwijnt ook langzamer na het einde."],
+  go(){TOUR[0].go();SIM=simulate();pinNow();applyPreset(2);}},
+ {t:["Add mental health support","Voeg psychische steun toe"],
+  x:["Mental health support now runs alongside the financial programme. The drop is much bigger than with financial support alone (dashed).",
+     "Psychische steun loopt nu naast het financiële programma. De daling is veel groter dan met alleen financiële steun (stippellijn)."],
+  go(){TOUR[0].go();applyPreset(1);SIM=simulate();pinNow();Object.assign(LEV.mh,{on:true,start:5,len:15});}},
+ {t:["Your turn","Nu jij"],
+  x:["Design your own policy mix in step 1, change how the system works in step 2, or click an arrow in the diagram. Pin a scenario to compare it with your next idea.",
+     "Ontwerp je eigen beleidsmix bij stap 1, verander hoe het systeem werkt bij stap 2, of klik op een pijl in het schema. Zet een scenario vast om het met je volgende idee te vergelijken."],
+  go(){}}
+];
+let tourIx=0;
+function showTour(run){
+  const s=TOUR[tourIx], i=lang==="nl"?1:0;
+  $("tour-step").textContent=T("Guided tour ","Rondleiding ")+(tourIx+1)+" / "+TOUR.length;
+  $("tour-title").textContent=s.t[i]; $("tour-text").textContent=s.x[i];
+  $("tour-dots").innerHTML=TOUR.map((_,j)=>`<span class="${j===tourIx?"on":""}"></span>`).join("");
+  $("tour-back").disabled=tourIx===0; $("tour-next").disabled=tourIx===TOUR.length-1;
+  if(run){s.go();syncControls();rerun();ph=0;playing=true;syncPlay();}
+}
+$("tour-next").addEventListener("click",()=>{if(tourIx<TOUR.length-1){tourIx++;showTour(true);}});
+$("tour-back").addEventListener("click",()=>{if(tourIx>0){tourIx--;showTour(true);}});
+
+// ============ Play / pin ============
+function syncPlay(){$("play").textContent=playing?"❚❚ "+L("pause"):(ph>=TMAX?"▶ "+L("replay"):"▶ "+L("play"));[1,2,4].forEach(s=>$("sp-"+s).setAttribute("aria-pressed",speed===s));
+  $("lg-pin").hidden=!PIN; $("unpin").disabled=!PIN;}
+function pinNow(){if(SIM)PIN={hiS:SIM.hiS,pS:SIM.pS};syncPlay();}
+$("play").addEventListener("click",()=>{playing=!playing;if(playing&&ph>=TMAX)ph=0;syncPlay();});
+$("restart").addEventListener("click",()=>{ph=0;playing=true;syncPlay();});
+addEventListener("keydown",e=>{if(e.code==="Space"&&!/INPUT|BUTTON|TEXTAREA/.test(document.activeElement.tagName)){e.preventDefault();$("play").click();}});
+$("pin").addEventListener("click",pinNow);
+$("unpin").addEventListener("click",()=>{PIN=null;syncPlay();});
+[1,2,4].forEach(s=>$("sp-"+s).addEventListener("click",()=>{speed=s;syncPlay();}));
+[0,1,2].forEach(i=>$("pr-"+i).addEventListener("click",()=>{applyPreset(i);changed();}));
+
+// ============ Language ============
+function applyLang(){document.documentElement.lang=lang;
+  document.querySelectorAll("[data-i]").forEach(el=>{el.innerHTML=L(el.dataset.i);});
+  $("lang-en").setAttribute("aria-pressed",lang==="en");$("lang-nl").setAttribute("aria-pressed",lang==="nl");
+  $("bands").innerHTML=BANDS.map((b,i)=>`<span><i style="background:var(--b${i})"></i>PHQ-9 ${b[lang==="nl"?1:0]}</span>`).join("");
+  buildControls(); showTour(false); syncPlay(); drawMapStatic(); updateWarn();}
+$("lang-en").addEventListener("click",()=>{lang="en";try{localStorage.setItem("pde-lang",lang)}catch(e){};applyLang();});
+$("lang-nl").addEventListener("click",()=>{lang="nl";try{localStorage.setItem("pde-lang",lang)}catch(e){};applyLang();});
+
+// ============ Theme colours ============
+let C={};
+function readColors(){const cs=getComputedStyle(document.documentElement);
+  ["bg","surface","fg","muted","line","dep","pre","fin","pin","street","b0","b1","b2","b3","b4"].forEach(k=>C[k]=cs.getPropertyValue("--"+k).trim());}
+readColors();
+try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>setTimeout(readColors,50));}catch(e){}
+new MutationObserver(()=>setTimeout(readColors,50)).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
+
+// ============ Scenario graph ============
+const tl=$("cv-tl"), tctx=tl.getContext("2d"); let TG=null;
+function layoutTl(){const w=tl.parentElement.clientWidth, h=Math.max(250,Math.min(330,w*0.38)), dpr=devicePixelRatio||1;
+  tl.width=w*dpr; tl.height=h*dpr; tl.style.height=h+"px"; tctx.setTransform(dpr,0,0,dpr,0,0); TG={w,h,ml:44,mr:14};}
+function niceStep(r){const raw=r/4,p=Math.pow(10,Math.floor(Math.log10(raw))),m=raw/p;return(m<1.5?1:m<3?2:m<7?5:10)*p;}
+const xOf=t=>TG.ml+t/TMAX*(TG.w-TG.ml-TG.mr);
+function drawTl(){
+  if(!TG||!SIM) return; const c=tctx,g=TG; c.clearRect(0,0,g.w,g.h);
+  c.font="10.5px "+getComputedStyle(document.body).getPropertyValue("--font-data");
+  const laneH=7, top=2, cols={fin:C.fin,mh:C.dep,soc:C.pre};
+  ["fin","mh","soc"].forEach((k,i)=>{const y=top+i*(laneH+3), l=LEV[k];
+    c.fillStyle=C.line; c.globalAlpha=0.45; c.fillRect(g.ml,y,g.w-g.ml-g.mr,laneH); c.globalAlpha=1;
+    if(l.on){c.fillStyle=cols[k]; const a=xOf(Math.min(TMAX,l.start)), b=xOf(Math.min(TMAX,l.start+l.len)); c.fillRect(a,y,Math.max(2,b-a),laneH);}});
+  const plotTop=top+3*(laneH+3)+10, bottom=18, gap=24, avail=g.h-plotTop-bottom-gap, hA=avail*0.62, hB=avail-hA;
+  const fr=Math.min(NF-1,Math.round(ph/REC));
+  const panel=(yTop,hh,arr,pinArr,col,lo,hi,fmt,label)=>{
+    const step=niceStep(hi-lo); lo=Math.floor(lo/step)*step; hi=Math.ceil(hi/step)*step;
+    const y=v=>yTop+(hi-v)/(hi-lo)*hh;
+    c.textAlign="right"; c.textBaseline="middle";
+    for(let v=lo;v<=hi+1e-9;v+=step){c.strokeStyle=C.line;c.lineWidth=Math.abs(v)<1e-9?1.3:0.6;c.beginPath();c.moveTo(g.ml,y(v));c.lineTo(g.w-g.mr,y(v));c.stroke();c.fillStyle=C.muted;c.fillText(fmt(Math.abs(v)<1e-9?0:v,step),g.ml-6,y(v));}
+    const draw=(a,color,dash,w,upto)=>{c.save();c.setLineDash(dash);c.strokeStyle=color;c.lineWidth=w;c.lineJoin="round";c.beginPath();
+      const n=upto==null?a.length:Math.min(a.length,upto+1);for(let i=0;i<n;i++){const X=xOf(i*REC),Y=y(a[i]);i?c.lineTo(X,Y):c.moveTo(X,Y);}c.stroke();c.restore();};
+    if(pinArr) draw(pinArr,C.pin,[5,4],1.8);
+    c.globalAlpha=0.28; draw(arr,C[col],[],2.4); c.globalAlpha=1;
+    draw(arr,C[col],[],2.8,fr);
+    c.fillStyle=C[col]; c.beginPath(); c.arc(xOf(fr*REC),y(arr[fr]),4.5,0,Math.PI*2); c.fill();
+    c.textAlign="left"; c.textBaseline="top"; c.fillText(label,g.ml+6,yTop+1);
+  };
+  const hiMax=Math.max(25,...SIM.hiS,...(PIN?PIN.hiS:[]));
+  panel(plotTop,hA,SIM.hiS,PIN&&PIN.hiS,"dep",0,Math.min(100,hiMax*1.05),v=>Math.round(v)+"%",T("residents with PHQ-9 ≥ 10","bewoners met PHQ-9 ≥ 10"));
+  const all=[...SIM.pS,...(PIN?PIN.pS:[])]; const pLo=Math.min(-0.2,...all), pHi=Math.max(0.1,...all);
+  panel(plotTop+hA+gap,hB,SIM.pS,PIN&&PIN.pS,"pre",pLo,pHi,(v,s)=>dec(v,s<0.1?2:1),T("social precarity (SD)","bestaansonzekerheid (SD)"));
+  const X=xOf(ph); c.strokeStyle=C.fg; c.globalAlpha=0.35; c.lineWidth=1; c.beginPath(); c.moveTo(X,plotTop-4); c.lineTo(X,g.h-bottom); c.stroke(); c.globalAlpha=1;
+  c.fillStyle=C.muted; c.textAlign="center"; c.textBaseline="alphabetic";
+  for(let t=0;t<=TMAX;t+=5) c.fillText(t,xOf(t),g.h-3);
+}
+let scrubbing=false;
+function scrub(e){const r=tl.getBoundingClientRect();ph=Math.max(0,Math.min(TMAX,(e.clientX-r.left-TG.ml)/(TG.w-TG.ml-TG.mr)*TMAX));}
+tl.addEventListener("pointerdown",e=>{scrubbing=true;playing=false;syncPlay();try{tl.setPointerCapture(e.pointerId)}catch(_){};scrub(e);});
+tl.addEventListener("pointermove",e=>{if(scrubbing)scrub(e);});
+addEventListener("pointerup",()=>{scrubbing=false;});
+
+// ============ Neighbourhood ============
+const hood=$("cv-hood"), hctx=hood.getContext("2d"); let HG=null, hoverIx=-1;
+function layoutHood(){const w=hood.parentElement.clientWidth, cols=25, rows=12, cell=w/cols, h=rows*cell+4, dpr=devicePixelRatio||1;
+  hood.width=w*dpr; hood.height=h*dpr; hood.style.height=h+"px"; hctx.setTransform(dpr,0,0,dpr,0,0);
+  const pos=[]; for(let i=0;i<N;i++){const c=i%cols,r=Math.floor(i/cols);pos.push([c*cell+cell/2,r*cell+cell/2+2]);}
+  HG={w,h,cell,pos};}
+function drawHood(){
+  if(!HG||!SIM) return; const g=HG; hctx.clearRect(0,0,g.w,g.h);
+  const fr=Math.min(NF-1,Math.round(ph/REC)), rad=g.cell*0.37;
+  for(let i=0;i<N;i++){const b=bandOf(phqOf(SIM.D[fr*N+i])), [x,y]=g.pos[i];
+    hctx.beginPath(); hctx.arc(x,y,rad*(b>=2?1.12:1),0,Math.PI*2); hctx.fillStyle=C["b"+b]; hctx.fill();
+    if(i===hoverIx){hctx.lineWidth=2;hctx.strokeStyle=C.fg;hctx.stroke();}}
+}
+function pick(e){if(!HG)return -1;const r=hood.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;let best=-1,bd=1e9;
+  HG.pos.forEach(([px,py],i)=>{const d=(px-x)**2+(py-y)**2;if(d<bd){bd=d;best=i;}});return bd<(HG.cell*0.7)**2?best:-1;}
+function showTip(){const tip=$("tip"); if(hoverIx<0||!SIM){tip.hidden=true;return;}
+  const fr=Math.min(NF-1,Math.round(ph/REC)), phq=phqOf(SIM.D[fr*N+hoverIx]), s=S0[hoverIx];
+  const fs=s<0?T("low","laag"):s<0.5?T("medium","middel"):T("high","hoog");
+  const band=BANDS[bandOf(phq)][lang==="nl"?1:0].replace(/^[\d–+]+\s/,"");
+  tip.textContent=T(`Resident ${hoverIx+1} · financial stress ${fs} · PHQ-9 ≈ ${phq} (${band})`,`Bewoner ${hoverIx+1} · financiële stress ${fs} · PHQ-9 ≈ ${phq} (${band})`);
+  const [x,y]=HG.pos[hoverIx]; tip.style.left=Math.min(Math.max(x,130),HG.w-130)+"px"; tip.style.top=y+"px"; tip.hidden=false;}
+hood.addEventListener("mousemove",e=>{hoverIx=pick(e);showTip();});
+hood.addEventListener("mouseleave",()=>{hoverIx=-1;showTip();});
+hood.addEventListener("click",e=>{hoverIx=pick(e);showTip();});
+
+// ============ System map ============
+const NS="http://www.w3.org/2000/svg";
+function mk(tag,a,p){const e=document.createElementNS(NS,tag);for(const k in a)e.setAttribute(k,a[k]);p&&p.appendChild(e);return e;}
+let ME={};
+function focusTweak(k){const el=$("tw-"+k); el.scrollIntoView({behavior:"smooth",block:"center"}); el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash"); $("m-"+k).focus({preventScroll:true});}
+function drawMapStatic(){
+  const svg=$("map"); svg.innerHTML=""; const defs=mk("defs",{},svg);
+  [["fin","var(--fin)"],["dep","var(--dep)"],["pre","var(--pre)"]].forEach(([id,c])=>{const m=mk("marker",{id:"ah-"+id,viewBox:"0 0 10 10",refX:"7",refY:"5",markerWidth:"12",markerHeight:"12",markerUnits:"userSpaceOnUse",orient:"auto"},defs);mk("path",{d:"M0,0 L10,5 L0,10 z",fill:c},m);});
+  const E={sd_:["M180,92 L112,196","var(--fin)","fin"],sp_:["M240,92 L308,196","var(--fin)","fin"],dp:["M138,214 Q210,184 282,214","var(--dep)","dep"],pd:["M282,248 Q210,278 138,248","var(--pre)","pre"]};
+  ME.e={}; ME.l={};
+  for(const k in E){const [d,c,m]=E[k];
+    mk("path",{d,fill:"none",stroke:c,"stroke-opacity":0.16,"stroke-width":7,"stroke-linecap":"round"},svg);
+    ME.e[k]=mk("path",{d,fill:"none",stroke:c,"stroke-linecap":"round","stroke-dasharray":"3 9","marker-end":"url(#ah-"+m+")"},svg);
+    const hit=mk("path",{d,fill:"none",stroke:"transparent","stroke-width":26,class:"hit",tabindex:0,role:"button","aria-label":TWDEF.find(r=>r[0]===k)[lang==="nl"?2:1]},svg);
+    hit.addEventListener("click",()=>focusTweak(k)); hit.addEventListener("keydown",ev=>{if(ev.key==="Enter")focusTweak(k);});}
+  ME.l.sd_=mk("text",{x:132,y:142,"text-anchor":"end"},svg); ME.l.sp_=mk("text",{x:288,y:142,"text-anchor":"start"},svg);
+  ME.l.dp=mk("text",{x:210,y:186,"text-anchor":"middle"},svg); ME.l.pd=mk("text",{x:210,y:292,"text-anchor":"middle"},svg);
+  const node=(k,x,y,col,soft,label,ly)=>{const g=mk("g",{},svg);
+    mk("circle",{cx:x,cy:y,r:32,fill:"var(--surface)",stroke:col,"stroke-width":2.5},g);
+    const fill=mk("circle",{cx:x,cy:y,r:28,fill:soft},g);
+    const t=mk("text",{x,y:y+6,"text-anchor":"middle",style:`font-family:var(--font-display);font-weight:700;font-size:19px;fill:${col}`},g); t.textContent=k;
+    const tt=mk("text",{x,y:ly,"text-anchor":"middle",style:"fill:var(--fg);font-family:var(--font-body);font-size:13px"},g); tt.textContent=label;
+    const v=mk("text",{x,y:ly+15,"text-anchor":"middle",style:`fill:${col};font-size:12px`},g); return {fill,v};};
+  ME.S=node("S",210,60,"var(--fin)","var(--fin-soft)",T("Financial stress","Financiële stress"),14);
+  ME.D=node("D",100,230,"var(--dep)","var(--dep-soft)",T("Depressive symptoms","Depressieve klachten"),282);
+  ME.P=node("P",320,230,"var(--pre)","var(--pre-soft)",T("Social precarity","Sociale onzekerheid"),282);
+  ME.S.v.setAttribute("x",252); ME.S.v.setAttribute("y",66); ME.S.v.setAttribute("text-anchor","start");
+  ME.b={}; const badge=(k,x,y,col,txt)=>{const g=mk("g",{},svg);mk("rect",{x:x-48,y:y-12,width:96,height:24,rx:12,fill:col},g);
+    const t=mk("text",{x,y:y+4.5,"text-anchor":"middle",style:"fill:var(--surface);font-family:var(--font-body);font-weight:600;font-size:11.5px"},g);t.textContent=txt;ME.b[k]=g;};
+  badge("fin",108,60,"var(--fin)",T("support on","steun aan")); badge("mh",62,176,"var(--dep)",T("mental health","psych. steun")); badge("soc",358,176,"var(--pre)",T("social support","sociale steun"));
+}
+let dash=0;
+function drawMap(dt){
+  if(!ME.e||!SIM) return; if(playing) dash-=dt*SPEEDS[speed];
+  for(const k in ME.e){const w=Math.max(0,M[k]), e=ME.e[k];
+    e.setAttribute("stroke-width",(1+w*11).toFixed(2)); e.setAttribute("stroke-opacity",w<0.02?0.15:1);
+    e.setAttribute("stroke-dashoffset",(dash*60*(0.25+w*2)).toFixed(1));}
+  ME.l.sd_.textContent=dec(M.sd_,2); ME.l.sp_.textContent=dec(M.sp_,2);
+  ME.l.dp.textContent="D → P  "+dec(M.dp,2); ME.l.pd.textContent="P → D  "+dec(M.pd,2);
+  const fr=Math.min(NF-1,Math.round(ph/REC)), sPct=SIM.S[fr], dC=SIM.meanD[fr]-SIM.d0, pC=SIM.pS[fr];
+  ME.S.fill.setAttribute("r",(8+20*sPct).toFixed(1));
+  ME.D.fill.setAttribute("r",Math.max(4,Math.min(31,28+dC*25)).toFixed(1)); ME.P.fill.setAttribute("r",Math.max(4,Math.min(31,28+pC*25)).toFixed(1));
+  ME.S.v.textContent=Math.round(sPct*100)+"%"; ME.D.v.textContent=T("avg PHQ-9 ","gem. PHQ-9 ")+dec(SIM.phqS[fr],1); ME.P.v.textContent=sgn(pC,2)+" SD";
+  const t=fr*REC; for(const k in ME.b) ME.b[k].style.display=onAt(k,t)?"":"none";
+}
+
+// ============ Readouts ============
+let lastR=0;
+function readouts(now){
+  if(now-lastR<120||!SIM) return; lastR=now;
+  const fr=Math.min(NF-1,Math.round(ph/REC));
+  $("tv1").textContent=Math.round(SIM.hi[fr]/100*N)+" / "+N;
+  const avg=SIM.phqS[fr], start=SIM.q0;
+  $("tv2").textContent=dec(avg,1); $("tu2").textContent=T("vs start ","t.o.v. start ")+sgn(avg-start,1);
+  $("tv3").textContent=sgn(SIM.pS[fr],2); $("tv4").textContent=Math.round(SIM.S[fr]*100)+"%";
+  $("clock").textContent=T("time ","tijd ")+dec(ph,1)+" / "+TMAX;
+  if(hoverIx>=0) showTip();
+}
+
+// ============ Animation loop ============
+let prev=performance.now(), endHold=0;
+function frame(now){
+  const dt=Math.min(0.1,(now-prev)/1000); prev=now;
+  if(playing&&!scrubbing){ ph=Math.min(TMAX,ph+dt*SPEEDS[speed]); if(ph>=TMAX){playing=false;syncPlay();} }
+  drawTl(); drawHood(); drawMap(dt); readouts(now);
+  requestAnimationFrame(frame);
+}
+addEventListener("resize",()=>{layoutTl();layoutHood();});
+layoutTl(); layoutHood(); applyLang(); TOUR[0].go(); syncControls(); rerun(); ph=12; syncPlay();
+requestAnimationFrame(frame);
+</script>
