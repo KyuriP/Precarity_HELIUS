@@ -1,0 +1,98 @@
+Corrected Chapter 6 figures, 18 October 2026
+
+Reproduction
+
+From the repository root, run
+
+  Rscript code/intervention_simulation/05_reproduce_thesis_figures.R /path/to/HELIUS_LEONIE.sav /path/to/python3
+
+The third command argument is optional if python3 is on PATH. Required R
+packages are haven, dplyr, jsonlite, ggplot2, tidyr and patchwork. Python needs
+NumPy, Pillow and reportlab. The original Palatino font is used. Exact pixels
+can differ across font installations, graphics devices and package versions.
+
+Only researchers authorized to use the HELIUS data can regenerate the empirical
+inputs. No participant records or stress distribution are included here.
+Private intermediates stay under data/intervention/thesis_correction, which is
+excluded by the repository's /data ignore rule. Public figure outputs are under
+draft/thesis_corrections/figures. The published paper assets are preserved.
+
+This entry point evaluates the preprocessing through clust_data and imports
+only the calibration function and plotting expressions from 04_linear_model.R.
+It does not run that historical exploratory script from top to bottom. The
+historical snapshot block has inconsistent column names (s_adjusted versus
+s_shifted, and rep versus replicate). The new entry point avoids that broken
+block and makes the exact thesis settings explicit.
+
+What changed
+
+1. The original function incorrectly returned sqrt(sigma_d2) for sigma_p.
+   The one-line correction to sqrt(sigma_p2) is already in commit e026484.
+   The drift coefficients were already correct.
+2. Figure 6.4 now shows the calibrated precariousness noise increasing as
+   alpha_DP increases. Depression noise still decreases.
+3. The archived Figure 6.8A used older noise formulas. The replacement uses
+   the stationary calibration with a 0.3 multiplier on both noise amplitudes.
+   It uses 500 individuals per parameter/intervention combination, the same
+   grids, dt=0.01, zero initial states, and snapshots at steps 100, 300 and 500.
+   The original parallel random draws were not recoverable. Seed 2026101807
+   reproduces the approved replacement, not the old individual wiggles.
+4. Figure 6.8B uses the corrected sigma_p, the original 0.3 multiplier, seed
+   123, 500 trajectories, original sample/draw order and original plotting
+   settings. The title is now 'Response During and After Support'. The faint
+   trajectories, axes, colors, line widths and opacity are retained. Original
+   ylim(-1,1) clipping is retained, which produces a ggplot warning about
+   out-of-range path points. All points remain in the simulation and means.
+5. Both panels explicitly use the 0.3 multiplier. This is an illustrative
+   scaling choice. It reduces stochastic variance to 0.09 of its unscaled
+   contribution, not total population variance, because stress heterogeneity
+   remains. These plotted simulations do not match the full calibrated
+   variances/covariances. Their expected means do not depend on this scaling.
+
+Appendix and interpretation corrections applied in the thesis
+
+The off-diagonal moments are covariances, not the earlier printed correlation
+values. The actual six moments are
+  Var(D)=1, Var(P)=0.80712852965242976, Var(S)=0.74280611561567922,
+  Cov(D,P)=0.33553322010641318, Cov(D,S)=0.30806409724712824,
+  Cov(P,S)=0.19756368477893649.
+
+The complete stationary cross-covariance identity is
+  2 Cov(D,P) = alpha_DS Cov(P,S) + alpha_DP Var(P)
+             + alpha_PS Cov(D,S) + alpha_PD Var(D).
+The correct expression is
+  alpha_PS = [Cov(P,S) - alpha_PD Cov(D,S)] / Var(S).
+With the actual inputs it is +0.0248087123 at alpha_DP=0. The previously
+discussed +0.0534 used the earlier printed moments, not the implemented inputs.
+
+The nonnegative-coefficient bound is alpha_DP <= 0.6721532916. The simulated
+grid still ends at 0.65. The bound is not a loss of stability. The largest
+alpha_DP*alpha_PD product is 0.0977123, and both eigenvalues are -1 at the
+upper bound where alpha_PD reaches zero.
+
+Conclusions
+
+The central comparison remains: the same baseline covariances can be matched
+by configurations with different response timing. Under sustained support,
+the configurations have the same expected long-term levels. Noise corrections
+change variability and finite-sample wiggles, not the expected mean paths.
+
+One interpretation needed correction. In the compared configurations,
+alpha_DP=0.65 gives more gradual initial improvement and a longer-lasting
+reduction after support withdrawal. Calling the latter 'slower recovery and
+prolonged depression' was misleading. Several coefficients vary together, so
+the comparison does not isolate the effect of stronger feedback. The value
+0.65 is neither a stability boundary nor the strongest feedback-loop product.
+
+The causal-discovery analyses were not changed. These corrections do not
+require rewriting the final thesis conclusion in section 9.7. They do not
+revise the results of Chapters 7 or 8.
+
+Validation
+
+The reproduction entry point checks covariance balance and stability at 401
+values, checks the input moments against the actual calibration, and writes
+validation.json. At preparation, the maximum covariance residual was below
+7e-16. The regenerated A matched the approved preview pixel for pixel. B's
+sample means matched the previously approved corrected B exactly, and every
+pixel outside its title was unchanged. The final PDF was rendered and checked.
