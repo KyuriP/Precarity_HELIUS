@@ -35,8 +35,9 @@ What changed
    the stationary calibration with a 0.3 multiplier on both noise amplitudes.
    It uses 500 individuals per parameter/intervention combination, the same
    grids, dt=0.01, zero initial states, and snapshots at steps 100, 300 and 500.
-   The original parallel random draws were not recoverable. Seed 2026101807
-   reproduces the approved replacement, not the old individual wiggles.
+   The original parallel random draws were not recoverable. The corrected
+   panel uses seed 2026101807, so its random fluctuations differ from those
+   in the published figure.
 4. Figure 6.8B uses the corrected sigma_p, the original 0.3 multiplier, seed
    123, 500 trajectories, original sample/draw order and original plotting
    settings. The title is now 'Response During and After Support'. The faint
@@ -62,8 +63,8 @@ The complete stationary cross-covariance identity is
              + alpha_PS Cov(D,S) + alpha_PD Var(D).
 The correct expression is
   alpha_PS = [Cov(P,S) - alpha_PD Cov(D,S)] / Var(S).
-With the actual inputs it is +0.0248087123 at alpha_DP=0. The previously
-discussed +0.0534 used the earlier printed moments, not the implemented inputs.
+With the actual inputs it is +0.0248087123 at alpha_DP=0. Using the earlier
+printed moments instead would give +0.0534.
 
 The nonnegative-coefficient bound is alpha_DP <= 0.6721532916. The simulated
 grid still ends at 0.65. The bound is not a loss of stability. The largest
@@ -72,10 +73,11 @@ upper bound where alpha_PD reaches zero.
 
 Conclusions
 
-The central comparison remains: the same baseline covariances can be matched
-by configurations with different response timing. Under sustained support,
+Configurations that match the same baseline covariances can still differ
+in how quickly they respond to support. Under sustained support,
 the configurations have the same expected long-term levels. Noise corrections
-change variability and finite-sample wiggles, not the expected mean paths.
+change variability and fluctuations in the sample means. The expected mean
+paths remain the same.
 
 One interpretation needed correction. In the compared configurations,
 alpha_DP=0.65 gives more gradual initial improvement and a longer-lasting
@@ -84,15 +86,15 @@ prolonged depression' was misleading. Several coefficients vary together, so
 the comparison does not isolate the effect of stronger feedback. The value
 0.65 is neither a stability boundary nor the strongest feedback-loop product.
 
-The causal-discovery analyses were not changed. These corrections do not
-require rewriting the final thesis conclusion in section 9.7. They do not
-revise the results of Chapters 7 or 8.
+The causal discovery analyses and the results of Chapters 7 and 8 are
+unchanged. The corrections do not alter the final thesis conclusion.
 
 Validation
 
 The reproduction entry point checks covariance balance and stability at 401
 values, checks the input moments against the actual calibration, and writes
-validation.json. At preparation, the maximum covariance residual was below
-7e-16. The regenerated A matched the approved preview pixel for pixel. B's
-sample means matched the previously approved corrected B exactly, and every
-pixel outside its title was unchanged. The final PDF was rendered and checked.
+validation.json. The maximum covariance residual was below 7e-16 in the
+18 October 2026 run. The assembled figure was compared with the corrected
+panels. Panel A matched pixel for pixel. Changing
+panel B's title left its sample means and all pixels outside the title
+unchanged. The final PDF was also checked visually.
