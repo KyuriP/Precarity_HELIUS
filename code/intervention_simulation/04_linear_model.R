@@ -77,7 +77,7 @@ get_model_parameters_from_alpha_dp <- function(alpha_dp, varD, varP, varS, covDP
     alpha_ps = alpha_ps,
     alpha_pd = alpha_pd,
     sigma_d  = sqrt(sigma_d2),
-    sigma_p  = sqrt(sigma_d2)
+    sigma_p  = sqrt(sigma_p2)
   )
 }
 
