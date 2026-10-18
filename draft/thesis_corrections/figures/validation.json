@@ -1,0 +1,11 @@
+{
+  "N": 500,
+  "dt": 0.01,
+  "A_seed": 2026101807,
+  "B_seed": 123,
+  "noise_multiplier": 0.29999999999999999,
+  "max_stationarity_residual": 6.6613381477509392e-16,
+  "admissible_alpha_DP_bound": 0.67215329161670445,
+  "max_feedback_product": 0.097712293273203299,
+  "expected_mean_change_from_noise_scaling": 0
+}
